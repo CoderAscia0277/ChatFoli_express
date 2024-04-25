@@ -2,13 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import AuthenticationPanel from './chat/components/AutneticationPanel';
-
+import AuthenticationPanel from './chat/components/AuthenticationPanel';
+import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const router = createBrowserRouter([
+  {
+    path:'/',
+    element:  <AuthenticationPanel/>}]
+);
 root.render(
   <React.StrictMode>
-    <AuthenticationPanel/>
+    <RouterProvider router={router}/>
   </React.StrictMode>
 );
 
