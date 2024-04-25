@@ -10,3 +10,18 @@
 body{
   background-color: var(--theme-darker);
 }
+
+@keyframes wrong_wiggle{
+  0%{
+    transform: translateX(0);
+  }
+  33%{
+    transform: translateX(-100);
+  }
+  66%{
+    transform: translateX(0);
+  }
+  100%{
+    transform: translateX(100);
+  }
+}
