@@ -2,14 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import AuthenticationPanel from './chat/components/AutneticationPanel';
 
-const AuthenticationPanel = () => {
-  return(
-    <section>
-      <article className='text-black'>Hi there</article>
-    </section>
-  );
-};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

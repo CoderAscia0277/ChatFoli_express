@@ -2,4 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+  --theme-dark : rgb(50,52,54);
+  --theme-darker: rgb(36,37,38);
+}
 
+body{
+  background-color: var(--theme-dark);
+}
