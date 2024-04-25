@@ -55,10 +55,10 @@ const AuthenticationPanel = () =>{
                     <input onKeyDown={HandleDown} onChange={HandleChange} placeholder="Secret Key" className="text lg:text-2xl md:text-2xl sm:text-xl text-lg  flex flex-row text-center lg:w-1/2 md:w-1/2 w-3/4 border-0 outline-0 text-white h-16 rounded-2xl" type="text" style={{backgroundColor:'rgb(46 47 49)'}}></input>
                 </article>
                 <article className=" w-full flex flex-row justify-center items-center">
-                    <button onClick={SubmitCode}  className="h-10 w-28 rounded-3xl text-white" style={{backgroundColor: isFilled ? 'rgb(2 229 255)' : 'rgb(46 47 49)'}}> Submit</button>
+                    <button onClick={SubmitCode}  className="h-10 w-28 rounded-3xl text-white hover:scale-105" style={{backgroundColor: isFilled ? 'rgb(2 229 255)' : 'rgb(46 47 49)'}}> Submit</button>
 
                 </article>
-                <span className="text-slate-400  text-xs">Where to find secret key?</span>
+                <span className="text-slate-400 cursor-pointer hover:text-white text-xs">Where to find secret key?</span>
             </section>
        
     );
