@@ -10,7 +10,9 @@
 body{
   background-color: var(--theme-darker);
 }
-
+::-webkit-scrollbar{
+  display: none;
+}
 @keyframes wrong_wiggle{
   0%{
     transform: translateX(0);

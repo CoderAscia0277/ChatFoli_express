@@ -34,7 +34,7 @@ const AuthenticationPanel = () =>{
             TextField.value = "";
             TextField.placeholder = "Welcome !";
             setTimeout(()=>{
-                window.location.href = window.location.origin + '/helloworld';
+                window.location.href = window.location.origin + '/chat';
             },500);
             
             return;
