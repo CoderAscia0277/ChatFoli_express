@@ -4,6 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import AuthenticationPanel from './chat/components/AuthenticationPanel';
 import { createBrowserRouter,RouterProvider } from 'react-router-dom';
+import ChatIndex from './chat/core/chatIndex';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -15,6 +16,9 @@ const router = createBrowserRouter([
   {
     path:'/helloworld',
     element:<div>Hello World !</div>
+  },{
+    path:'/chat',
+    element:<ChatIndex/>
   }]
 );
 root.render(
