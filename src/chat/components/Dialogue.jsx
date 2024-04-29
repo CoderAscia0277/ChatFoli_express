@@ -45,7 +45,7 @@ const Dialogue = ({image = "./images/Foli.png" }) => {
             <div className="flex-grow px-4 h-max flex flex-col ">
                 <span className=" text-white lg:font-semibold md:font-semibold font-bold">P. Star 7</span>
                 <p className="font-sans  text-neutral-100 mt-4 text-break leading-8 ">Hi this is a sample text I made to ensure that the text inside the paragraph is displaying correctly.</p>
-                <div className="bg-neutral-800 animate-pulse h-46 rounded-xl mt-6" style={{aspectRatio:5/3}}></div> 
+                <div className="bg-neutral-800 animate-pulse lg:h-46 md:h-46 h-50 rounded-xl mt-6" style={{aspectRatio:5/3}}></div> 
                 <CharacterOption role={'narrator'}/>
                 {/* <UserOption/> */}
             </div>
