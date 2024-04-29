@@ -13,8 +13,9 @@ body{
 ::-webkit-scrollbar{
   display: none;
 }
-.container div:last-child{
-  margin-bottom: 20vh;
+
+.container .content:last-child{
+  margin-bottom: 10vh;
 }
 @keyframes wrong_wiggle{
   0%{
