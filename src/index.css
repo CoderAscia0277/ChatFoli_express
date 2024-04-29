@@ -15,7 +15,7 @@ body{
 }
 
 .container .content:last-child{
-  margin-bottom: 10vh;
+  margin-bottom: 5vh;
 }
 @keyframes wrong_wiggle{
   0%{
