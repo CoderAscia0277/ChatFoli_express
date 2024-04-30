@@ -13,7 +13,7 @@ const ChatIndex = () => {
     }
 
     return(
-        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0 bg-neutral-900 lg:rounded-xl md:rounded-xl  mt-0 flex flex-col">
+        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0 bg-neutral-900 lg:rounded-xl md:rounded-xl  mt-0 flex flex-col py-2 ">
             <article className="w-full min-h-16 flex flex-row items-center px-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-left-short text-white w-12 h-12 hover:cursor-pointer hover:scale-110" viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
@@ -50,10 +50,17 @@ const ChatIndex = () => {
                 
                 <textarea placeholder="Say something . . ." onFocus={() => setTogglingPanel(toggling_panel ? false : '')} onChange={HandleChange}  className="text-start bg-neutral-800 outline-0 lg:w-3/5 md:w-3/5 sm:w-3/4 w-1/2 py-2 text-white rounded-2xl flex flex-row items-center px-4 " style={{border: 'solid 1px rgb(67 67 67)',resize:'none'}}></textarea>
                 
-               
-                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className= {` ${filled ? '' : 'opacity-15'} bi bi-arrow-up-square-fill w-10 h-10 text-white hover:cursor-pointer hover:scale-110`} viewBox="0 0 16 16">
-                    <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
-                </svg>
+                { filled ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-up-square-fill w-10 h-10 text-white cursor-pointer" viewBox="0 0 16 16">
+                        <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0"/>
+                    </svg>
+                    :
+                    <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className= {` bi bi-arrow-up-square-fill w-10 h-10 text-white `} viewBox="0 0 16 16">
+                        <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707z"/>
+                    </svg>
+
+                }
+                
             </article>
         </section>
     )

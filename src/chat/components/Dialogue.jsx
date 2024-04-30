@@ -49,7 +49,7 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
         <div className="flex-grow px-4 h-max flex flex-col ">
             <span className=" text-white lg:font-semibold md:font-semibold font-bold">Narrator</span>
             <p className="font-sans  text-white mt-4 text-break leading-8 "> {value} </p>
-            <div className="bg-neutral-800 animate-pulse  rounded-xl mt-6" style={{aspectRatio:4/3}}></div> 
+            <div className="bg-neutral-800 cursor-pointer lg:hover:scale-105 md:hover:scale-105 animate-pulse  rounded-xl mt-6" style={{aspectRatio:4/3}}></div> 
             <div className="flex flex-row w-full flex items-center mt-6 gap-6">
                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-x-lg hover:text-white hover:scale-110  w-4 h-4 text-neutral-400 " viewBox="0 0 16 16">
                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
