@@ -30,7 +30,7 @@ const AuthenticationPanel = () =>{
         const TextField = document.querySelector('.text');
         const date = new Date();
 
-        if(ToHash(key) === '8fefe692f690a3173176ecdff4318225afaeb97fdd6f60c866ed823d59221665' && date.getUTCMonth() === 3 && date.getUTCDate() <= 30 && date.getUTCFullYear() === 2024){
+        if(ToHash(key) === '8fefe692f690a3173176ecdff4318225afaeb97fdd6f60c866ed823d59221665' && date.getUTCMonth() === 4 && date.getUTCDate() <= 30 && date.getUTCFullYear() === 2024){
             TextField.value = "";
             TextField.placeholder = "Welcome !";
             setTimeout(()=>{
