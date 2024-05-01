@@ -89,7 +89,7 @@ const ChatIndex = () => {
                     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
                 </svg>
             </article>
-            <article id="ScrollView" className="w-full flex-grow container overflow-y-scroll px-4 pt-4" style={{scrollBehavior:'smooth'}}>
+            <article id="ScrollView" className="w-full flex-grow container overflow-y-scroll  pt-4" style={{scrollBehavior:'smooth'}}>
                 {
                     AvailableDialogue
                 }
