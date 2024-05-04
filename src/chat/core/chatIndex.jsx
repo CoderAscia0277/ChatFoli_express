@@ -86,7 +86,7 @@ const ChatIndex = () => {
                 
             }else{
                 setTimeout(() => {
-                    DialogueBlocks = [...DialogueBlocks,<Dialogue done={() => setDialogueState(true)} target="nar"  value={'Narrator testing'} key={DialogueBlocks.length}/>];
+                    DialogueBlocks = [...DialogueBlocks,<Dialogue done={() => setDialogueState(true)} target="nar"  value={'This is a text provided by the narrator for testing.'} key={DialogueBlocks.length}/>];
                     setDialogueBlocks(DialogueBlocks);          
                 }, 10000);
      
@@ -123,7 +123,7 @@ const ChatIndex = () => {
                 }
               
             </article>
-            {/* <article className="w-full absolute z-10 bottom-20 bg-neutral-900 " style={{animation: toggling_panel ? 'push_up 250ms ease-in-out forwards' : toggling_panel === false ? 'pull_down 250ms ease-in-out forwards' : '' }}>
+            {/* <article className="w-full absolute z-10 h-1/2  bg-stone-900  " style={{bottom:'15%' , animation: toggling_panel ? 'push_up 250ms ease-in-out forwards' : toggling_panel === false ? 'pull_down 250ms ease-in-out forwards' : '' }}>
               
             </article> */}
             <article className=" absolute z-10 bottom-8 bg-transparent w-full">

@@ -73,9 +73,9 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
     const NarratorDialogue = ({value}) => {
         return(
                 <>
-                    <img src={image} className="w-10 h-10 bg-neutral-800 rounded-full" alt="" />
+                    {/* <img src={image} className="w-10 h-10 bg-neutral-800 rounded-full" alt="" /> */}
                     <div className="flex-grow px-4 h-max flex flex-col ">
-                        <span className=" text-white lg:font-semibold md:font-semibold font-bold">Narrator</span>
+                        {/* <span className=" text-white lg:font-semibold md:font-semibold font-bold">Narrator</span> */}
                         <p className="font-sans  text-white mt-4 text-break leading-8 "> {value} </p>
                         <div className="bg-neutral-800 cursor-pointer lg:hover:scale-105 md:hover:scale-105 animate-pulse  rounded-xl mt-6" style={{aspectRatio:4/3}}></div> 
                         <div className="flex flex-row w-full flex items-center mt-6 gap-6">
@@ -100,7 +100,7 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
 
     // borderBottom: wait_state && target !== 'user' ? '' : 'solid 1px rgb(37 37 37)'
     return(
-        <div className="content  w-full min-h-20 h-auto flex  flex-row py-6 px-4" style={{background: target === 'user' ? 'rgba(37,37,37,0.2)':''}}>
+        <div className="content  w-full min-h-20 h-auto flex  flex-row py-6 px-4" style={{background: target === 'user' ? 'rgba(37,37,37,0.6)':''}}>
            {
               target ? target === 'user' ? <UserDialogue value={value} name={name}/> 
                 : target === 'char' ? <CharacterDialogue value={value} name={name}/> : 
