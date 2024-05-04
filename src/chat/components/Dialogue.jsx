@@ -1,6 +1,6 @@
 import { useState , useEffect , useRef } from "react";
 
-const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', name = ''}) => {
+const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => console.log('do nothing')}) => {
 
     let didMountRef = useRef(false);
     const [wait_state , set_wait_state] = useState(true);
@@ -14,34 +14,17 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
         }else{
             //Update once
             didMountRef.current = true;
-            setTimeout(() =>{
-                set_wait_state(false);
-                
-            },17000);
+            // setTimeout(() =>{
+            //     set_wait_state(false);
+                done();
+            // },5000);
         }
     });
 
-    const LoadingBubble = () => {
-        return(
-            <div className="w-full flex flex-row justify-center  items-end  gap-4">
-                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-circle-fill w-3 h-3 animate-bounce text-white" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-circle-fill w-3 h-3 animate-bounce text-white" viewBox="0 0 16 16" style={{animationDelay:'300ms'}}>
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-circle-fill w-3 h-3  animate-bounce text-white " viewBox="0 0 16 16" style={{animationDelay:'500ms'}}>
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                </svg>
-            </div>
-        );
-
-    }
 
     const CharacterDialogue = ({value,name}) => {
         return(
-                
-                    wait_state ? <div className="flex-grow px-4 flex flex-col  "> <LoadingBubble/> </div> :
+
                     <>
                         <img src={image} className="w-10 h-10 bg-neutral-800 rounded-full" alt="" />
                         <div className="flex-grow px-4 h-max flex flex-col ">
@@ -86,11 +69,9 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
             
         );
     }
-
+    // <div className="flex-grow px-4 h-12 flex flex-col "> <LoadingBubble/> </div> 
     const NarratorDialogue = ({value}) => {
         return(
-
-                wait_state ?  <div className="flex-grow px-4 h-12 flex flex-col "> <LoadingBubble/> </div> :
                 <>
                     <img src={image} className="w-10 h-10 bg-neutral-800 rounded-full" alt="" />
                     <div className="flex-grow px-4 h-max flex flex-col ">
@@ -117,8 +98,9 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
        );
     }
 
+    // borderBottom: wait_state && target !== 'user' ? '' : 'solid 1px rgb(37 37 37)'
     return(
-        <div className="content  w-full min-h-20 h-auto flex  flex-row py-6 px-4" style={{borderBottom: wait_state && target !== 'user' ? '' : 'solid 1px rgb(37 37 37)', background: target === 'user' ? 'rgba(37,37,37,0.2)':''}}>
+        <div className="content  w-full min-h-20 h-auto flex  flex-row py-6 px-4" style={{background: target === 'user' ? 'rgba(37,37,37,0.2)':''}}>
            {
               target ? target === 'user' ? <UserDialogue value={value} name={name}/> 
                 : target === 'char' ? <CharacterDialogue value={value} name={name}/> : 
