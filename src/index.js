@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {lazy} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import AuthenticationPanel from './chat/components/AuthenticationPanel';
+// import AuthenticationPanel from './chat/components/AuthenticationPanel';
 import { createBrowserRouter,RouterProvider } from 'react-router-dom';
-import ChatIndex from './chat/core/chatIndex';
+// import ChatIndex from './chat/core/chatIndex';
+
+const AuthenticationPanel = lazy(()=>import('./chat/components/AuthenticationPanel'));
+const ChatIndex = lazy(()=>import('./chat/core/chatIndex'));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
