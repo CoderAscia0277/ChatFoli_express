@@ -1,6 +1,6 @@
 import { useEffect , useRef } from "react";
 
-const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => console.log('do nothing')}) => {
+const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => console.log('do nothing')}) => {
 
     let didMountRef = useRef(false);
 
@@ -21,11 +21,11 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
         return(
 
                     <>
-                        <img src={image} className="ml-2 w-10 h-10 bg-neutral-800 rounded-full" alt="" />
+                        <img src={image} className="ml-2 w-10 h-10  rounded-full" alt="" style={{background:theme.dark}} />
                         <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 ">
-                            <span className=" text-white lg:font-semibold md:font-semibold font-bold rounded-xl px-2" style={{backgroundColor:'rgba( 255, 255, 255, 0.10)'}}>{name}</span>
-                            <p className="font-sans min-w-20 text-start py-2 px-4  text-white text-break leading-8 bg-neutral-800" style={{borderRadius:'10px 10px 10px 0px'}}> {value} </p>
-                            <div className=" dialogue hidden  flex-row   gap-4 justify-center items-center py-2 px-4 rounded-xl bg-neutral-800">
+                            {/* <span className=" text-white lg:font-semibold md:font-semibold  rounded-xl px-2 opacity-75" style={{backgroundColor:theme.light}}>{name}</span> */}
+                            <p className="font-sans min-w-20 text-start py-2 px-4  text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px',background:theme.light}}> {value} </p>
+                            <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.light}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className=" bi bi-x-lg cursor-pointer text-white hover:scale-110 w-4 h-4 " viewBox="0 0 16 16">
                                     <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                                 </svg>
@@ -48,8 +48,8 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
                 {/* <img src={image} className="w-10 h-10 bg-neutral-800 rounded-full" alt="" /> */}
                 <div className="parent px-4 h-max flex flex-col gap-2 items-end ">
                 {/* <span className=" text-white lg:font-semibold md:font-semibold font-bold">{name}</span> */}
-                <p className="font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8 bg-neutral-800" style={{borderRadius:'10px 10px 0px 10px'}}> {value} </p>
-                <div className="dialogue hidden flex-row   gap-4 justify-center items-center py-2 px-4 rounded-xl bg-neutral-800">
+                <p className="font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8" style={{borderRadius:'10px 10px 0px 10px',background:theme.dark}}> {value} </p>
+                <div className="dialogue hidden flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.dark}}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                         </svg>
@@ -71,9 +71,9 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
                     {/* <img src={image} className="w-10 h-10 bg-neutral-800 rounded-full" alt="" /> */}
                     <div className="dialogue px-4 h-max flex flex-col gap-4">
                         {/* <span className=" text-white lg:font-semibold md:font-semibold font-bold">Narrator</span> */}
-                        <p className="font-sans min-w-20 text-start  py-2 px-4 text-white mt-4 text-break leading-8 bg-neutral-800" style={{borderRadius:'10px'}}> {value} </p>
-                        <div className="bg-neutral-800 cursor-pointer lg:hover:scale-105 md:hover:scale-105   rounded-xl " style={{aspectRatio:4/3}}></div> 
-                        <div className="dialogue hidden flex-row w-max  gap-4 justify-center items-center py-2 px-4 rounded-xl bg-neutral-800">
+                        <p className="font-sans min-w-20 text-start  py-2 px-4 text-white mt-4 text-break leading-8 " style={{borderRadius:'10px',background:theme.light}}> {value} </p>
+                        <div className="cursor-pointer   rounded-xl " style={{aspectRatio:4/3,background:theme.light}}></div> 
+                        <div className="dialogue hidden flex-row w-max opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.light}}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4  " viewBox="0 0 16 16">
                                 <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                             </svg>
