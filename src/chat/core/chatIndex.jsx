@@ -128,8 +128,8 @@ const ChatIndex = () => {
                     DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
             </article>
-            <article className={`w-full absolute bottom-0 z-10 transition-all min-h-20 flex flex-col  px-4 ${DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
-                <div className="flex flex-row items-center justify- gap-4">
+            <article className={`w-full absolute bottom-0 z-10 transition-all min-h-20 flex flex-col  ${DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
+                <div className="flex flex-row items-center justify-center gap-4 px-4 ">
                     <span className={`  ${isTextFieldFocus ? 'w-0 hidden' : 'w-1/6 flex'}  flex-row justify-center items-center gap-4`}>
 
                         <span className={`rounded-full   overflow-hidden scale-110 ${isTextFieldFocus ? 'p-0 w-0' : 'p-2'}`} style={{background:theme.dark}}>
@@ -139,13 +139,13 @@ const ChatIndex = () => {
                         </span>
                     
                     </span>
-                    <span className="flex-grow  transition-all flex flex-row justify-start items-center px-4 gap-4  rounded-2xl" style={{border: 'solid 1px rgb(67 67 67)',background:theme.dark}}>
+                    <span className="flex-grow  transition-all flex flex-row justify-start items-center  px-4 gap-4  rounded-2xl" style={{border: 'solid 1px rgb(67 67 67)',background:theme.dark}}>
        
                     
                         <textarea onKeyDown={HandlePress} onBlur={()=>setTextFieldFocus(false)} placeholder="Say something . . ." onFocus={() => {setEmojiToggle(false); setTextFieldFocus(true)}} onChange={HandleChange}  className={`text-start bg-transparent  transition-all outline-0 flex-grow py-2 text-white  flex  items-center px-2 `} style={{resize:'none'}}></textarea>
                     
                         { filled ? 
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" onClick={() => SubmitText()} className="bi bi-arrow-up-square-fill transition-all w-8 h-8 text-white cursor-pointer " viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" onClick={() => SubmitText()} className="bi bi-arrow-up-square-fill transition-all w-8 h-8 text-white cursor-pointer" viewBox="0 0 16 16">
                                 <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0"/>
                             </svg>
                             :
@@ -155,7 +155,7 @@ const ChatIndex = () => {
                         }
                     </span>
                 </div>
-                <div className={`${EmojiSticker ? 'push_up flex' : 'pull_down'} p-2 `}>
+                <div className={`${EmojiSticker ? 'push_up flex' : 'pull_down'} py-4 `}>
                     <span className="h-full w-full transition-all rounded-2xl " style={{background:theme.dark}}>
 
                     </span>
