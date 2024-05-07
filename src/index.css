@@ -54,23 +54,33 @@ body{
     width: 0;
   }
 }
+
 @keyframes push_up{
   0%{
-    width: 0;
+    height: 0vh;
   }
   100%{
-    width: 100%;
+    height: 35vh;
   }
 }
-@keyframes collapse_down {
+.push_up{
+  animation: push_up 100ms ease-in-out forwards;
+}
+
+@keyframes pull_down {
   0%{
-    height: 10vh;
+    height: 35vh;
   }
   100%{
     height:0;
+    /* display: none; */
   }
-
 }
+.pull_down{
+  animation: pull_down 100ms ease-in-out forwards;
+}
+
+
 @keyframes pulse{
   0%{
     opacity: 1;
@@ -84,3 +94,19 @@ body{
     transform: translateY(0);
   }
 }
+/* @keyframes expand_emoji_icon {
+  0%{
+    width: 75%;
+  }
+  100%{
+    width: 100%;
+  }
+}
+@keyframes shrink_emoji_icon {
+  0%{
+    width: 100%;
+  }
+  100%{
+    width: 75%;
+  }
+} */
