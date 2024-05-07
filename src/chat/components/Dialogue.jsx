@@ -15,7 +15,7 @@ const Dialogue = ({image = "./images/Foli.png", target = 'user' , value = '', na
             done();
         }
     });
-
+//Theme dark rgb(23 40 61) , Light rgb(50 71 99)
 
     const CharacterDialogue = ({value,name}) => {
         return(
