@@ -71,7 +71,7 @@ const ChatIndex = () => {
         });
      
         setDialogueBlocks(DialogueBlocks);
-        // console.log("remove_dialogue_from_parent",id);
+        console.log("remove_dialogue_from_parent",id);
     }
 
     const SubmitText = () => {

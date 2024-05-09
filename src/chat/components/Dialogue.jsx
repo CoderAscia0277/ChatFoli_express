@@ -15,7 +15,7 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
             didMountRef.current = true;
             done();
         }
-        return remove_element ? console.log('removed') : console.log('mounted');
+        return remove_element ?   remove(id) : console.log('mounted');
     });
 //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
 
@@ -25,9 +25,10 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
                     <>
                         <img src={image} className="ml-2 w-10 h-10  rounded-full" alt="" style={{background:theme.dark}} />
                         <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 ">
+                            <span className=" text-white lg:font-semibold md:font-semibold font-bold rounded-2xl px-2 py-1" style={{background:'rgba(50, 71, 99,0.35)'}}>{name}</span>
                             <p className="pointer-events-none font-sans min-w-20 text-start py-2 px-4  text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px',background:theme.light}}> {value} </p>
                             <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.light}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); remove(id)}} fill="currentColor" className=" bi bi-x-lg cursor-pointer text-white hover:scale-110 w-4 h-4 " viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); }} fill="currentColor" className=" bi bi-x-lg cursor-pointer text-white hover:scale-110 w-4 h-4 " viewBox="0 0 16 16">
                                     <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                                 </svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white hover:scale-110 cursor-pointer bi bi-arrow-clockwise  w-4 h-4 " viewBox="0 0 16 16">
@@ -49,7 +50,8 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
                 <div className="parent px-4 h-max flex flex-col gap-2 items-end ">
                 <p className="pointer-events-none font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8" style={{borderRadius:'10px 10px 0px 10px',background:theme.dark}}> {value} </p>
                 <div className="dialogue hidden flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.dark}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); remove(id)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white bi bi-pencil-square hover:scale-110 cursor-pointer  w-4 h-4 " viewBox="0 0 16 16">
@@ -71,7 +73,7 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
                         <p className="pointer-events-none font-sans min-w-20 text-start  py-2 px-4 text-white mt-4 text-break leading-8 " style={{borderRadius:'10px',background:theme.light}}> {value} </p>
                         <div className="cursor-pointer   rounded-xl " style={{aspectRatio:4/3,background:theme.light}}></div> 
                         <div className="dialogue hidden flex-row w-max opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.light}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); remove(id)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4  " viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4  " viewBox="0 0 16 16">
                                 <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                             </svg>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white hover:scale-110 cursor-pointer bi bi-arrow-clockwise   w-4 h-4 " viewBox="0 0 16 16">
