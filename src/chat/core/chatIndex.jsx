@@ -64,9 +64,18 @@ const ChatIndex = () => {
         }
     }
 
+    const remove_dialogue_from_parent = (id) => {
+  
+        DialogueBlocks = DialogueBlocks.filter((block) => {
+            return `dialogue_${block.key}` !== id;
+        });
+     
+        setDialogueBlocks(DialogueBlocks);
+        // console.log("remove_dialogue_from_parent",id);
+    }
+
     const SubmitText = () => {
 
-        
         if(DialogueState){
 
             const target = document.querySelector('textarea');
@@ -77,20 +86,21 @@ const ChatIndex = () => {
             setDialogueState(false);
             
             //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} target="user" name="Azaki" value={UserInput} key={DialogueBlocks.length}/>];
+            
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}  id={`dialogue_${DialogueBlocks.length}`}  remove={(x) => remove_dialogue_from_parent(x)} target="user" name="Azaki" value={UserInput} key={DialogueBlocks.length}/>];
             setDialogueBlocks(DialogueBlocks);
     
     
             const ItemPicker = Math.floor(Math.random() * 100);
             if(ItemPicker > 50){
                 setTimeout(() => {
-                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}  done={() => setDialogueState(true)} target="char" name="Suzumi" value={'Testing testing'} key={DialogueBlocks.length}/>];
+                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => setDialogueState(true)} target="char" name="Suzumi" value={'Testing testing'} key={DialogueBlocks.length}/>];
                     setDialogueBlocks(DialogueBlocks);
                 },5000);
                 
             }else{
                 setTimeout(() => {
-                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} done={() => setDialogueState(true)} target="nar"  value={'This is a text provided by the narrator for testing.'} key={DialogueBlocks.length}/>];
+                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}   id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)} done={() => setDialogueState(true)} target="nar"  value={'This is a text provided by the narrator for testing.'} key={DialogueBlocks.length}/>];
                     setDialogueBlocks(DialogueBlocks);          
                 }, 5000);
      
@@ -128,7 +138,7 @@ const ChatIndex = () => {
                     DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
             </article>
-            <article className={`w-full absolute bottom-0 z-10 transition-all flex flex-col  ${DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
+            <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col py-4 px-2  ${DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
                 <div className="flex flex-row items-center justify-center gap-4 px-2 ">
                     <span className={`  ${isTextFieldFocus ? 'w-0 hidden' : 'w-1/6 flex'}  flex-row justify-center items-center gap-4`}>
 
@@ -155,7 +165,7 @@ const ChatIndex = () => {
                         }
                     </span>
                 </div>
-                <div className={`${EmojiSticker ? 'push_up flex' : 'pull_down'} py-4 `}>
+                <div className={`${EmojiSticker ? 'push_up flex' : 'pull_down'} px-2 pt-2 `}>
                     <span className="h-full w-full transition-all rounded-2xl " style={{background:theme.dark}}>
 
                     </span>

@@ -1,8 +1,9 @@
-import { useEffect , useRef } from "react";
+import React, { useEffect , useRef , useState } from "react";
 
-const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => console.log('do nothing')}) => {
+const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null}) => {
 
     let didMountRef = useRef(false);
+    const [remove_element,set_remove_element] = useState(false);
 
     useEffect(() =>{
         const ScrollView = document.querySelector('#ScrollView');
@@ -14,6 +15,7 @@ const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", 
             didMountRef.current = true;
             done();
         }
+        return remove_element ? console.log('removed') : console.log('mounted');
     });
 //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
 
@@ -25,7 +27,7 @@ const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", 
                         <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 ">
                             <p className="pointer-events-none font-sans min-w-20 text-start py-2 px-4  text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px',background:theme.light}}> {value} </p>
                             <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.light}}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className=" bi bi-x-lg cursor-pointer text-white hover:scale-110 w-4 h-4 " viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); remove(id)}} fill="currentColor" className=" bi bi-x-lg cursor-pointer text-white hover:scale-110 w-4 h-4 " viewBox="0 0 16 16">
                                     <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                                 </svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white hover:scale-110 cursor-pointer bi bi-arrow-clockwise  w-4 h-4 " viewBox="0 0 16 16">
@@ -47,7 +49,7 @@ const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", 
                 <div className="parent px-4 h-max flex flex-col gap-2 items-end ">
                 <p className="pointer-events-none font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8" style={{borderRadius:'10px 10px 0px 10px',background:theme.dark}}> {value} </p>
                 <div className="dialogue hidden flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.dark}}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); remove(id)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
                             <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                         </svg>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white bi bi-pencil-square hover:scale-110 cursor-pointer  w-4 h-4 " viewBox="0 0 16 16">
@@ -69,7 +71,7 @@ const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", 
                         <p className="pointer-events-none font-sans min-w-20 text-start  py-2 px-4 text-white mt-4 text-break leading-8 " style={{borderRadius:'10px',background:theme.light}}> {value} </p>
                         <div className="cursor-pointer   rounded-xl " style={{aspectRatio:4/3,background:theme.light}}></div> 
                         <div className="dialogue hidden flex-row w-max opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.light}}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4  " viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); remove(id)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4  " viewBox="0 0 16 16">
                                 <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                             </svg>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white hover:scale-110 cursor-pointer bi bi-arrow-clockwise   w-4 h-4 " viewBox="0 0 16 16">
@@ -89,6 +91,7 @@ const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", 
     }
     
     return(
+        remove_element ? "" :
         <div className={`content  w-auto  min-h-20 h-auto flex  flex-row pt-6  ${target === 'user' ? 'justify-end' : 'justify-start'}`}>
            {
               target ? target === 'user' ? <UserDialogue value={value} name={name}/> 
@@ -102,6 +105,7 @@ const Dialogue = ({theme = {'dark':'','light':''} ,image = "./images/Foli.png", 
             }
             
         </div>
+        
     );
 };
 
