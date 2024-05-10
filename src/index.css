@@ -27,11 +27,11 @@ body{
       display: flex;
     }
 }
-.super_parent .content:nth-last-child(2) {
+/* .super_parent .content:nth-last-child(2) {
   && .dialogue{
     display: flex;
   }
-}
+} */
 @keyframes wrong_wiggle{
   0%{
     transform: translateX(0);

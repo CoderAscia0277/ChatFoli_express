@@ -1,8 +1,8 @@
 import { useState , useEffect , useRef } from "react";
 import Dialogue from "../components/Dialogue";
 import LoadingBubble from "../components/LoadingComponent";
-
-
+import Store from "../utils/ConfigureStore";
+import { set_onBusy } from "../utils/ConfigureStore";
 let DialogueBlocks  = [];
 
 
@@ -16,7 +16,12 @@ const ChatIndex = () => {
     const [AvailableDialogue , setDialogueBlocks] = useState();
     let didMountRef = useRef(false);
     const [isTextFieldFocus,setTextFieldFocus] = useState(false);
-    const [DialogueState ,setDialogueState] = useState(true);
+
+    const [DialogueState ,setDialogueState] = useState(Store.getState().onBusy);
+    const UpdateDialogueState = (update) => setDialogueState(update);
+    Store.subscribe(() => UpdateDialogueState(Store.getState().onBusy));
+    
+
     const theme = {'dark':'rgba(23, 40, 61, 0.85)','light':'rgba(50, 71, 99, 0.85)'};
     const [EmojiSticker,setEmojiToggle] = useState(false);
 
@@ -31,13 +36,13 @@ const ChatIndex = () => {
              
             }
         }
-        return;
+        return console.log(DialogueState);
         
     });
 
 
     const HandleChange = (e) => {
-        if(e.target.value && DialogueState){
+        if(e.target.value && !DialogueState){
             setUserInput(e.target.value);
             setFilled(true);
         }
@@ -46,9 +51,9 @@ const ChatIndex = () => {
         }
     }
     const HandlePress = (e) => {
+
         const text = e.target.value;
         
-
         if (e.key === 'Enter' && text.length < 250 ) {
             e.preventDefault();
 
@@ -59,48 +64,53 @@ const ChatIndex = () => {
             
             SubmitText();
             return;
-        }else if(!DialogueState){
+        }else if(DialogueState){
             e.preventDefault();
         }
     }
 
     const remove_dialogue_from_parent = (id) => {
   
+        //This block filter out the invisible components e.g ["",""]
+
         DialogueBlocks = DialogueBlocks.filter((block) => {
             return `dialogue_${block.key}` !== id;
         });
      
+        //Updates the available dialogue blocks to display
         setDialogueBlocks(DialogueBlocks);
         console.log("remove_dialogue_from_parent",id);
     }
 
     const SubmitText = () => {
 
-        if(DialogueState){
+        if(!DialogueState){
 
             const target = document.querySelector('textarea');
             target.value = '';
 
             setFilled(false);
             setUserInput('');
-            setDialogueState(false);
+            // setDialogueState(false);
+            Store.dispatch(set_onBusy(true));
+            
             
             //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
             
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}  id={`dialogue_${DialogueBlocks.length}`}  remove={(x) => remove_dialogue_from_parent(x)} target="user" name="Azaki" value={UserInput} key={DialogueBlocks.length}/>];
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}  id={`dialogue_${DialogueBlocks.length}`}  remove={(x) => remove_dialogue_from_parent(x)} target="user" name="Azaki" value={UserInput}   key={DialogueBlocks.length}/>];
             setDialogueBlocks(DialogueBlocks);
     
     
             const ItemPicker = Math.floor(Math.random() * 100);
             if(ItemPicker > 50){
                 setTimeout(() => {
-                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => setDialogueState(true)} target="char" name="Suzumi" value={'Testing testing'} key={DialogueBlocks.length}/>];
+                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="char" name="Suzumi" value={'Testing testing'} key={DialogueBlocks.length}/>];
                     setDialogueBlocks(DialogueBlocks);
                 },5000);
                 
             }else{
                 setTimeout(() => {
-                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}   id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)} done={() => setDialogueState(true)} target="nar"  value={'This is a text provided by the narrator for testing.'} key={DialogueBlocks.length}/>];
+                    DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}   id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)} done={() => Store.dispatch(set_onBusy(false))} target="nar"  value={'This is a text provided by the narrator for testing.'} key={DialogueBlocks.length}/>];
                     setDialogueBlocks(DialogueBlocks);          
                 }, 5000);
      
@@ -135,10 +145,10 @@ const ChatIndex = () => {
             </article>
             <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none" style={{backgroundColor: DialogueState ? "" : 'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}} >
                 {
-                    DialogueState ? " " : <LoadingBubble theme={theme}/>
+                    !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
             </article>
-            <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col py-4 px-2  ${DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
+            <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col py-4 px-2  ${!DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
                 <div className="flex flex-row items-center justify-center gap-4 px-2 ">
                     <span className={`  ${isTextFieldFocus ? 'w-0 hidden' : 'w-1/6 flex'}  flex-row justify-center items-center gap-4`}>
 

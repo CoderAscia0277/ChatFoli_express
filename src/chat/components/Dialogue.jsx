@@ -1,9 +1,12 @@
 import React, { useEffect , useRef , useState } from "react";
+import Store from "../utils/ConfigureStore";
 
 const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null}) => {
 
     let didMountRef = useRef(false);
     const [remove_element,set_remove_element] = useState(false);
+    const [display_options,set_display_options] = useState(!Store.getState().onBusy);
+    Store.subscribe(() => set_display_options(!Store.getState().onBusy));
 
     useEffect(() =>{
         const ScrollView = document.querySelector('#ScrollView');
@@ -48,17 +51,22 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
         return(
             <>
                 <div className="parent px-4 h-max flex flex-col gap-2 items-end ">
-                <p className="pointer-events-none font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8" style={{borderRadius:'10px 10px 0px 10px',background:theme.dark}}> {value} </p>
-                <div className="dialogue hidden flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.dark}}>
+                    <p className="pointer-events-none font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8" style={{borderRadius:'10px 10px 0px 10px',background:theme.dark}}> {value} </p>
+                    {
+                        display_options ?
+                        <div className="dialogue hidden flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.dark}}>
 
-                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
-                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white bi bi-pencil-square hover:scale-110 cursor-pointer  w-4 h-4 " viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                        </svg>
-                    </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
+                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white bi bi-pencil-square hover:scale-110 cursor-pointer  w-4 h-4 " viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                        </div>
+                        : ''
+                    }
+                    
                 </div>
             </>
            
