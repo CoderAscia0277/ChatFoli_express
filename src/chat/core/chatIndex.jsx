@@ -10,7 +10,6 @@ let DialogueBlocks  = [];
 
 const ChatIndex = () => {
 
-    // const [toggling_panel,setTogglingPanel] = useState();
     const [filled , setFilled] = useState();
     const [UserInput , setUserInput] = useState("");
     const [AvailableDialogue , setDialogueBlocks] = useState();
@@ -18,12 +17,15 @@ const ChatIndex = () => {
     const [isTextFieldFocus,setTextFieldFocus] = useState(false);
 
     const [DialogueState ,setDialogueState] = useState(Store.getState().onBusy);
-    const UpdateDialogueState = (update) => setDialogueState(update);
-    Store.subscribe(() => UpdateDialogueState(Store.getState().onBusy));
+    Store.subscribe(() => setDialogueState(Store.getState().onBusy));
     
 
     const theme = {'dark':'rgba(23, 40, 61, 0.85)','light':'rgba(50, 71, 99, 0.85)'};
     const [EmojiSticker,setEmojiToggle] = useState(false);
+
+    const circle = "bi bi-circle-fill w-3 h-3  cursor-pointer " ;
+
+    const [emoji_indicator_icon_status,setEmojiIndicator] = useState([true,false,false,false]);
 
     useEffect(()=>{
         const ScrollView = document.querySelector('#ScrollView');
@@ -36,7 +38,7 @@ const ChatIndex = () => {
              
             }
         }
-        return console.log(DialogueState);
+        return;
         
     });
 
@@ -91,7 +93,6 @@ const ChatIndex = () => {
 
             setFilled(false);
             setUserInput('');
-            // setDialogueState(false);
             Store.dispatch(set_onBusy(true));
             
             
@@ -176,11 +177,28 @@ const ChatIndex = () => {
                     </span>
                 </div>
                 <div className={`${EmojiSticker ? 'push_up flex' : 'pull_down'} px-2 pt-2 `}>
-                    <span className="h-full w-full transition-all rounded-2xl " style={{background:theme.dark}}>
-
-                    </span>
+                    <div className="h-full w-full flex flex-col transition-all rounded-2xl " style={{background:theme.dark}}>
+                        <div className=" w-full flex-grow rounded-xl">
+    
+                        </div>
+                    <div className=" w-full flex flex-row h-5 overflow-hidden gap-4 mb-2 justify-center ">
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={(e) => {e = emoji_indicator_icon_status.map((item,index) => { return index === 0 ?  true : false}); setEmojiIndicator(e)}} fill="currentColor" className={`${circle} ${emoji_indicator_icon_status[0] ? 'text-white' : 'text-neutral-500'}`} viewBox="0 0 16 16">
+                            <circle cx="8" cy="8" r="8"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={(e) => {e = emoji_indicator_icon_status.map((item,index) => {return index === 1 ? true : false}); setEmojiIndicator(e)}}   fill="currentColor" className={`${circle} ${emoji_indicator_icon_status[1] ? 'text-white' : 'text-neutral-500'}`} viewBox="0 0 16 16" >
+                            <circle cx="8" cy="8" r="8"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={(e) => {e = emoji_indicator_icon_status.map((item,index) => {return index === 2 ? true  : false}); setEmojiIndicator(e)}}  fill="currentColor" className={`${circle} ${emoji_indicator_icon_status[2] ? 'text-white' : 'text-neutral-500'}`} viewBox="0 0 16 16" >
+                            <circle cx="8" cy="8" r="8"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={(e) => {e = emoji_indicator_icon_status.map((item,index) => { return index === 3 ? true  : false}); setEmojiIndicator(e)}}   fill="currentColor"className={`${circle} ${emoji_indicator_icon_status[3] ? 'text-white' : 'text-neutral-500'}`} viewBox="0 0 16 16" >
+                            <circle cx="8" cy="8" r="8"/>
+                        </svg>
+               
+                    </div>
                 </div>
-                    
+            </div>
+                        
                 
      
             </article>
