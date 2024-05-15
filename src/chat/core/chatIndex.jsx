@@ -139,7 +139,7 @@ const ChatIndex = () => {
         );
     }
 
-    const ChatHeader = ({}) => {
+    const ChatHeader = ({value}) => {
         return(
         <article className="w-full min-h-16 flex flex-row items-center px-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-left-short text-white w-12 h-12 hover:cursor-pointer hover:scale-110" viewBox="0 0 16 16">
@@ -158,7 +158,7 @@ const ChatIndex = () => {
     }
 
 
-    const ChatPanelIcons = ({}) => {
+    const ChatPanelIcons = ({value}) => {
 
         const [icon_state,setIconState] = useState([true,false,false,false]);
 
@@ -213,7 +213,7 @@ const ChatIndex = () => {
         );
     }
 
-    const ClickableChatIcons = ({}) => {
+    const ClickableChatIcons = ({value}) => {
         return(
             <div className=" w-full flex-grow flex  flex-col gap-4 pb-2 px-4 overflow-y-auto">
                 <div className="w-full  flex flex-row   items-center justify-around ">
