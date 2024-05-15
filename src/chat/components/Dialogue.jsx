@@ -26,6 +26,7 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
         return(
 
                     <>
+                                            
                         <img src={image} className="ml-2 w-10 h-10  rounded-full" alt="" style={{background:theme.dark}} />
                         <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 ">
                             <span className=" text-white lg:font-semibold md:font-semibold font-bold rounded-2xl px-2 py-1" style={{background:'rgba(50, 71, 99,0.35)'}}>{name}</span>
