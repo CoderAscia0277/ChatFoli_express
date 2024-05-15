@@ -23,9 +23,9 @@ const ChatIndex = () => {
     const theme = {'dark':'rgba(23, 40, 61, 0.85)','light':'rgba(50, 71, 99, 0.85)'};
     const [EmojiSticker,setEmojiToggle] = useState(false);
 
-    const circle = "bi bi-circle-fill w-3 h-3  cursor-pointer " ;
+    // const circle = "bi bi-circle-fill w-3 h-3  cursor-pointer " ;
 
-    const [emoji_indicator_icon_status,setEmojiIndicator] = useState([true,false,false,false]);
+    // const [emoji_indicator_icon_status,setEmojiIndicator] = useState([true,false,false,false]);
 
     useEffect(()=>{
         const ScrollView = document.querySelector('#ScrollView');
@@ -140,8 +140,8 @@ const ChatIndex = () => {
                         Moe Moe Paradise!
                     </span>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" style={{background:theme.light}} class="bi bi-list text-white w-8 h-8 hover:cursor-pointer hover:scale-110 rounded-md " viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" style={{background:theme.light}} className="bi bi-list text-white w-8 h-8 hover:cursor-pointer hover:scale-110 rounded-md " viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                 </svg>
                 {/* <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-three-dots-vertical text-white w-8 h-8 hover:cursor-pointer hover:scale-110" viewBox="0 0 16 16">
                     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
@@ -158,7 +158,7 @@ const ChatIndex = () => {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
             </article>
-            <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col py-4 px-2  ${!DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
+            <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col pt-4 px-2  ${!DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
                 <div className="flex flex-row items-center justify-center gap-3 px-0 ">
                     <span className={`  ${isTextFieldFocus ? 'w-0 hidden' : 'w-max flex'}  flex-row justify-center items-center gap-4`}>
 
@@ -186,32 +186,47 @@ const ChatIndex = () => {
                     </span>
                 </div>
                 <div className={`${EmojiSticker ? 'push_up flex' : 'pull_down'} px-0 pt-2 overflow-hidden `}>
-                    <div className="h-full w-full flex flex-col transition-all rounded-md gap-2 pt-2" style={{background:theme.dark}}>
-                        <div className="w-full h-10 px-4 flex flex-grow gap-4">
+                    <div className="h-full w-full flex flex-col transition-all rounded-md  pt-4" style={{background:theme.dark}}>
+                        <div className="w-full h-10  flex flex-grow flex-row  justify-around px-4 gap-4">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-emoji-wink-fill w-7 h-7 text-neutral-400 text-white hover:cursor-pointer  " viewBox="0 0 16 16">
                                 <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M7 6.5C7 5.672 6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8s1-.672 1-1.5M4.285 9.567a.5.5 0 0 0-.183.683A4.5 4.5 0 0 0 8 12.5a4.5 4.5 0 0 0 3.898-2.25.5.5 0 1 0-.866-.5A3.5 3.5 0 0 1 8 11.5a3.5 3.5 0 0 1-3.032-1.75.5.5 0 0 0-.683-.183m5.152-3.31a.5.5 0 0 0-.874.486c.33.595.958 1.007 1.687 1.007s1.356-.412 1.687-1.007a.5.5 0 0 0-.874-.486.93.93 0 0 1-.813.493.93.93 0 0 1-.813-.493"/>
                             </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-emoji-wink-fill w-7 h-7 text-neutral-400 text-white hover:cursor-pointer  " viewBox="0 0 16 16">
-                                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M7 6.5C7 5.672 6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8s1-.672 1-1.5M4.285 9.567a.5.5 0 0 0-.183.683A4.5 4.5 0 0 0 8 12.5a4.5 4.5 0 0 0 3.898-2.25.5.5 0 1 0-.866-.5A3.5 3.5 0 0 1 8 11.5a3.5 3.5 0 0 1-3.032-1.75.5.5 0 0 0-.683-.183m5.152-3.31a.5.5 0 0 0-.874.486c.33.595.958 1.007 1.687 1.007s1.356-.412 1.687-1.007a.5.5 0 0 0-.874-.486.93.93 0 0 1-.813.493.93.93 0 0 1-.813-.493"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-map  w-7 h-7 text-neutral-400 text-white hover:cursor-pointer " viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.5.5 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103M10 1.91l-4-.8v12.98l4 .8zm1 12.98 4-.8V1.11l-4 .8zm-6-.8V1.11l-4 .8v12.98z"/>
                             </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-emoji-wink-fill w-7 h-7 text-neutral-400 text-white hover:cursor-pointer  " viewBox="0 0 16 16">
+                            {/* <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-emoji-wink-fill w-7 h-7 text-neutral-400 text-white hover:cursor-pointer  " viewBox="0 0 16 16">
                                 <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M7 6.5C7 5.672 6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8s1-.672 1-1.5M4.285 9.567a.5.5 0 0 0-.183.683A4.5 4.5 0 0 0 8 12.5a4.5 4.5 0 0 0 3.898-2.25.5.5 0 1 0-.866-.5A3.5 3.5 0 0 1 8 11.5a3.5 3.5 0 0 1-3.032-1.75.5.5 0 0 0-.683-.183m5.152-3.31a.5.5 0 0 0-.874.486c.33.595.958 1.007 1.687 1.007s1.356-.412 1.687-1.007a.5.5 0 0 0-.874-.486.93.93 0 0 1-.813.493.93.93 0 0 1-.813-.493"/>
+                            </svg> */}
+                            {/* <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-emoji-wink-fill w-7 h-7 text-neutral-400 text-white hover:cursor-pointer  " viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0M7 6.5C7 5.672 6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8s1-.672 1-1.5M4.285 9.567a.5.5 0 0 0-.183.683A4.5 4.5 0 0 0 8 12.5a4.5 4.5 0 0 0 3.898-2.25.5.5 0 1 0-.866-.5A3.5 3.5 0 0 1 8 11.5a3.5 3.5 0 0 1-3.032-1.75.5.5 0 0 0-.683-.183m5.152-3.31a.5.5 0 0 0-.874.486c.33.595.958 1.007 1.687 1.007s1.356-.412 1.687-1.007a.5.5 0 0 0-.874-.486.93.93 0 0 1-.813.493.93.93 0 0 1-.813-.493"/>
+                            </svg> */}
+                            <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-briefcase  w-7 h-7 text-neutral-400 text-white hover:cursor-pointer" viewBox="0 0 16 16">
+                                <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-chat-right-text w-7 h-7 text-neutral-400 text-white hover:cursor-pointer" viewBox="0 0 16 16">
+                                <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                                <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
                             </svg>
                         </div>
-                        <div className=" w-full flex-grow flex flex-col gap-4 rounded-xl py-4 overflow-y-auto">
-                            <div className="w-full  flex flex-row gap-4 items-center justify-center">
+                        <div className=" w-full flex-grow flex  flex-col gap-4 mb-2 mt-4 px-4 overflow-y-auto">
+                            <div className="w-full  flex flex-row   items-center justify-around ">
                                <EmojiRenderer/>  
                                <EmojiRenderer/>  
                                <EmojiRenderer/>  
                             </div>
-                            <div className="w-full   flex flex-row gap-4 justify-center">
+                            <div className="w-full   flex flex-row  justify-around ">
+                                <EmojiRenderer/>  
+                                <EmojiRenderer/>  
+                                <EmojiRenderer/>  
+                            </div>
+                            <div className="w-full   flex flex-row  justify-around ">
                                 <EmojiRenderer/>  
                                 <EmojiRenderer/>  
                                 <EmojiRenderer/>  
                             </div>
 
                         </div>
-                        <div className=" w-full flex flex-row h-10 items-center overflow-hidden gap-4 mb-2 justify-center ">
+                        {/* <div className=" w-full flex flex-row h-10 items-center overflow-hidden gap-4 mb-2 justify-center ">
                             <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-caret-left-fill w-6 h-6 text-white cursor-pointer hover:scale-105" viewBox="0 0 16 16">
                                 <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                             </svg>
@@ -230,7 +245,7 @@ const ChatIndex = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-caret-right-fill w-6 h-6 text-white cursor-pointer hover:scale-105" viewBox="0 0 16 16">
                                 <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                             </svg>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                         
