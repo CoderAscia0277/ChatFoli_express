@@ -3,11 +3,10 @@ import Dialogue from "../components/Dialogue";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
+import { chapter_01 } from "../utils/story_chap01";
+
+
 let DialogueBlocks  = [];
-
-
-
-
 const ChatIndex = () => {
 
     const [filled , setFilled] = useState();
@@ -31,13 +30,16 @@ const ChatIndex = () => {
 
         if(UserInput.length <= 1 && !DialogueState){
 
-            if(didMountRef.current){
+            if(didMountRef.current ){
                 ScrollView.scrollTop = ScrollView.scrollHeight;
             }
             
             else{
                 didMountRef.current = true;
-                ScrollView.scrollTop = ScrollView.scrollHeight;
+                // ScrollView.scrollTop = ScrollView.scrollHeight;
+
+                DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="nar" name="" value={chapter_01[0].init} key={DialogueBlocks.length}/>]
+                setDialogueBlocks(DialogueBlocks);
             }
         }
         return;
