@@ -3,7 +3,7 @@ import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
 
-const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , chapter_no = 0, chapter_progress = 0} ) => {
+const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , chapter_no = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
 
     let didMountRef = useRef(false);
     const [remove_element,set_remove_element] = useState(false);
@@ -19,14 +19,14 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
         const ScrollView = document.querySelector('#ScrollView');
         if(didMountRef.current){
             //Update every time
-            // ScrollView.scrollTop = ScrollView.scrollHeight;
+            ScrollView.scrollTop = chapter_progress || target === 'user' ? ScrollView.scrollHeight : 0;
         }else{
             //Update once
             didMountRef.current = true;
             // console.log(story_progress)
             done();
-            console.log(current_narration_progress);
-            console.log(current_available_options);
+            // console.log(current_narration_progress);
+            // console.log(current_available_options);
         }
         return remove_element ?   remove(id) : console.log('mounted');
     });
@@ -58,7 +58,7 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
         );
     }
 
-    const UserDialogue = ({value,name}) =>{
+    const UserDialogue = ({value}) =>{
         return(
             <>
                 <div className="parent px-4 h-max flex flex-col gap-2 items-end ">
@@ -84,29 +84,33 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
             
         );
     }
-   
+    const [show_option,setOption] = useState(true);
     const NarratorDialogue = ({}) => {
         
         return(
                 <>
                     <div className="dialogue px-4 h-max flex flex-col ">
-                        <div className=" font-sans min-w-20 text-start  py-2 px-4 text-white mt-4 text-break leading-8 flex flex-col items-center gap-4" style={{borderRadius:'10px',background:theme.light}}> 
+                        <div className=" font-sans min-w-20 text-start  pt-2 pb-4 px-4 text-white  text-break leading-8 flex flex-col items-center gap-4" style={{borderRadius:'10px',background:theme.light}}> 
                             {current_narration_progress}
                             <div className="rounded-xl w-full" style={{aspectRatio:4/3,background:theme.light}}>
                                
                                 {/* <span  className="w-auto px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border">Run Away</span> */}
                                
                             </div>
-                            <div className="cursor-pointer gap-2  flex flex-col pb-4 w-full" style={{placeItems:'center'}}>   
+                            
+                                <div className="dialogue hidden cursor-pointer gap-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
                                 {
                                     current_available_options.map((option,index) => {
-                                     
+                                        const option_text = option[`option_0${index + 1}`];
+                                        const option_key = option['key'];
                                         return(
-                                            <div  className="w-max px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border" key={index} style={{lineHeight:'1rem'}}>{option[`option_0${index + 1}`]}</div> 
+                                            <div onClick={() => { setOption(false); option_selected(option_text,option_key); }} className={` w-max px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
                                         );
                                     })
                                 }
-                            </div>  
+                                </div> 
+                            
+                              
                             {/* <div className=" flex flex-row w-max opacity-75  gap-4 justify-center items-center py-2 rounded-xl " >
                                 <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-5 h-5  " viewBox="0 0 16 16">
                                     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
