@@ -3,7 +3,7 @@ import Dialogue from "../components/Dialogue";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
-import { chapter_01 } from "../utils/story_chap01";
+
 
 
 let DialogueBlocks  = [];
@@ -24,28 +24,31 @@ const ChatIndex = () => {
 
     const [icon_state,setIconState] = useState([true,false,false,false]);
 
-    useEffect(()=>{
+    // useEffect(()=>{
 
-        const ScrollView = document.querySelector('#ScrollView');
+    //     const ScrollView = document.querySelector('#ScrollView');
 
-        if(UserInput.length <= 1 && !DialogueState){
+    //     if(UserInput.length <= 1 && !DialogueState){
 
-            if(didMountRef.current ){
-                ScrollView.scrollTop = ScrollView.scrollHeight;
-            }
+    //         if(didMountRef.current ){
+    //             ScrollView.scrollTop = ScrollView.scrollHeight;
+    //         }
             
-            else{
-                didMountRef.current = true;
-                // ScrollView.scrollTop = ScrollView.scrollHeight;
-
-                DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="nar" name="" value={chapter_01[0].init} key={DialogueBlocks.length}/>]
-                setDialogueBlocks(DialogueBlocks);
-            }
-        }
-        return;
+    //         else{
+    //             didMountRef.current = true;
+    //             // ScrollView.scrollTop = ScrollView.scrollHeight;
+    //             // mount_init_dialogues();
+    //         }
+    //     }
+    //     return;
         
-    });
+    // });
 
+    // console.log(chapter_01);
+    // const mount_init_dialogues = () => {
+    //     DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${0}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="nar" name="" story='story_01' story_chapter='chap_01' narration_array={''} key={0}/>]
+    //     setDialogueBlocks(DialogueBlocks);
+    // }
 
     const HandleChange = (e) => {
         if(e.target.value && !DialogueState){
@@ -88,7 +91,7 @@ const ChatIndex = () => {
         console.log("remove_dialogue_from_parent",id);
     }
 
-    const SubmitText = () => {
+    const SubmitText = (option) => {
 
         if(!DialogueState){
 
@@ -102,7 +105,7 @@ const ChatIndex = () => {
             
             //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
             
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}  id={`dialogue_${DialogueBlocks.length}`}  remove={(x) => remove_dialogue_from_parent(x)} target="user" name="Azaki" value={UserInput}   key={DialogueBlocks.length}/>];
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme}  id={`dialogue_${DialogueBlocks.length}`}  remove={(x) => remove_dialogue_from_parent(x)} target="user" name="Azaki" value={option ? option : UserInput}   key={DialogueBlocks.length}/>];
             setDialogueBlocks(DialogueBlocks);
     
     
@@ -241,20 +244,22 @@ const ChatIndex = () => {
             
             <ChatHeader/>
 
-            <article id="ScrollView" onClick={() => set_chat_menu_panel(chat_menu_panel ? false : '')} className="super_parent w-full flex-grow container overflow-y-scroll  pt-4" style={{scrollBehavior:'smooth'}}>
+            <article id="ScrollView" onClick={() => set_chat_menu_panel(chat_menu_panel ? false : '')} className="super_parent w-full flex-grow container overflow-y-scroll  " style={{scrollBehavior:'smooth'}}>
+                <Dialogue theme={theme} id={`dialogue_${0}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="nar" name=""  submit = {(option) => SubmitText(option)} />
                 {
+                    
                     AvailableDialogue
                 }
               
             </article>
-
-            <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none" style={{backgroundColor: DialogueState ? "" : 'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}} >
+            {/* style={{backgroundColor: DialogueState ? "" : 'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}} */}
+            {/* <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none"  >
                 {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
-            </article>
+            </article> */}
 
-            <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col pt-4 px-2  ${!DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
+            {/* <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col pt-4 px-2  ${!DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
                 <div className="flex flex-row items-center justify-center gap-3 px-0 ">
                     <span className={`  ${isTextFieldFocus ? 'w-0 hidden' : 'w-max flex'}  flex-row justify-center items-center gap-4`}>
 
@@ -267,7 +272,7 @@ const ChatIndex = () => {
                     </span>
                     <span className="flex-grow  transition-all flex flex-row justify-start items-center  gap-4  rounded-2xl" style={{border: 'solid 1px rgb(67 67 67)',background:theme.dark}}>
        
-                        <textarea onKeyDown={HandlePress} onBlur={()=>setTextFieldFocus(false)} placeholder="Say something . . ." onFocus={() => {set_chat_menu_panel(chat_menu_panel ? false : ''); setTextFieldFocus(true)}} onChange={HandleChange}  className={`text-start bg-transparent  transition-all outline-0 flex-grow pl-4 py-2 text-white  flex  items-center px-2 `} style={{resize:'none'}}></textarea>
+                        <textarea  onBlur={()=>setTextFieldFocus(false)} placeholder="Say something . . ." onFocus={() => {set_chat_menu_panel(chat_menu_panel ? false : ''); setTextFieldFocus(true)}}   className={`text-start bg-transparent  transition-all outline-0 flex-grow pl-4 py-2 text-white  flex  items-center px-2 `} style={{resize:'none'}}></textarea>
                     
                         { filled ? 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" onClick={() => SubmitText()} className={`bi bi-arrow-up-square-fill transition-all w-8 h-8 text-white cursor-pointer mx-2`} viewBox="0 0 16 16">
@@ -291,7 +296,7 @@ const ChatIndex = () => {
                         
                 
      
-            </article>
+            </article> */}
         </section>
     )
 }

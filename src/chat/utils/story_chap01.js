@@ -4,7 +4,7 @@
         'init':`You suddenly find your self on the middle of an unknown forest, you began searching for food. After a few minutes
         of walking, you stumble across a wounded goblin. What would you do next?`,
         'option':[
-            {'option_01':"Help the wounded goblin",'key':"help_goblin"},
+            {'option_01':"Help the wounded goblin fafaffaafaf",'key':"help_goblin"},
             {'option_02':"Leave the wounded goblin",'key':"leave_goblin"}
         ]
     },
