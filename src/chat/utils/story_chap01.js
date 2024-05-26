@@ -13,6 +13,8 @@
         'hasCharacterDialogue':false,
         'help_goblin':`You decided to help the wounded goblin. As you check his condition, a horde of goblins suddenly came out
         the bushes. Terrified with the situation you choose to...`,
+        'leave_goblin':`You decided to leave the wounded goblin. As you continue your journey, you encountered a horde of goblins, 
+         terrified with the situation you choose to...`,
         'option':[
             {'option_01':"Defend yourself",'key':"defend_self"},
             {'option_02':"Run for your life",'key':"run_away"}

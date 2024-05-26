@@ -1,4 +1,4 @@
-import { useState , useEffect , useRef } from "react";
+import { useState, useMemo , useEffect , useRef } from "react";
 import Dialogue from "../components/Dialogue";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
@@ -22,28 +22,12 @@ const ChatIndex = () => {
     const theme = {'dark':'rgba(23, 40, 61, 0.85)','light':'rgba(50, 71, 99, 0.85)'};
     const [chat_menu_panel,set_chat_menu_panel] = useState('');
 
-    const [icon_state,setIconState] = useState([true,false,false,false]);
 
-    // useEffect(()=>{
 
-    //     const ScrollView = document.querySelector('#ScrollView');
-
-    //     if(UserInput.length <= 1 && !DialogueState){
-
-    //         if(didMountRef.current ){
-    //             ScrollView.scrollTop = ScrollView.scrollHeight;
-    //         }
-            
-    //         else{
-    //             didMountRef.current = true;
-    //             // ScrollView.scrollTop = ScrollView.scrollHeight;
-    //             // mount_init_dialogues();
-    //         }
-    //     }
-    //     return;
-        
-    // });
-
+   
+    // const [icon_state,setIconState] = useState([true,false,false,false]);
+    const ScrollView = '';
+    
     // console.log(chapter_01);
     // const mount_init_dialogues = () => {
     //     DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${0}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="nar" name="" story='story_01' story_chapter='chap_01' narration_array={''} key={0}/>]
@@ -94,8 +78,17 @@ const ChatIndex = () => {
     const has_option_selected = (option_text,option_key) => {
         console.log(option_key);
 
-        DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} value={option_text} target="user" chapter_progress={option_key} key={DialogueBlocks.length} />];
+        Store.dispatch(set_onBusy(true));
+
+        DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  value={option_text} target="user" chapter_progress={option_key} key={DialogueBlocks.length} />];
         setDialogueBlocks(DialogueBlocks);
+        
+        // Store.dispatch(set_onBusy(true)); 
+
+        setTimeout(() => {
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={1} target="nar"  key={DialogueBlocks.length} />];
+            setDialogueBlocks(DialogueBlocks);
+        },5000);
     }
 
     // const SubmitText = (option) => {
@@ -118,10 +111,10 @@ const ChatIndex = () => {
     
     //         const ItemPicker = Math.floor(Math.random() * 100);
     //         if(ItemPicker > 50){
-    //             setTimeout(() => {
-    //                 DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="char" name="Suzumi" value={'Testing testing'} key={DialogueBlocks.length}/>];
-    //                 setDialogueBlocks(DialogueBlocks);
-    //             },5000);
+                // setTimeout(() => {
+                //     DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} target="char" name="Suzumi" value={'Testing testing'} key={DialogueBlocks.length}/>];
+                //     setDialogueBlocks(DialogueBlocks);
+                // },5000);
                 
     //         }else{
     //             setTimeout(() => {
@@ -146,19 +139,89 @@ const ChatIndex = () => {
    
     //     );
     // }
+    let user_touch = false;
+    let head_anim = '';
+    const ChatHeader = ({}) => {
+        
+        // const anim_type = useMemo(() => {
+        //     return anim;
+        // },[anim]);
+        const [isTouching,setTouching] = useState(false);
+        const [anim ,setAnim] = useState('');
+        useEffect(()=>{
 
-    const ChatHeader = ({value}) => {
+            if(didMountRef.current ){
+                // ScrollView.scrollTop = ScrollView.scrollHeight;
+                // if(isTouching){
+                //     setTouching(false);
+                // }
+            }
+            
+            else{
+                didMountRef.current = true;
+                const ScrollView = document.querySelector('#ScrollView');
+                ScrollView.addEventListener('touchmove',touch_move);
+                // setTouching(true);
+                ScrollView.addEventListener('touchend',touch_end);
+                // setTimeout(() => {
+                //     setTouching(false);
+                // },3000);
+                // ScrollView.scrollTop = ScrollView.scrollHeight;
+                // mount_init_dialogues();
+                setAnim('chat_header_anim');
+                setTimeout(() => {
+                    // setTouching(false);
+                    setAnim('');
+                    user_touch = false;
+                },3000);
+                // touch_move();
+            }
+        return;
+        
+        });
+        let isBusy = false;
+        // const anim_type = useMemo(() => {
+        //     return anim;
+        // },[anim]);
+        const touch_move = () =>{
+            if(!head_anim && !user_touch){
+                // setTouching(true);
+                
+                // isBusy = true;
+                head_anim = 'chat_header_anim';
+                setAnim(head_anim);
+                setTimeout(() => {
+                    // setTouching(false);
+                    head_anim = '';
+                    setAnim(head_anim);
+                },4000);
+                user_touch = true;
+            }
+            console.log(anim,user_touch , 't_M');
+            // return;
+        }
+        // const draw = () => {
+
+        // }
+        const touch_end = () =>{
+        //    isBusy = false;
+            console.log(head_anim,user_touch,'t_e');
+            // setTouching(false);
+            user_touch = false;
+        }
+
+
         return(
-        <article className="w-full min-h-16 flex flex-row items-center px-2">
+        <article  className={` ${ anim } overflow-y-hidden w-full h-0 absolute z-10 top-0 flex flex-row items-center px-2`} style={{background:'linear-gradient(180deg,rgb(32,32,32),rgba(32,32,32,0.8),rgba(32,32,32,0.5),rgba(32,32,32,0))'}}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-left-short text-white w-12 h-12 hover:cursor-pointer hover:scale-110" viewBox="0 0 16 16">
                 <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
             </svg> 
             <div className="flex-grow h-full flex flex-row justify-center items-center">
-                <span className="font-sans font-bold min-w-20 min-h-10 text-white rounded-2xl flex flex-row items-center px-4" style={{background:theme.light}}>
+                <span className="font-sans font-bold min-w-20 min-h-10 text-white rounded-2xl flex flex-row items-center px-4" >
                     Moe Moe Paradise!
                 </span>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" style={{background:theme.light}} className="bi bi-list text-white w-9 h-9 hover:cursor-pointer hover:scale-110 rounded-md " viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list text-white w-9 h-9 hover:cursor-pointer hover:scale-110 rounded-md " viewBox="0 0 16 16">
                 <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
             </svg>
         </article>
@@ -244,14 +307,16 @@ const ChatIndex = () => {
     //         </div>
     //     );
     // }
-
+    // const header_anim = useMemo(() => {
+    //     return isTouching;
+    // },[isTouching]);
 
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2 " style={{background:'url(./images/classroom_bg.jpg) center/cover no-repeat'}}>
+           
+            <ChatHeader/> 
             
-            <ChatHeader/>
-
-            <article id="ScrollView" onClick={() => set_chat_menu_panel(chat_menu_panel ? false : '')} className="super_parent w-full flex-grow container overflow-y-scroll  " style={{scrollBehavior:'smooth'}}>
+            <article id="ScrollView" onClick={() => set_chat_menu_panel(chat_menu_panel ? false : '')} className="super_parent w-full flex-grow container overflow-y-scroll pt-8  " style={{scrollBehavior:'smooth'}}>
                 <Dialogue theme={theme} id={`dialogue_${0}`} remove={(x) => remove_dialogue_from_parent(x)}  done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar" name=""  />
                 {
                     
@@ -260,11 +325,11 @@ const ChatIndex = () => {
               
             </article>
             {/* style={{backgroundColor: DialogueState ? "" : 'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}} */}
-            {/* <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none"  >
+            <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none"  >
                 {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
-            </article> */}
+            </article>
 
             {/* <article className={`w-full absolute bottom-0  z-10 transition-all flex flex-col pt-4 px-2  ${!DialogueState ? '' : 'opacity-0 pointer-events-none'}  `} style={{backgroundColor:'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}}>
                 <div className="flex flex-row items-center justify-center gap-3 px-0 ">
