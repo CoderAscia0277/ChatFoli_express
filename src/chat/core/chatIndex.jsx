@@ -17,8 +17,8 @@ const ChatIndex = () => {
     Store.subscribe(() => setDialogueState(Store.getState().onBusy));
     
 
-    const theme = {'dark':'rgba(23, 40, 61, 0.65)','light':'rgba(50, 71, 99, 0.65)'};
-
+    // const theme = {'dark':'rgba(23, 40, 61, 0.65)','light':'rgba(50, 71, 99, 0.65)'};
+    const theme = {'dark':'rgb(23,23,23)','mid-dark':'rgb(36 36 36)','light':'rgb(38 38 38)'};
 
     const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
@@ -114,10 +114,10 @@ const ChatIndex = () => {
 
     }
 
-    
+    // style={{background:'url(./images/classroom_bg.jpg) center/cover no-repeat'}}
 
     return(
-        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2 " style={{background:'url(./images/classroom_bg.jpg) center/cover no-repeat'}}>
+        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2" style={{background:theme.dark}} >
            
             <ChatHeader anim={header_anim}/> 
             
@@ -129,7 +129,7 @@ const ChatIndex = () => {
                 }
               
             </article>
-            <article className=" absolute flex justify-center items-center z-10 min-h-10 bottom-0 bg-transparent w-full pointer-events-none"  >
+            <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
                 {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
