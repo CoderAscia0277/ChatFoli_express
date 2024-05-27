@@ -1,9 +1,9 @@
-import React, { useEffect , useRef , useState } from "react";
+import React, { useEffect , useRef , useState ,memo} from "react";
 import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
 
-const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
+const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
 
     let didMountRef = useRef(false);
     const [remove_element,set_remove_element] = useState(false);
@@ -12,8 +12,7 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
     const story = Store.getState().story;
     const current_narration_progress = story[0][page_number][chapter_progress ? chapter_progress : 'init']; 
     const current_available_options = story[0][page_number]['option'];
-    // {story[0][0]['init']}
-    
+    //{story[0][0]['init']}
 
     useEffect(() =>{
         const ScrollView = document.querySelector('#ScrollView');
@@ -24,13 +23,19 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
             //Update once
             didMountRef.current = true;
             ScrollView.scrollTop = chapter_progress || target === 'user' ? ScrollView.scrollHeight : 0;
-            // console.log(story_progress)
             done();
-            // console.log(current_narration_progress);
-            // console.log(current_available_options);
+            console.log(id , ' mounted' , target);
         }
-        return remove_element ?   remove(id) : console.log('mounted');
     });
+
+    useEffect(() => {
+        if(remove_element){
+            remove(id,target) 
+        }
+        
+    },[remove_element]);
+
+   
 //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
 
     const CharacterDialogue = ({value,name}) => {
@@ -85,8 +90,8 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
             
         );
     }
-    const [show_option,setOption] = useState(true);
-    const NarratorDialogue = ({}) => {
+    // const [show_option,setOption] = useState(true);
+    const NarratorDialogue = () => {
         
         return(
                 <>
@@ -105,7 +110,7 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
                                         const option_text = option[`option_0${index + 1}`];
                                         const option_key = option['key'];
                                         return(
-                                            <div onClick={() => { setOption(false); option_selected(option_text,option_key); }} className={` w-max px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
+                                            <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
                                         );
                                     })
                                 }
@@ -159,4 +164,4 @@ const Dialogue = ({id, remove , theme = {'dark':'','light':''} ,image = "./image
     );
 };
 
-export default Dialogue;
+export default memo(Dialogue);

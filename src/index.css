@@ -64,9 +64,9 @@ body{
     height: 8vh;
   }
 }
-/* .collapse_down{
+.collapse_down{
   animation: collapse_down 100ms ease-in-out forwards;
-} */
+}
 
 @keyframes collapse_up {
   0%{
@@ -80,9 +80,9 @@ body{
 .chat_header_anim {
   animation: collapse_down 100ms ease-in-out forwards,collapse_up 100ms ease-in-out 3s forwards ;
 }
-/* .collapse_up{
+.collapse_up{
   animation: collapse_up 100ms ease-in-out forwards;
-} */
+}
 
 
 @keyframes pulse{
