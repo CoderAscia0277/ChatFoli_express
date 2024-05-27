@@ -17,7 +17,7 @@ const ChatIndex = () => {
     Store.subscribe(() => setDialogueState(Store.getState().onBusy));
     
 
-    const theme = {'dark':'rgba(23, 40, 61, 0.85)','light':'rgba(50, 71, 99, 0.85)'};
+    const theme = {'dark':'rgba(23, 40, 61, 0.65)','light':'rgba(50, 71, 99, 0.65)'};
 
 
     const [header_anim,setHeaderAnim] = useState('');
@@ -129,7 +129,7 @@ const ChatIndex = () => {
                 }
               
             </article>
-            <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none"  >
+            <article className=" absolute flex justify-center items-center z-10 min-h-10 bottom-0 bg-transparent w-full pointer-events-none"  >
                 {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }

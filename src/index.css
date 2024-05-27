@@ -18,7 +18,7 @@ body{
   animation: collapse_down 100ms ease-in-out forwards;
 }
 .container .content:last-child{
-  margin-bottom: 8vh;
+  margin-bottom: 4vh;
 }
 .pulse{
   animation: pulse 1s ease-in-out infinite;
