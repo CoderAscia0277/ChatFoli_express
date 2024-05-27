@@ -3,7 +3,7 @@ import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
 
-const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
+const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
 
     let didMountRef = useRef(false);
     const [remove_element,set_remove_element] = useState(false);
@@ -12,6 +12,7 @@ const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''}
     const story = Store.getState().story;
     const current_narration_progress = story[0][page_number][chapter_progress ? chapter_progress : 'init']; 
     const current_available_options = story[0][page_number]['option'];
+    const char_dialogue_available = story[0][page_number]['hasCharacterDialogue'];
     //{story[0][0]['init']}
 
     useEffect(() =>{
@@ -25,6 +26,12 @@ const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''}
             ScrollView.scrollTop = chapter_progress || target === 'user' ? ScrollView.scrollHeight : 0;
             done();
             console.log(id , ' mounted' , target);
+
+            if(char_dialogue_available){
+                const dialogue = story[0][page_number]['character_dialogue'];
+                char_dialogue(dialogue,Object.keys(dialogue)[0],chapter_progress);
+              
+            }
         }
     });
 
@@ -43,7 +50,7 @@ const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''}
 
                     <>
                                             
-                        <img src={image} className="ml-2 w-10 h-10  rounded-full" alt="" style={{background:theme.dark}} />
+                        {/* <img src={image} className="ml-2 w-10 h-10 block rounded-full" alt="" style={{background:theme.dark}} /> */}
                         <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 ">
                             <span className=" text-white lg:font-semibold md:font-semibold font-bold rounded-2xl px-2 py-1" style={{background:'rgba(50, 71, 99,0.35)'}}>{name}</span>
                             <p className="pointer-events-none font-sans min-w-20 text-start py-2 px-4  text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px',background:theme.light}}> {value} </p>
@@ -91,6 +98,8 @@ const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''}
         );
     }
     // const [show_option,setOption] = useState(true);
+
+
     const NarratorDialogue = () => {
         
         return(
@@ -103,22 +112,24 @@ const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''}
                                 {/* <span  className="w-auto px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border">Run Away</span> */}
                                
                             </div>
-                            
+
                                 <div className="dialogue hidden cursor-pointer gap-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
                                 {
-                                    current_available_options.map((option,index) => {
-                                        const option_text = option[`option_0${index + 1}`];
-                                        const option_key = option['key'];
-                                        return(
-                                            <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
-                                        );
-                                    })
+                                    !char_dialogue_available ?
+                                        current_available_options.map((option,index) => {
+                                            const option_text = option[`option_0${index + 1}`];
+                                            const option_key = option['key'];
+                                            return(
+                                                <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
+                                            );
+                                        })
+                                    : ''
                                 }
                                 </div> 
                             
                               
-                            <div className=" dialogue hidden flex-row w-full opacity-75  gap-4 justify-start items-center py-2 rounded-xl " >
-                                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className={`bi bi-x-lg ${!chapter_progress ? 'hidden' : ''} cursor-pointer text-white hover:scale-110  w-5 h-4 `} viewBox="0 0 16 16">
+                            <div className=" flex flex-row w-full opacity-75  gap-4 justify-start items-center py-2 rounded-xl " >
+                                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className={`bi bi-x-lg ${!chapter_progress ? 'hidden' : ''} dialogue hidden cursor-pointer text-white hover:scale-110  w-5 h-4 `} viewBox="0 0 16 16">
                                     <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                                 </svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-5 h-5  " viewBox="0 0 16 16">
@@ -147,7 +158,7 @@ const Dialogue = ({id, remove = () => {return;} , theme = {'dark':'','light':''}
     
     return(
         remove_element ? "" :
-        <div className={`content  w-auto  min-h-20 h-auto flex  flex-row   ${target === 'user' ? 'justify-end' : 'justify-start'}`}>
+        <div className={`content  w-auto  min-h-20 h-auto flex  flex-row ${target === 'char' ? 'pt-4'  : ''}  ${target === 'user' ? 'justify-end' : 'justify-start'}`}>
            {
               target ? target === 'user' ? <UserDialogue value={value} name={name}/> 
                 : target === 'char' ? <CharacterDialogue value={value} name={name}/> : 

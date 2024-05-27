@@ -7,7 +7,8 @@
             {'option_01':"Help the wounded goblin",'key':"help_goblin"},
             {'option_02':"Leave the wounded goblin",'key':"leave_goblin"}
             
-        ]
+        ],
+        
     },
     {
         'hasCharacterDialogue':false,
@@ -18,7 +19,10 @@
         'option':[
             {'option_01':"Defend yourself",'key':"defend_self"},
             {'option_02':"Run for your life",'key':"run_away"}
-        ]
+        ],
+        'character_dialogue':
+           {'none':'none'}
+         ,
     },
     {
         'hasCharacterDialogue':false,
@@ -44,7 +48,15 @@
         You were extremely buffled about what happened. After the smoke clears out, you saw a white hair girl wearing blue
         ancient looking dress on top of the huge goblin's corpse.`,
 
-        'character_dialogue':[{"Ming Fei":["Are you alright?, my name is Ming Fei, captain of the Tianquan guards ","You're so brave, fighting this goblin with that sword. My name is Ming Fei, captain of the Tianquan guards"]}],
+        'character_dialogue':
+            {"Ming Fei":
+                {
+                    'defend_self':"Are you alright?, my name is Ming Fei, captain of the Tianquan guards ",
+                    'fight_goblin':"You're so brave, fighting this goblin with that sword. My name is Ming Fei, captain of the Tianquan guards"
+                }
+            }
+        ,
+
         'option':[
             {'option_01':"Continue Narration",'key':"narrate"},
             {'option_02':"Reply"}

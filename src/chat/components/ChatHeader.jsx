@@ -3,7 +3,7 @@ import { memo, useRef ,useEffect} from "react";
 
 
 const ChatHeader = ({anim = ''}) => {
-    // console.log('rendered');
+   
     let didMountRef = useRef(false);
 
     useEffect(() => {

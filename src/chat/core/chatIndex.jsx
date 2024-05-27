@@ -82,9 +82,21 @@ const ChatIndex = () => {
         
     }
    
+    const has_char_dialogue = (dialogue_array,char_name,char_dialogue_key) => {
+        // console.log(dialogue_array , char_name, char_dialogue_key);  
+        // console.log(dialogue_array[char_name]);
+        // page_number.current += 1;
+
+        // Store.dispatch(set_onBusy(true));
+        setTimeout(() => {
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}   target="char"  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} />];
+            setDialogueBlocks(DialogueBlocks);
+        },1500);
+        
+    };
 
     const has_option_selected = (option_text,option_key) => {
-        console.log(option_text,option_key);
+        // console.log(option_text,option_key);
 
         page_number.current += 1;
 
@@ -94,11 +106,11 @@ const ChatIndex = () => {
         setDialogueBlocks(DialogueBlocks);
 
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current} target="nar"  key={DialogueBlocks.length} />];
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key)} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current} target="nar"  key={DialogueBlocks.length} />];
             setDialogueBlocks(DialogueBlocks);
-        },5000);
+        },2000);
 
-        console.log(option_text,option_key);
+        // console.log(option_text,option_key);
 
     }
 
@@ -117,7 +129,6 @@ const ChatIndex = () => {
                 }
               
             </article>
-            {/* style={{backgroundColor: DialogueState ? "" : 'rgba( 32, 32, 32, 0.20)',backdropFilter:'blur(1px)'}} */}
             <article className=" absolute flex justify-center items-center z-10 min-h-20 bottom-0 bg-transparent w-full pointer-events-none"  >
                 {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
