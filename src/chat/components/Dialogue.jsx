@@ -1,4 +1,4 @@
-import React, { useEffect , useRef , useState ,memo} from "react";
+import React, { useEffect , useRef ,memo} from "react";
 import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
@@ -6,15 +6,16 @@ import Store from "../utils/ConfigureStore";
 const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
 
     let didMountRef = useRef(false);
-    const [remove_element,set_remove_element] = useState(false);
-    const [display_options,set_display_options] = useState(!Store.getState().onBusy);
-    Store.subscribe(() => set_display_options(!Store.getState().onBusy));
+    // const [remove_element,set_remove_element] = useState(false);
+    // const [display_options,set_display_options] = useState(!Store.getState().onBusy);
+    // Store.subscribe(() => set_display_options(!Store.getState().onBusy));
     const story = Store.getState().story;
     const current_narration_progress = story[0][page_number][chapter_progress ? chapter_progress : 'init']; 
     const current_available_options = story[0][page_number]['option'];
     const char_dialogue_available = story[0][page_number]['hasCharacterDialogue'];
     //{story[0][0]['init']}
-
+    // const print = (val) => console.log(val);
+    let char_observer = useRef(null);
     useEffect(() =>{
         const ScrollView = document.querySelector('#ScrollView');
         if(didMountRef.current){
@@ -36,15 +37,34 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
                 char_dialogue(dialogue,Object.keys(dialogue)[0],chapter_progress);
               
             }
+
+            if(target === 'char'){
+                char_observer.current = new IntersectionObserver((items) => {
+                   items.forEach((item) => {
+                       if(item.isIntersecting){
+                           console.log('isVisible ',true);
+                           
+   
+                           char_observer.current.disconnect();
+                       
+                           
+                       }else{
+                           console.log('isVisible ',false)
+                       }
+                   })
+               });
+               char_observer.current.observe(document.querySelector('.char_par'));
+            }
         }
     });
+   
 
-    useEffect(() => {
-        if(remove_element){
-            remove(id,target) 
-        }
+    // useEffect(() => {
+    //     if(remove_element){
+    //         remove(id,target) 
+    //     }
         
-    },[remove_element]);
+    // },[remove_element]);
 
    
 //Theme dark rgb(23 40 61) , Light rgb(50 71 99)
@@ -58,11 +78,8 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
                                 <img src={image} className="w-10 h-10" alt="none" />
                                 {name}
                             </span>
-                            <p className="pointer-events-none font-sans min-w-20 text-start px-4 py-2 text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px'}}> {value} </p>
+                            <p className="char_par pointer-events-none font-sans min-w-20 text-start px-4 py-2 text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px'}}> {value} </p>
                             <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl ">
-                                {/* <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true); }} fill="currentColor" className=" bi bi-x-lg cursor-pointer text-white hover:scale-110 w-4 h-4 " viewBox="0 0 16 16">
-                                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                                </svg> */}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white hover:scale-110 cursor-pointer bi bi-arrow-clockwise  w-5 h-5 " viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
                                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
@@ -78,45 +95,22 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
 
     const UserDialogue = ({value}) =>{
         return(
-            <>
                 <div className="parent px-4 h-max flex flex-col gap-2 items-end ">
                     <p className="pointer-events-none font-sans min-w-20 text-center  py-2 px-4 text-white mt-4 text-break leading-8" style={{borderRadius:'10px 10px 0px 10px',background:theme['mid-dark']}}> {value} </p>
-                    {/* {
-                        display_options ?
-                        <div className=" dialogue hidden flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl " style={{background:theme.dark}}>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => {set_remove_element(true)}} fill="currentColor" className="bi bi-x-lg cursor-pointer text-white hover:scale-110  w-4 h-4 " viewBox="0 0 16 16">
-                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                            </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white bi bi-pencil-square hover:scale-110 cursor-pointer  w-4 h-4 " viewBox="0 0 16 16">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                            </svg>
-                        </div>
-                        : ''
-                    }
-                     */}
                 </div>
-            </>
-           
-            
         );
     }
-    // const [show_option,setOption] = useState(true);
-
 
     const NarratorDialogue = () => {
         
         return(
                 <>
                     <div className="dialogue px-4 h-max flex flex-col" style={{borderTop:`solid 1px ${theme.light}`,borderBottom:`solid 1px ${theme.light}`}}>
+                        
                         <div className=" font-sans min-w-20 text-start transition-all  pt-2 pb-4 px-4 text-white  text-break leading-8 flex flex-col items-center gap-4" > 
+                            <div className="rounded-xl w-full" style={{aspectRatio:4/3,background:theme.light}}></div>
                             {current_narration_progress}
-                            <div className="rounded-xl w-full" style={{aspectRatio:4/3,background:theme.light}}>
-                               
-                                {/* <span  className="w-auto px-4 h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center border">Run Away</span> */}
-                               
-                            </div>
+                            
 
                                 <div className="dialogue hidden cursor-pointer gap-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
                                 {
@@ -162,7 +156,7 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
     }
     
     return(
-        remove_element ? "" :
+        
         <div className={`content  w-auto  min-h-20 h-auto flex  flex-row ${target === 'char' ? 'pt-4'  : ''}  ${target === 'user' ? 'justify-end' : 'justify-start'}`}>
            {
               target ? target === 'user' ? <UserDialogue value={value} name={name}/> 
@@ -170,13 +164,11 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
                 target === 'nar' ? <NarratorDialogue value={value}/> : <div className="flex-grow px-4 h-max flex flex-col ">
                                <span className=" text-white lg:font-semibold md:font-semibold font-bold">System</span>
                                 <p className="font-sans  text-neutral-100 mt-4 text-break leading-8 ">{`Invalid dialogue type: ${name} `}</p>
-                            </div>
+                            </div> : ''
               
-              : ''
-            }
-            
-        </div>
-        
+              
+            }           
+        </div>    
     );
 };
 
