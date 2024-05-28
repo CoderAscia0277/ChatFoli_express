@@ -23,10 +23,11 @@ const ChatIndex = () => {
     const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
     
-    
+    // const ScrollView = document.querySelector('#ScrollView');
+
     useEffect(() => {
         if(didMountRef.current){
-
+           
         }else{
             didMountRef.current = true;
             ScrollView.current.addEventListener('touchstart',touch_start);

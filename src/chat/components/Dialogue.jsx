@@ -1,9 +1,9 @@
-import React, { useEffect , useRef ,memo} from "react";
+import React, { useEffect , useRef, useMemo  ,memo, useState, Suspense} from "react";
 import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
 
-const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
+const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
 
     let didMountRef = useRef(false);
     // const [remove_element,set_remove_element] = useState(false);
@@ -16,15 +16,21 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
     //{story[0][0]['init']}
     // const print = (val) => console.log(val);
     let char_observer = useRef(null);
+
+    const[show_button,set_show_button] = useState(false);
+    // let isVisible = useRef(false);
+
     useEffect(() =>{
         const ScrollView = document.querySelector('#ScrollView');
         if(didMountRef.current){
-            //Update every time
-            // ScrollView.scrollTop = chapter_progress || target === 'user' ? ScrollView.scrollHeight : 0;
+            
         }else{
             //Update once
-
+            
             didMountRef.current = true;
+
+            //If the target is user or the story has progress then scroll down
+            // this wont be triggered if a character dialogue was selected as target
             if(chapter_progress || target === 'user' ){
                 ScrollView.scrollTop =  ScrollView.scrollHeight;
             }
@@ -32,7 +38,10 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
             done();
             console.log(id , ' mounted' , target);
 
+            //checks if theres character dialogue provided on that specific story progress
             if(char_dialogue_available){
+                //generate a new character panel based from the current story progress
+                // some of the script has built in dialougue this block manage their display
                 const dialogue = story[0][page_number]['character_dialogue'];
                 char_dialogue(dialogue,Object.keys(dialogue)[0],chapter_progress);
               
@@ -42,14 +51,15 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
                 char_observer.current = new IntersectionObserver((items) => {
                    items.forEach((item) => {
                        if(item.isIntersecting){
-                           console.log('isVisible ',true);
-                           
-   
-                           char_observer.current.disconnect();
-                       
-                           
+                            //remove the scroll down button when reach bottom panel
+                            set_show_button(true);
+                            //remove scroll listener when reach the bottom panel
+                            char_observer.current.disconnect();
+
                        }else{
-                           console.log('isVisible ',false)
+                           //adds the scroll down button
+                            set_show_button(false);
+                      
                        }
                    })
                });
@@ -58,24 +68,62 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
         }
     });
    
+    const imgCache = useMemo(() => {
+        return({
+            _cache:{},
+            read(src){
+                if(!this._cache[src]){ //This block checks if the provided src has already been used once if not then it will fetch the src
+                    this._cache[src] = new Promise((resolve) =>{
+                        const img = new Image();
+                        img.onload = () =>{ //when the image is loaded this block will run
+                            this._cache[src] = true;
+                            resolve(this._cache[src]);
+                        }
+                        img.onerror = () => {   
+                            // Throws an error message if the src is invalid
+                            throw new Error(`invalid url: ${src}`);
+                        }
+                        img.src = src;
+                    }).then((img) =>{
+                        this._cache[src] = true;
+                    }).catch((err) =>{
+                        return;
+                    });
+                }
+                if(this._cache[src] instanceof Promise){
+                    throw this._cache[src];
+                }
+                return this._cache[src]; //this line throws the already loaded image
+            }
+        });
+    },[]);
 
-    // useEffect(() => {
-    //     if(remove_element){
-    //         remove(id,target) 
-    //     }
-        
-    // },[remove_element]);
+    const SuspenseImg = ({src,icon = false}) => {
+        imgCache.read(src);
+        return (
+            <>
+                {
+                !icon ? 
+                    <img src={src} className="rounded-xl w-full " style={{aspectRatio:4/3,background:theme.light}}></img> :
+                    <img src={src} alt="none" className="w-10 h-10 rounded-full" />
+                
+                }
+            </>
+            
+           
+        );
+    }
 
-   
-//Theme dark rgb(23 40 61) , Light rgb(50 71 99)
-// style={{background:'rgba(50, 71, 99,0.35)'}}
     const CharacterDialogue = ({value,name}) => {
         return(
 
                     <>
                         <div className=" px-4 justify-start  items-start h-max flex flex-col gap-2 ">
                             <span className="flex flex-row gap-4 items-center text-white lg:font-semibold md:font-semibold font-bold rounded-2xl px-2">
-                                <img src={image} className="w-10 h-10" alt="none" />
+                                <Suspense fallback={<div className="w-10 h-10 rounded-full" style={{aspectRatio:1/1,background:theme.light}}></div>}>
+                                    <SuspenseImg icon={true} src={image}/>
+                                </Suspense>
+                        
                                 {name}
                             </span>
                             <p className="char_par pointer-events-none font-sans min-w-20 text-start px-4 py-2 text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px'}}> {value} </p>
@@ -89,6 +137,11 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
                                 </svg>
                             </div>
                         </div>
+                        {
+                            show_button ? 
+                            '' : <span onClick={() => {const scroll_elem = document.querySelector('#ScrollView'); scroll_elem.scrollTop = scroll_elem.scrollHeight;}} className="pulse_btn opacity-0 w-10 h-10 absolute bottom-5 z-10 border rounded-full"></span>
+                        }
+                        
                     </>
         );
     }
@@ -108,7 +161,9 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
                     <div className="dialogue px-4 h-max flex flex-col" style={{borderTop:`solid 1px ${theme.light}`,borderBottom:`solid 1px ${theme.light}`}}>
                         
                         <div className=" font-sans min-w-20 text-start transition-all  pt-2 pb-4 px-4 text-white  text-break leading-8 flex flex-col items-center gap-4" > 
-                            <div className="rounded-xl w-full" style={{aspectRatio:4/3,background:theme.light}}></div>
+                            <Suspense fallback={<div className="rounded-xl w-full " style={{aspectRatio:4/3,background:theme.light}}></div>}>
+                                <SuspenseImg  src={image_src}/>
+                            </Suspense>
                             {current_narration_progress}
                             
 
@@ -157,7 +212,7 @@ const Dialogue = ({id, char_dialogue = () => {return;} ,remove = () => {return;}
     
     return(
         
-        <div className={`content  w-auto  min-h-20 h-auto flex  flex-row ${target === 'char' ? 'pt-4'  : ''}  ${target === 'user' ? 'justify-end' : 'justify-start'}`}>
+        <div className={`content  w-auto  min-h-20 h-auto flex  flex-row ${target === 'char' ? 'pt-4'  : ''}  ${target === 'user' ? 'justify-end' : 'justify-center'}`}>
            {
               target ? target === 'user' ? <UserDialogue value={value} name={name}/> 
                 : target === 'char' ? <CharacterDialogue value={value} name={name}/> : 
