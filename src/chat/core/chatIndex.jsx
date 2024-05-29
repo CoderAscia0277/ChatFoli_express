@@ -18,7 +18,8 @@ const ChatIndex = () => {
     
 
     // const theme = {'dark':'rgba(23, 40, 61, 0.65)','light':'rgba(50, 71, 99, 0.65)'};
-    const theme = {'dark':'rgb(23,23,23)','mid-dark':'rgb(36 36 36)','light':'rgb(38 38 38)'};
+    // const theme = {'dark':'rgb(23,23,23)','mid-dark':'rgb(36 36 36)','light':'rgb(38 38 38)'};
+    const theme = {'dark':'rgb(23 23 23)','light':'#FBF6F3'};
 
     const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
@@ -103,8 +104,8 @@ const ChatIndex = () => {
 
         Store.dispatch(set_onBusy(true));
 
-        DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  value={option_text} target="user" chapter_progress={option_key} key={DialogueBlocks.length} />];
-        setDialogueBlocks(DialogueBlocks);
+        // DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  value={option_text} target="user" chapter_progress={option_key} key={DialogueBlocks.length} />];
+        // setDialogueBlocks(DialogueBlocks);
 
         setTimeout(() => {
             DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key)} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current} target="nar"  key={DialogueBlocks.length} />];
@@ -118,9 +119,9 @@ const ChatIndex = () => {
     // style={{background:'url(./images/classroom_bg.jpg) center/cover no-repeat'}}
 
     return(
-        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2" style={{background:theme.dark}} >
+        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2" style={{background:theme.light}} >
            
-            <ChatHeader anim={header_anim}/> 
+            <ChatHeader theme={theme} anim={header_anim}/> 
             
             <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll pt-8  " style={{scrollBehavior:'smooth'}}>
                 <Dialogue theme={theme} id={`dialogue_${0}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar" name=""  />

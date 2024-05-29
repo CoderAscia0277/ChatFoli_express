@@ -104,7 +104,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
             <>
                 {
                 !icon ? 
-                    <img src={src} className="rounded-xl w-full " style={{aspectRatio:4/3,background:theme.light}}></img> :
+                    <img src={src} className="w-full " style={{aspectRatio:4/3,background:theme.light}}></img> :
                     <img src={src} alt="none" className="w-10 h-10 rounded-full" />
                 
                 }
@@ -118,29 +118,36 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
         return(
 
                     <>
-                        <div className=" px-4 justify-start  items-start h-max flex flex-col gap-2 ">
-                            <span className="flex flex-row gap-4 items-center text-white lg:font-semibold md:font-semibold font-bold rounded-2xl px-2">
-                                <Suspense fallback={<div className="w-10 h-10 rounded-full" style={{aspectRatio:1/1,background:theme.light}}></div>}>
+                        <div className=" px-4 justify-start  items-start h-max flex flex-col gap-2 relative bottom-5 ">
+                            <span className="flex flex-row gap-4 items-center relative top-5 left-5 border border-black  text-black font-medium rounded-2xl px-2" style={{background:theme.light}}>
+                                {/* <Suspense fallback={<div className="w-10 h-10 rounded-full" style={{aspectRatio:1/1,background:theme.light}}></div>}>
                                     <SuspenseImg icon={true} src={image}/>
-                                </Suspense>
+                                </Suspense> */}
                         
                                 {name}
                             </span>
-                            <p className="char_par pointer-events-none font-sans min-w-20 text-start px-4 py-2 text-white text-break leading-8 " style={{borderRadius:'10px 10px 10px 0px'}}> {value} </p>
-                            <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center py-2 px-4 rounded-xl ">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white hover:scale-110 cursor-pointer bi bi-arrow-clockwise  w-5 h-5 " viewBox="0 0 16 16">
-                                    <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-white bi bi-heart hover:scale-110 cursor-pointer w-5 h-5 " viewBox="0 0 16 16">
-                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                </svg>
+                            <div className="char_par pointer-events-none font-sans min-w-20 text-start px-4 py-4 gap-2 text-black text-break leading-8 border border-black rounded-xl font-medium flex flex-col items-end justify-end">
+                                {value} 
+                                <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center  rounded-xl ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-black hover:scale-110 cursor-pointer bi bi-arrow-clockwise  w-5 h-5 " viewBox="0 0 16 16">
+                                        <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-black bi bi-heart hover:scale-110 cursor-pointer w-5 h-5 " viewBox="0 0 16 16">
+                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                    </svg>
+                                </div>
                             </div>
+                           
+                            {/* <div className="border w-full min-h-50 dialogue hidden border-black">
+
+                            </div> */}
                         </div>
                         {
                             show_button ? 
-                            '' : <span onClick={() => {const scroll_elem = document.querySelector('#ScrollView'); scroll_elem.scrollTop = scroll_elem.scrollHeight;}} className="pulse_btn opacity-0 w-10 h-10 absolute bottom-5 z-10 border rounded-full"></span>
+                            '' : <span onClick={() => {const scroll_elem = document.querySelector('#ScrollView'); scroll_elem.scrollTop = scroll_elem.scrollHeight;}} className="pulse_btn  w-12 h-12 absolute bottom-5 z-10 border border-black rounded-full"></span>
                         }
+                        
                         
                     </>
         );
@@ -158,13 +165,14 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
         
         return(
                 <>
-                    <div className="dialogue px-4 h-max flex flex-col" style={{borderTop:`solid 1px ${theme.light}`,borderBottom:`solid 1px ${theme.light}`}}>
+                    <div className="dialogue h-max flex flex-col">
                         
-                        <div className=" font-sans min-w-20 text-start transition-all  pt-2 pb-4 px-4 text-white  text-break leading-8 flex flex-col items-center gap-4" > 
-                            <Suspense fallback={<div className="rounded-xl w-full " style={{aspectRatio:4/3,background:theme.light}}></div>}>
+                        <div className=" font-sans min-w-20 text-start transition-all  pt-2 pb-4  text-white  text-break leading-8 flex flex-col items-center gap-4" > 
+                            <p className="text-neutral-900 border border-black font-medium font-sans px-4 py-2 mx-4 relative top-10" style={{background:'#FBF6F3AA'}}>{current_narration_progress}</p>
+                            <Suspense fallback={<div className=" w-full " style={{aspectRatio:4/3,background:theme.light}}></div>}>
                                 <SuspenseImg  src={image_src}/>
                             </Suspense>
-                            {current_narration_progress}
+                            
                             
 
                                 <div className="dialogue hidden cursor-pointer gap-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
@@ -174,7 +182,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                                             const option_text = option[`option_0${index + 1}`];
                                             const option_key = option['key'];
                                             return(
-                                                <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max min-w-52  h-12 rounded-xl hover:cursor-pointer hover:scale-105 flex flex-row items-center justify-center border `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
+                                                <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
                                             );
                                         })
                                     : ''
