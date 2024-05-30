@@ -28,6 +28,33 @@ body{
       display: flex;
     }
 }
+.input_expandable:hover{
+  animation: input_expand 100ms ease-in-out forwards;
+
+}
+.input_expandable:not(:hover){
+  animation: input_shrink 100ms ease-in-out forwards;
+
+}
+.input_expandable{
+  transition: ease-in-out 1s;
+}
+@keyframes input_expand{
+  0%{
+    width: 50%;
+  }
+  100%{
+    width: 100%;
+  }
+}
+@keyframes input_shrink{
+  0%{
+    width:inherit;
+  }
+  100%{
+    width: 50%;
+  }
+}
 /* .super_parent .content:nth-last-child(2) {
   && .dialogue{
     display: flex;

@@ -24,6 +24,10 @@ const ChatIndex = () => {
     const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
     
+    //Reply Panel variables
+    const [isToReply , setIsToReply] = useState(false);
+    let show_reply_notif = useRef(true);
+    // const ReplyPanel = useRef(null);
     // const ScrollView = document.querySelector('#ScrollView');
 
     useEffect(() => {
@@ -87,13 +91,13 @@ const ChatIndex = () => {
     const has_char_dialogue = (dialogue_array,char_name,char_dialogue_key) => {
         // console.log(dialogue_array , char_name, char_dialogue_key);  
         // console.log(dialogue_array[char_name]);
-        // page_number.current += 1;
+        page_number.current += 1;
 
         // Store.dispatch(set_onBusy(true));
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}   target="char"  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} />];
+            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}   target="char"  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} show_reply_notif={() => setIsToReply(true)} />];
             setDialogueBlocks(DialogueBlocks);
-        },1500);
+        },100);
         
     };
 
@@ -110,13 +114,39 @@ const ChatIndex = () => {
         setTimeout(() => {
             DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key)} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current} target="nar"  key={DialogueBlocks.length} />];
             setDialogueBlocks(DialogueBlocks);
-        },2000);
+        },100);
 
         // console.log(option_text,option_key);
 
     }
 
     // style={{background:'url(./images/classroom_bg.jpg) center/cover no-repeat'}}
+
+    const ReplyNotify = () =>{
+
+        // const show_checkbox = () => show_reply_notif.current = !show_reply_notif.current;
+
+        return(
+            <article className="w-3/4 border border-black absolute top-20 p-4 flex flex-col gap-2 rounded-lg justify-start items-start " style={{aspectRatio:4/3,background:theme.light}}>
+                <p style={{lineHeight:'2rem'}}>
+                    Please make sure your response is relevant to the present topic, to avoid 
+                    unexpected outcomes.
+                </p>
+                <span className="flex justify-center items-center my-2">
+                    <p className="font-light">Don't show this message? </p>
+                    <input onChange={() => {show_reply_notif.current = !show_reply_notif.current; }} className="mx-2 " type="checkbox"/> 
+                    
+                </span>
+                <div className="w-full flex flex-row justify-center items-end gap-2">
+                    <button onClick={() => setIsToReply(false)}  className={` w-1/2  h-8 hover:cursor-pointer  text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}>Cancel</button>
+                    <button onClick={() => setIsToReply(false)} style={{background:theme.dark}} className={` w-1/2  h-8 hover:cursor-pointer font-medium text-white border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}>Accept</button> 
+                   
+                </div>
+            </article>
+        )
+
+        
+    }
 
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2" style={{background:theme.light}} >
@@ -136,7 +166,10 @@ const ChatIndex = () => {
                     !DialogueState ? " " : <LoadingBubble theme={theme}/>
                 }
             </article>
-
+            {
+                isToReply && show_reply_notif.current? 
+                    <section className="w-full h-full absolute z-10 top-0 flex justify-center" style={{background:'rgba(23,23,23,0.5)'}}><ReplyNotify/></section> : ''
+            } 
            
         </section>
     )

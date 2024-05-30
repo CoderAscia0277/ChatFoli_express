@@ -3,7 +3,7 @@ import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
 
-const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} } ) => {
+const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} , show_reply_notif = () => {return;}} ) => {
 
     let didMountRef = useRef(false);
     // const [remove_element,set_remove_element] = useState(false);
@@ -13,9 +13,14 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
     const current_narration_progress = story[0][page_number][chapter_progress ? chapter_progress : 'init']; 
     const current_available_options = story[0][page_number]['option'];
     const char_dialogue_available = story[0][page_number]['hasCharacterDialogue'];
+
+
+
     //{story[0][0]['init']}
     // const print = (val) => console.log(val);
     let char_observer = useRef(null);
+
+
 
     const[show_button,set_show_button] = useState(false);
     // let isVisible = useRef(false);
@@ -44,6 +49,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                 // some of the script has built in dialougue this block manage their display
                 const dialogue = story[0][page_number]['character_dialogue'];
                 char_dialogue(dialogue,Object.keys(dialogue)[0],chapter_progress);
+                console.log(current_available_options);
               
             }
 
@@ -115,6 +121,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
     }
 
     const CharacterDialogue = ({value,name}) => {
+
         return(
 
                     <>
@@ -142,6 +149,26 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                             {/* <div className="border w-full min-h-50 dialogue hidden border-black">
 
                             </div> */}
+                            
+                            <div className="dialogue hidden cursor-pointer gap-4 pt-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
+                                {/* {
+                                        [{'option_01':'Continue narration','key':'continue_narr'},{'option_02':'Reply','key':'reply'}].map((option,index) => {
+                                            const option_text = option[`option_0${index + 1}`];
+                                            const option_key = option['key'];
+                                            return(
+                                                <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
+                                            );
+                                        })
+                                } */}
+                                <div  className={` w-max min-w-1/2 max-w-full px-4  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}  style={{lineHeight:'1rem'}}>Continue narration</div> 
+                                <div className="input_expandable flex flex-row justify-evenly w-1/2 px-2 items-center border border-black  rounded-lg  ">
+                                    <input onFocus={() => show_reply_notif()} type='text' placeholder="Reply as Player" className={` placeholder:text-black w-3/4 bg-transparent outline-0 h-12 hover:cursor-pointer font-medium text-black  flex flex-row items-center justify-center`} style={{lineHeight:'1rem'}}/>
+                                    <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-send-fill w-6 h-6" viewBox="0 0 16 16">
+                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                    </svg>
+                                </div>
+                                 
+                            </div> 
                         </div>
                         {
                             show_button ? 
@@ -218,6 +245,8 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
        );
     }
     
+   
+    // const isToReply = true;
     return(
         
         <div className={`content  w-auto  min-h-20 h-auto flex  flex-row ${target === 'char' ? 'pt-4'  : ''}  ${target === 'user' ? 'justify-end' : 'justify-center'}`}>
@@ -230,7 +259,8 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                             </div> : ''
               
               
-            }           
+            } 
+                   
         </div>    
     );
 };

@@ -51,8 +51,8 @@
         'character_dialogue':
             {"Ming Fei":
                 {
-                    'defend_self':"Are you alright?, my name is Ming Fei, captain of the Tianquan guards ",
-                    'fight_goblin':"You're so brave, fighting this goblin with that sword. My name is Ming Fei, captain of the Tianquan guards"
+                    'defend_self':"Are you alright?, my name is Ming Fei, Captain of the Tianquan guards and you are? ",
+                    'fight_goblin':"You're so brave, fighting this goblin with that sword. My name is Ming Fei, Captain of the Tianquan guards and you are?"
                 }
             }
         ,
