@@ -35,8 +35,8 @@ const ChatIndex = () => {
            
         }else{
             didMountRef.current = true;
-            ScrollView.current.addEventListener('touchstart',touch_start);
-            ScrollView.current.addEventListener('touchmove',touch_move);
+            // ScrollView.current.addEventListener('touchstart',touch_start);
+            // ScrollView.current.addEventListener('touchmove',touch_move);
  
             touch_start();
             touch_move();

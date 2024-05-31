@@ -43,7 +43,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
             done();
             // console.log('loaded',isLoaded.current);
             //add component observer
-
+            generate_char_dialogue();
 
            
         }
@@ -75,7 +75,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
                             </Suspense>
                             {/* {
                                 !show_button ?  */}
-                                 <span id="nav" onClick={(e) => {
+                                 {/* <span id="nav" onClick={(e) => {
                                             const scroll_elem = document.querySelector('#ScrollView'); 
                                             const node = e.target;
                                             node.parentNode.removeChild(node);
@@ -84,7 +84,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
                                     ;}} 
                                     
                                     className="pulse_btn  w-12 h-12 absolute bottom-5 z-10  border border-black rounded-full"></span>
-                            
+                             */}
                             
 
                                 <div className=" dialogue hidden cursor-pointer gap-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
