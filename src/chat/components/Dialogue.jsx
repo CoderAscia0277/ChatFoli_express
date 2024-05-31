@@ -3,7 +3,7 @@ import Store from "../utils/ConfigureStore";
 // import { chapter_01 } from "../utils/story_chap01";
 // import Store from "../utils/ConfigureStore";
 
-const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} , show_reply_notif = () => {return;}} ) => {
+const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = () => {return;} ,remove = () => {return;} , theme = {'dark':'','light':''} ,image = "./images/Foli.png", target = 'user' , value = '', name = '',done = () => null , page_number = 0, chapter_progress = 0, option_selected = () =>{return;} , show_reply_notif = () => {return;}} , push_user_dialogue = () => {return;} ) => {
 
     let didMountRef = useRef(false);
     // const [remove_element,set_remove_element] = useState(false);
@@ -131,9 +131,6 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                     <>
                         <div className=" px-4 justify-start  items-start h-max flex flex-col gap-2 relative bottom-5 ">
                             <span className="flex flex-row gap-4 items-center relative top-5 left-5 border border-black  text-black font-medium rounded-2xl px-2" style={{background:theme.light}}>
-                                {/* <Suspense fallback={<div className="w-10 h-10 rounded-full" style={{aspectRatio:1/1,background:theme.light}}></div>}>
-                                    <SuspenseImg icon={true} src={image}/>
-                                </Suspense> */}
                         
                                 {name}
                             </span>
@@ -155,15 +152,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                             </div> */}
                             
                             <div className="dialogue hidden cursor-pointer gap-4 pt-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
-                                {/* {
-                                        [{'option_01':'Continue narration','key':'continue_narr'},{'option_02':'Reply','key':'reply'}].map((option,index) => {
-                                            const option_text = option[`option_0${index + 1}`];
-                                            const option_key = option['key'];
-                                            return(
-                                                <div onClick={() => {  option_selected(option_text,option_key); }} className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
-                                            );
-                                        })
-                                } */}
+                            
                                 <div  className={` w-max min-w-1/2 max-w-full px-4  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}  style={{lineHeight:'1rem'}}>Continue narration</div> 
                                 <div className="input_expandable flex flex-row justify-evenly w-1/2 px-2 items-center border border-black  rounded-lg  ">
                                     <input 
@@ -179,15 +168,16 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                                                 console.log(user_text.current)
                                             }
                                         } 
+                                        
                                         onFocus={() =>  show_reply_notif()} type='text' placeholder="Reply as Player" 
                                         className={` placeholder:text-black w-3/4 bg-transparent outline-0 h-12 hover:cursor-pointer font-medium text-black  flex flex-row items-center justify-center`} style={{lineHeight:'1rem'}}/>
-                                    <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-send-fill w-6 h-6" viewBox="0 0 16 16">
-                                        
+                                    <svg xmlns="http://www.w3.org/2000/svg" onClick={() => push_user_dialogue(user_text.current)} fill="currentColor" className="bi bi-send-fill w-6 h-6" viewBox="0 0 16 16">
+{/*                                         
                                         {
-                                            text_isFilled ?
-                                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/> :
+                                            text_isFilled ? */}
+                                            {/* <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/> : */}
                                             <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                        }
+                                        
                                     </svg>
                                 </div>
                                  

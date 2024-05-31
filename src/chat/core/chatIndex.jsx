@@ -4,8 +4,8 @@ import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
 import ChatHeader from "../components/ChatHeader";
-
-
+import NarratorDialogue from "../components/NarratorDialogue";
+import CharacterDialogue from "../components/CharacterDialogue";
 let DialogueBlocks  = [];
 const ChatIndex = () => {
 
@@ -95,11 +95,17 @@ const ChatIndex = () => {
 
         // Store.dispatch(set_onBusy(true));
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}   target="char"  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} show_reply_notif={() => setIsToReply(true)} />];
+            DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}    key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} show_reply_notif={() => setIsToReply(true)} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
             setDialogueBlocks(DialogueBlocks);
         },100);
         
     };
+
+    const add_user_dialogue = ({user_text}) => {
+        DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}   target="user"  key={DialogueBlocks.length} value={user_text}  />];
+        setDialogueBlocks(DialogueBlocks);
+    }
+
 
     const has_option_selected = (option_text,option_key) => {
         // console.log(option_text,option_key);
@@ -112,7 +118,7 @@ const ChatIndex = () => {
         // setDialogueBlocks(DialogueBlocks);
 
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key)} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current} target="nar"  key={DialogueBlocks.length} />];
+            DialogueBlocks = [...DialogueBlocks,<NarratorDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current}  key={DialogueBlocks.length} />];
             setDialogueBlocks(DialogueBlocks);
         },100);
 
@@ -154,7 +160,8 @@ const ChatIndex = () => {
             <ChatHeader theme={theme} anim={header_anim}/> 
             
             <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll   " style={{scrollBehavior:'smooth'}}>
-                <Dialogue theme={theme} id={`dialogue_${0}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar" name=""  />
+                <NarratorDialogue theme={theme} id={`dialogue_${0}`}   done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar"/>
+
                 {
                     
                     AvailableDialogue
