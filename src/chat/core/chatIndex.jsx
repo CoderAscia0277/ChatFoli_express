@@ -138,8 +138,8 @@ const ChatIndex = () => {
                     
                 </span>
                 <div className="w-full flex flex-row justify-center items-end gap-2">
-                    <button onClick={() => setIsToReply(false)}  className={` w-1/2  h-8 hover:cursor-pointer  text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}>Cancel</button>
-                    <button onClick={() => setIsToReply(false)} style={{background:theme.dark}} className={` w-1/2  h-8 hover:cursor-pointer font-medium text-white border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}>Accept</button> 
+                    <button onClick={() => {setIsToReply(false); show_reply_notif.current = false}}  className={` w-1/2  h-8 hover:cursor-pointer  text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}>Cancel</button>
+                    <button onClick={() => {setIsToReply(false); show_reply_notif.current = false}} style={{background:theme.dark}} className={` w-1/2  h-8 hover:cursor-pointer font-medium text-white border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}>Accept</button> 
                    
                 </div>
             </article>
@@ -153,7 +153,7 @@ const ChatIndex = () => {
            
             <ChatHeader theme={theme} anim={header_anim}/> 
             
-            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll pt-8  " style={{scrollBehavior:'smooth'}}>
+            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll   " style={{scrollBehavior:'smooth'}}>
                 <Dialogue theme={theme} id={`dialogue_${0}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar" name=""  />
                 {
                     

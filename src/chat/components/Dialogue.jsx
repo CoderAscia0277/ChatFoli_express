@@ -14,7 +14,9 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
     const current_available_options = story[0][page_number]['option'];
     const char_dialogue_available = story[0][page_number]['hasCharacterDialogue'];
 
-
+    // variables for user text input
+    let user_text = useRef('');
+    const [text_isFilled,setTextIsFilled] = useState(false);
 
     //{story[0][0]['init']}
     // const print = (val) => console.log(val);
@@ -24,6 +26,8 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
 
     const[show_button,set_show_button] = useState(false);
     // let isVisible = useRef(false);
+
+
 
     useEffect(() =>{
         const ScrollView = document.querySelector('#ScrollView');
@@ -36,9 +40,9 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
 
             //If the target is user or the story has progress then scroll down
             // this wont be triggered if a character dialogue was selected as target
-            if(chapter_progress || target === 'user' ){
-                ScrollView.scrollTop =  ScrollView.scrollHeight;
-            }
+            // if(chapter_progress || target === 'user' ){
+            //     ScrollView.scrollTop =  ScrollView.scrollHeight ;
+            // }
             
             done();
             console.log(id , ' mounted' , target);
@@ -110,7 +114,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
             <>
                 {
                 !icon ? 
-                    <img src={src} className="w-full " style={{aspectRatio:4/3,background:theme.light}}></img> :
+                    <img src={src} className="w-full " style={{aspectRatio:3/4,background:theme.light}}></img> :
                     <img src={src} alt="none" className="w-10 h-10 rounded-full" />
                 
                 }
@@ -147,7 +151,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                             </div>
                            
                             {/* <div className="border w-full min-h-50 dialogue hidden border-black">
-
+    
                             </div> */}
                             
                             <div className="dialogue hidden cursor-pointer gap-4 pt-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
@@ -162,9 +166,28 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                                 } */}
                                 <div  className={` w-max min-w-1/2 max-w-full px-4  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}  style={{lineHeight:'1rem'}}>Continue narration</div> 
                                 <div className="input_expandable flex flex-row justify-evenly w-1/2 px-2 items-center border border-black  rounded-lg  ">
-                                    <input onFocus={() => show_reply_notif()} type='text' placeholder="Reply as Player" className={` placeholder:text-black w-3/4 bg-transparent outline-0 h-12 hover:cursor-pointer font-medium text-black  flex flex-row items-center justify-center`} style={{lineHeight:'1rem'}}/>
+                                    <input 
+                                        onChange={
+                                            (e) => {
+                                                if(e.target.value.length === 1){
+                                                    setTextIsFilled(true);
+                                                }
+                                                // if(!e.target.value.length){
+                                                //     setTextIsFilled(false);
+                                                // }
+                                                user_text.current = e.target.value; 
+                                                console.log(user_text.current)
+                                            }
+                                        } 
+                                        onFocus={() =>  show_reply_notif()} type='text' placeholder="Reply as Player" 
+                                        className={` placeholder:text-black w-3/4 bg-transparent outline-0 h-12 hover:cursor-pointer font-medium text-black  flex flex-row items-center justify-center`} style={{lineHeight:'1rem'}}/>
                                     <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-send-fill w-6 h-6" viewBox="0 0 16 16">
-                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                        
+                                        {
+                                            text_isFilled ?
+                                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/> :
+                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                        }
                                     </svg>
                                 </div>
                                  
@@ -172,7 +195,7 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
                         </div>
                         {
                             show_button ? 
-                            '' : <span onClick={() => {const scroll_elem = document.querySelector('#ScrollView'); scroll_elem.scrollTop = scroll_elem.scrollHeight;}} className="pulse_btn  w-12 h-12 absolute bottom-5 z-10 border border-black rounded-full"></span>
+                            '' : <span onClick={() => {const scroll_elem = document.querySelector('#ScrollView'); scroll_elem.scrollTop = scroll_elem.scrollHeight - 100;}} className="pulse_btn  w-12 h-12 absolute bottom-5 z-10 border border-black rounded-full"></span>
                         }
                         
                         
@@ -192,11 +215,11 @@ const Dialogue = ({id,image_src = '/images/classroom_bg.jpg', char_dialogue = ()
         
         return(
                 <>
-                    <div className="dialogue h-max flex flex-col">
+                    <div className="dialogue h-full flex flex-col">
                         
                         <div className=" font-sans min-w-20 text-start transition-all  pt-2 pb-4  text-white  text-break leading-8 flex flex-col items-center gap-4" > 
                             <p className="text-neutral-900 border border-black font-medium font-sans px-4 py-2 mx-4 relative top-10" style={{background:'#FBF6F3AA'}}>{current_narration_progress}</p>
-                            <Suspense fallback={<div className=" w-full " style={{aspectRatio:4/3,background:theme.light}}></div>}>
+                            <Suspense fallback={<div className=" w-full " style={{aspectRatio:3/4,background:theme.light}}></div>}>
                                 <SuspenseImg  src={image_src}/>
                             </Suspense>
                             
