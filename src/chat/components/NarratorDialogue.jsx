@@ -88,15 +88,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
     
 
     return(
-        <article onTouchMove={() => {
-            const node = document.querySelector('#nav');
-            if(node){
-                node.parentNode.removeChild(node);
-                // generate_char_dialogue();
-            }else{
-                return;
-            }
-        }} className={`content  w-auto  min-h-20 h-auto flex justify-center`}>
+        <article className={`content  w-auto  min-h-20 h-auto flex justify-center`}>
             <div className="dialogue h-full flex flex-col ">
                         
                         <div className="font-sans min-w-20 text-start transition-all  pt-2 pb-4  text-white  text-break leading-8 flex flex-col items-center gap-4" > 
@@ -127,7 +119,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
                                             const option_text = option[`option_0${index + 1}`];
                                             const option_key = option['key'];
                                             return(
-                                                <div onClick={() => {  option_selected(option_text,option_key); set_isOptionChosen(true)}} className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
+                                                <div onClick={isOptionChosen ? () => {return;} : () => {option_selected(option_text,option_key); set_isOptionChosen(true)} } className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
                                             );
                                         })
                                     : ''

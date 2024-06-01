@@ -19,14 +19,7 @@ const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options =
 
     return(
 
-        <article onTouchMove={() => {
-            const node = document.querySelector('#nav');
-            if(node){
-                node.parentNode.removeChild(node);
-            }else{
-                return;
-            }
-        }} className={`content mt-std w-auto  min-h-20 h-auto flex justify-center flex-col`}>
+        <article  className={`content mt-std w-auto  min-h-20 h-auto flex justify-center flex-col`}>
                     <Suspense fallback={<div className="w-full " style={{aspectRatio:1/1,background:theme.dark}}></div>}>
                                 <SuspenseImg icon={true} theme={theme} src={image_src}/>
                     </Suspense>
@@ -54,39 +47,14 @@ const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options =
                         </div>
             
                         
-                        <div className="dialogue hidden cursor-pointer gap-4 pt-2  flex flex-col  w-full" style={{placeItems:'center'}}>   
+                        <div className="cursor-pointer gap-4 pt-2  mt-std flex flex-col  w-full" style={{placeItems:'center'}}>   
                         
-                            {/* <div  className={` w-max min-w-1/2 max-w-full px-4  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `}  style={{lineHeight:'1rem'}}>Continue narration</div> 
-                            <div className="input_expandable flex flex-row justify-evenly w-1/2 px-2 items-center border border-black  rounded-lg  ">
-                                <input 
-                                    onChange={
-                                        (e) => {
-                                            // if(e.target.value.length === 1){
-                                            //     setTextIsFilled(true);
-                                            // }
-                                           
-                                            user_text.current = e.target.value; 
-                                            console.log(user_text.current)
-                                        }
-                                    } 
-                                    
-                                    onFocus={() =>  show_reply_notif()} type='text' placeholder="Reply as Player" 
-                                    className={` placeholder:text-black w-3/4 bg-transparent outline-0 h-12 hover:cursor-pointer font-medium text-black  flex flex-row items-center justify-center`} style={{lineHeight:'1rem'}}/>
-                                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => push_user_dialogue(user_text.current)} fill="currentColor" className="bi bi-send-fill w-6 h-6" viewBox="0 0 16 16">
-{/*                                         
-                                    {
-                                        text_isFilled ? 
-                                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/> :
-                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                    
-                                </svg>
-                            </div> */}
                             {
                                   user_options.map((option,index) => {
                                     const option_text = option[`option_0${index + 1}`];
                                     const option_key = option['key'];
                                     return(
-                                        <div className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg leading-relaxed `} key={index}  >{option_text}</div> 
+                                        <div onClick={() => push_user_dialogue(option_text)} className={` w-max px-4 min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg leading-relaxed `} key={index}  >{option_text}</div> 
                                     );
                                 })
                             }

@@ -62,7 +62,7 @@
 
         'option':[
             {'option_01':"Continue Narration",'key':"narrate"},
-            {'option_02':"Reply"}
+            {'option_02':"Thanks for saving me, my name Arthur"}
         ]
     },
     {

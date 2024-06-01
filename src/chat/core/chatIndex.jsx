@@ -1,11 +1,12 @@
 import { useState , useEffect , useRef, useCallback } from "react";
-import Dialogue from "../components/Dialogue";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
 import ChatHeader from "../components/ChatHeader";
 import NarratorDialogue from "../components/NarratorDialogue";
 import CharacterDialogue from "../components/CharacterDialogue";
+import UserDialogue from "../components/UserDialogue";
+
 let DialogueBlocks  = [];
 const ChatIndex = () => {
 
@@ -72,21 +73,21 @@ const ChatIndex = () => {
 
     let page_number = useRef(0);
 
-    const remove_dialogue_from_parent = (id ,target) => {
+    // const remove_dialogue_from_parent = (id ,target) => {
   
-        //This block filter out the invisible components e.g ["",""]
+    //     //This block filter out the invisible components e.g ["",""]
      
-        page_number.current = target === 'nar' && page_number.current > 0 ? page_number.current - 1 : page_number.current;
+    //     page_number.current = target === 'nar' && page_number.current > 0 ? page_number.current - 1 : page_number.current;
 
-        DialogueBlocks = DialogueBlocks.filter((block) => {
-            return `dialogue_${block.key}` !== id;
-        });
+    //     DialogueBlocks = DialogueBlocks.filter((block) => {
+    //         return `dialogue_${block.key}` !== id;
+    //     });
      
-        //Updates the available dialogue blocks to display
-        setDialogueBlocks(DialogueBlocks);
-        console.log("remove_dialogue_from_parent",id);
+    //     //Updates the available dialogue blocks to display
+    //     setDialogueBlocks(DialogueBlocks);
+    //     console.log("remove_dialogue_from_parent",id);
         
-    }
+    // }
    
     const has_char_dialogue = (dialogue_array = 'is a collection of character responses',char_name = "represent the character's name",char_dialogue_key = "a key that determines what char response should be use",possible_options) => {
         // console.log(dialogue_array , char_name, char_dialogue_key);  
@@ -95,14 +96,14 @@ const ChatIndex = () => {
 
         // Store.dispatch(set_onBusy(true));
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  user_options = {possible_options}  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} show_reply_notif={() => setIsToReply(true)} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
+            DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  user_options = {possible_options}  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
             setDialogueBlocks(DialogueBlocks);
         },100);
         
     };
 
-    const add_user_dialogue = ({user_text}) => {
-        DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}   target="user"  key={DialogueBlocks.length} value={user_text}  />];
+    const add_user_dialogue = (user_text) => {
+        DialogueBlocks = [...DialogueBlocks,<UserDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  key={DialogueBlocks.length} value={user_text}  push_character_dialogue={() => {return}} />];
         setDialogueBlocks(DialogueBlocks);
     }
 
@@ -122,7 +123,7 @@ const ChatIndex = () => {
             setDialogueBlocks(DialogueBlocks);
         },100);
 
-        // console.log(option_text,option_key);
+
 
     }
 
