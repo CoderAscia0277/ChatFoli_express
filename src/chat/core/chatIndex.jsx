@@ -88,14 +88,14 @@ const ChatIndex = () => {
         
     }
    
-    const has_char_dialogue = (dialogue_array,char_name,char_dialogue_key) => {
+    const has_char_dialogue = (dialogue_array = 'is a collection of character responses',char_name = "represent the character's name",char_dialogue_key = "a key that determines what char response should be use",possible_options) => {
         // console.log(dialogue_array , char_name, char_dialogue_key);  
         // console.log(dialogue_array[char_name]);
         page_number.current += 1;
 
         // Store.dispatch(set_onBusy(true));
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}    key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} show_reply_notif={() => setIsToReply(true)} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
+            DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  user_options = {possible_options}  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} show_reply_notif={() => setIsToReply(true)} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
             setDialogueBlocks(DialogueBlocks);
         },100);
         
@@ -118,7 +118,7 @@ const ChatIndex = () => {
         // setDialogueBlocks(DialogueBlocks);
 
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<NarratorDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current}  key={DialogueBlocks.length} />];
+            DialogueBlocks = [...DialogueBlocks,<NarratorDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key,user_options) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key,user_options)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current}  key={DialogueBlocks.length} />];
             setDialogueBlocks(DialogueBlocks);
         },100);
 
@@ -155,11 +155,11 @@ const ChatIndex = () => {
     }
 
     return(
-        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col pt-2" style={{background:theme.light}} >
+        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.light}} >
            
             <ChatHeader theme={theme} anim={header_anim}/> 
             
-            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll   " style={{scrollBehavior:'smooth'}}>
+            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
                 <NarratorDialogue theme={theme} id={`dialogue_${0}`}   done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar"/>
 
                 {

@@ -2,7 +2,8 @@
     {
         'hasCharacterDialogue':false,
         'init':`You suddenly find your self on the middle of an unknown forest, you began searching for food. After a few minutes
-        of walking, you stumble across a wounded goblin. What would you do next?`,
+        of walking, you stumble across a wounded goblin.`,
+        'question':' What would you do next?',
         'option':[
             {'option_01':"Help the wounded goblin",'key':"help_goblin"},
             {'option_02':"Leave the wounded goblin",'key':"leave_goblin"}
@@ -13,9 +14,10 @@
     {
         'hasCharacterDialogue':false,
         'help_goblin':`You decided to help the wounded goblin. As you check his condition, a horde of goblins suddenly came out
-        the bushes. Terrified with the situation you choose to...`,
+        the bushes.`,
         'leave_goblin':`You decided to leave the wounded goblin. As you continue your journey, you encountered a horde of goblins, 
-         terrified by the situation you choose to...`,
+         `,
+         'question':'Terrified by the situation you choose to...',
         'option':[
             {'option_01':"Defend yourself",'key':"defend_self"},
             {'option_02':"Run for your life",'key':"run_away"}
@@ -31,7 +33,8 @@
         As you saw the huge goblin charging to your direction, you decided to...`,
         'run_away':`Due to their ovwerwhelming number, you choose to run away. 
         As you run into the dense bushes, a huge goblin came out, accompanied by a huge roaring sound.
-        You saw the huge goblin charging towards you, you decided to...`,
+        `,
+        'question':'You saw the huge goblin charging towards you, you decided to...',
         'option':[ 
             {'option_01':"Prepare defensive moves",'key':"defend_self"},
             {'option_02':"Fight the huge goblin",'key':"fight_goblin"}

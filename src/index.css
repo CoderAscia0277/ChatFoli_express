@@ -13,12 +13,14 @@ body{
 ::-webkit-scrollbar{
   display: none;
 }
-
+.mt-std {
+  margin-top: 200px;
+}
 .animate_collapse_down{
   animation: collapse_down 100ms ease-in-out forwards;
 }
 .container .content:last-child{
-  margin-bottom: 2vh;
+  margin-bottom: 200px;
 }
 .pulse{
   animation: pulse 1s ease-in-out infinite;
