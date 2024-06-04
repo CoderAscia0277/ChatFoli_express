@@ -1,4 +1,4 @@
-import { useState , useEffect , useRef, useCallback } from "react";
+import { useState , useEffect , useRef, useMemo, Suspense} from "react";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
@@ -31,6 +31,20 @@ const ChatIndex = () => {
     // const ReplyPanel = useRef(null);
     // const ScrollView = document.querySelector('#ScrollView');
 
+    // const hiRef = useRef(null);
+    // const {data} = useQuery({
+    //     queryKey:['apiData'],
+    //     queryFn:() => fetch('http://localhost:5000/api/data').then(
+    //         res => res.json()
+    //     )
+    //  });
+
+
+   
+    const [message, set_message] = useState('');
+
+
+
     useEffect(() => {
         if(didMountRef.current){
            
@@ -38,12 +52,16 @@ const ChatIndex = () => {
             didMountRef.current = true;
             // ScrollView.current.addEventListener('touchstart',touch_start);
             // ScrollView.current.addEventListener('touchmove',touch_move);
- 
+            
             touch_start();
             touch_move();
             
+            // fetch('http://localhost:5000/api/data').then(
+            //     res_json => res_json.json()
+            //     ).then( data => { set_message(data.message)});
         }
     },[]);
+
     let temp_anim = useRef('');
     let isTouch = useRef(false);
     let isMoving = useRef(false);
@@ -157,29 +175,26 @@ const ChatIndex = () => {
 
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.light}} >
-           
-            <ChatHeader theme={theme} anim={header_anim}/> 
-            
-            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
-                <NarratorDialogue theme={theme} id={`dialogue_${0}`}   done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar"/>
-
-                {
-                    
-                    AvailableDialogue
-                }
-              
-            </article>
-            <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
-                {
-                    !DialogueState ? " " : <LoadingBubble theme={theme}/>
-                }
-            </article>
-            {
-                isToReply && show_reply_notif.current? 
-                    <section className="w-full h-full absolute z-10 top-0 flex justify-center" style={{background:'rgba(23,23,23,0.5)'}}><ReplyNotify/></section> : ''
-            } 
-           
-        </section>
+           <ChatHeader theme={theme} anim={header_anim}/> 
+           <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
+               <NarratorDialogue theme={theme} id={`dialogue_${0}`}   done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar"/>
+               {
+                   AvailableDialogue
+               }
+             
+           </article>
+           <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
+               {
+                   !DialogueState ? " " : <LoadingBubble theme={theme}/>
+               }
+           </article>
+           {
+               isToReply && show_reply_notif.current? 
+                   <section className="w-full h-full absolute z-10 top-0 flex justify-center" style={{background:'rgba(23,23,23,0.5)'}}><ReplyNotify/></section> : ''
+           } 
+          
+       </section>
+        
     )
 }
 
