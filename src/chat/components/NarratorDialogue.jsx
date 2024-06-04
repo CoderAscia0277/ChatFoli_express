@@ -89,10 +89,6 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
             option_observer.current.observe(optionNode);
     },[isOptionChosen]);
 
-    // const isMoving = () => {
-    //     set_show_button(false);
-    // }
-
     const Narration = ({url}) => {
         const data = fetch_data(url,'narration');
         return(
@@ -104,7 +100,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
         const qstn_optn = fetch_data(url,'qstn_optn')
         return(
             <>
-                <p className="text-black w-full font-medium  mb-5 text-xl leading-relaxed">{qstn_optn.question}</p>
+                <p className="text-black  font-medium  mb-5 mx-4 text-xl leading-relaxed">{qstn_optn.question}</p>
             {
                 qstn_optn.options.map((option,index) => {
                     const option_text = option[`option_0${index + 1}`];
@@ -118,34 +114,34 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
         );
     }
 
+    const qstn_optn_loading = () => {
+        return(
+            <>
+                <div className="bg-neutral-300 mb-5 w-3/4 h-12 loading rounded-md"> </div>
+                <div className="bg-neutral-300 mb-5 w-1/2 h-10 loading rounded-md"> </div>
+                <div className="bg-neutral-300 mb-5 w-1/2 h-10 loading rounded-md"> </div>
+                <div className="bg-neutral-300 w-1/2 h-8 loading rounded-md"> </div>
+            </>
+        )
+    }
+
     return(
         <article className={`content  w-auto  min-h-20 h-auto flex justify-center`}>
-            <div className="dialogue h-full flex flex-col ">
+            <div className="dialogue h-full flex flex-col w-full ">
                         
-                        <div className="font-sans min-w-20 text-start transition-all  pt-2 pb-4  text-white  text-break leading-8 flex flex-col items-center gap-4" > 
-                            {/* <Suspense fallback={<p>Loading</p>}>
-                                <Narration url={'http://localhost:5000/api/data/narration'}/>
-                            </Suspense> */}
-                             <div className="mt-std  mx-4 bg-neutral-300 w-3/4 h-36 loading rounded-md"> </div>
-                             <div className="mt-std  mx-4 bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>
+                <Suspense fallback={<div className="mt-std  mx-4 bg-neutral-300 w-3/4 h-36 loading rounded-md"> </div>}>
+                    <Narration url={'http://localhost:5000/api/data/narration'}/>
+                </Suspense>  
 
-                            {/* <Suspense fallback={<div className="mt-std w-full " style={{aspectRatio:3/4,background:theme.light}}></div>}>
-                                <SuspenseImg theme={theme} src={image_src}/>
-                            </Suspense> */}
-                             {
-                                story_data.isCharAvailable ? "" :
-                                <div id={'optionNode'} className="mt-std flex cursor-pointer gap-3   flex flex-col rounded-lg py-2 w-3/4" style={{placeItems:'center',aspectRatio:4/3}}>   
-                                      
-                                    {/* <Suspense fallback={<p>Loading Options</p>}>
-                                        <Options url={'http://localhost:5000/api/data/option'}/>
-                                    </Suspense> */}
-                                    <div className=" mx-4 bg-neutral-300 w-3/4 h-8 loading rounded-md"> </div>
-                                </div> 
-                            } 
-                        </div>
-                       
-                        
-                </div>
+                <Suspense fallback={<div className="mt-std bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>}>
+                    <SuspenseImg theme={theme} src={image_src}/>
+                </Suspense>
+                <div id={'optionNode'} className="mt-std flex cursor-pointer gap-3   flex flex-col rounded-lg py-2 w-full" style={{placeItems:'center',aspectRatio:4/3}}>   
+                    <Suspense fallback={<p>Loading Options</p>}>
+                        <Options url={'http://localhost:5000/api/data/option'}/>
+                    </Suspense>
+                </div>       
+            </div>
         </article>
     );
 }
