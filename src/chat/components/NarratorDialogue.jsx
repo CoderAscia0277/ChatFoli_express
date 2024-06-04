@@ -126,27 +126,20 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
                             {/* <Suspense fallback={<p>Loading</p>}>
                                 <Narration url={'http://localhost:5000/api/data/narration'}/>
                             </Suspense> */}
-                             <p className="mt-std  mx-4 pulse" style={{background:'#FBF6F3AA'}}> Loading</p>
-                            <Suspense fallback={<div className="mt-std w-full " style={{aspectRatio:3/4,background:theme.light}}></div>}>
+                             <div className="mt-std  mx-4 bg-neutral-300 w-3/4 h-36 loading rounded-md"> </div>
+                             <div className="mt-std  mx-4 bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>
+
+                            {/* <Suspense fallback={<div className="mt-std w-full " style={{aspectRatio:3/4,background:theme.light}}></div>}>
                                 <SuspenseImg theme={theme} src={image_src}/>
-                            </Suspense>
+                            </Suspense> */}
                              {
                                 story_data.isCharAvailable ? "" :
                                 <div id={'optionNode'} className="mt-std flex cursor-pointer gap-3   flex flex-col rounded-lg py-2 w-3/4" style={{placeItems:'center',aspectRatio:4/3}}>   
-                                             {/* {
-                                    !story_data.isCharAvailable ?
-                                        story_data.options.map((option,index) => {
-                                            const option_text = option[`option_0${index + 1}`];
-                                            const option_key = option['key'];
-                                            return(
-                                                <div onClick={isOptionChosen ? () => {return;} : () => {option_selected(option_text,option_key); set_isOptionChosen(true)} } className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option_text}_${option_key}`} style={{lineHeight:'1rem'}}>{option_text}</div> 
-                                            );
-                                        })
-                                    : ''
-                                } */}
-                                    <Suspense fallback={<p>Loading Options</p>}>
+                                      
+                                    {/* <Suspense fallback={<p>Loading Options</p>}>
                                         <Options url={'http://localhost:5000/api/data/option'}/>
-                                    </Suspense>
+                                    </Suspense> */}
+                                    <div className=" mx-4 bg-neutral-300 w-3/4 h-8 loading rounded-md"> </div>
                                 </div> 
                             } 
                         </div>

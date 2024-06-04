@@ -41,6 +41,18 @@ body{
 .input_expandable{
   transition: ease-in-out 1s;
 }
+.loading {animation: loading_pulse 3s ease-in-out infinite;}
+@keyframes loading_pulse{
+  0%{
+    opacity: 1;
+  }
+  50%{
+    opacity: 0.3;
+  }
+  100%{
+    opacity: 1;
+  }
+}
 @keyframes input_expand{
   0%{
     width: 50%;
