@@ -5,7 +5,7 @@ const UserDialogue = ({theme = {},id = '',value = '',name='Traveler' , push_char
 
     return(
 
-        <article  className={`content mt-std  w-full  min-h-20 h-auto flex justify-center items-end flex-col`}>
+        <article  className={`content   w-full  min-h-20 h-auto flex justify-center items-end flex-col`}>
 
                     <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 relative bottom-5 ">
 

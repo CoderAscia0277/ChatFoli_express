@@ -1,11 +1,11 @@
-import { memo,useRef, Suspense} from "react";
-import Store from "../utils/ConfigureStore";
+import { memo, Suspense} from "react";
+// import Store from "../utils/ConfigureStore";
 import SuspenseImg from "./SuspenseImg";
 
 const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options = ["is the option the user can choose from"],theme = {},value = '',show_reply_notif = () => {return;},name = '', push_user_dialogue = () => {return;}}) => {
     
     // variables for user text input
-    let user_text = useRef('');
+    // let user_text = useRef('');
     // const [text_isFilled,setTextIsFilled] = useState(false);
 
 
@@ -47,30 +47,21 @@ const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options =
                         </div>
             
                         
-                        <div className="cursor-pointer gap-4 pt-2  mt-std flex flex-col  w-full" style={{placeItems:'center'}}>   
+                        <div className="cursor-pointer gap-4 pt-2   flex flex-col  w-full" style={{placeItems:'center'}}>   
                         
-                            {
+                            {   user_options ?
                                   user_options.map((option,index) => {
-                                    const option_text = option[`option_0${index + 1}`];
-                                    const option_key = option['key'];
+                                   
                                     return(
-                                        <div onClick={() => push_user_dialogue(option_text)} className={` w-max px-4 min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg leading-relaxed `} key={index}  >{option_text}</div> 
+                                        <div onClick={() => push_user_dialogue(option)} className={` w-max px-4 min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg leading-relaxed `} key={index}  >{option}</div> 
                                     );
                                 })
+                                : ''
                             }
                              
                         </div> 
                     </div>
-                    {/* <span id="nav" onClick={(e) => {
-                                            const scroll_elem = document.querySelector('#ScrollView'); 
-                                            const node = e.target;
-                                            node.parentNode.removeChild(node);
-                                            scroll_elem.scrollTop = scroll_elem.scrollHeight ;
-                                    ;}} 
-                                    
-                    className="pulse_btn  w-12 h-12 absolute bottom-5 z-10  border border-black rounded-full"></span>
-                            
-                             */}
+                 
                     
                     
         </article>

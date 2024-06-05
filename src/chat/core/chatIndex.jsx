@@ -1,13 +1,15 @@
-import { useState , useEffect , useRef, useMemo, Suspense, createContext, useContext} from "react";
+import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy } from "react";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
-import ChatHeader from "../components/ChatHeader";
-import NarratorDialogue from "../components/NarratorDialogue";
-import CharacterDialogue from "../components/CharacterDialogue";
-import UserDialogue from "../components/UserDialogue";
 
-let DialogueBlocks  = [];
+const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
+const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
+const UserDialogue = lazy(() => import("../components/UserDialogue"));
+const ChatHeader = lazy(() => import("../components/ChatHeader"));
+
+
+// let DialogueBlocks  = [];
 
 const UserContext = createContext();
 
@@ -23,9 +25,7 @@ const ChatApp = ({UserId}) => {
                             'Content-Type':'application/json'
                         },
                         body:JSON.stringify({'UserID':UserId})
-                    }).
-                        then(res => res.json()).
-                        then(data => caches[Id] = data).catch(err => new Error('Invalid User ID'));
+                    }).then(res => res.json()).then(data => caches[Id] = data).catch(err => new Error('Invalid User ID'));
                 }
                 if(caches[Id] instanceof Promise){
                     throw caches[Id];
@@ -46,19 +46,16 @@ const ChatIndex = () => {
 
     //UserContext from Backend server
     const user_context = useContext(UserContext);
+    const {theme,stored_progress} = user_context;
 
-    const [AvailableDialogue , setDialogueBlocks] = useState();
+    const [AvailableDialogue , setDialogueBlocks] = useState(stored_progress);
+
     let didMountRef = useRef(false);
 
 
     const [DialogueState ,setDialogueState] = useState(Store.getState().onBusy);
     Store.subscribe(() => setDialogueState(Store.getState().onBusy));
     
-
-    // const theme = {'dark':'rgba(23, 40, 61, 0.65)','light':'rgba(50, 71, 99, 0.65)'};
-    // const theme = {'dark':'rgb(23,23,23)','mid-dark':'rgb(36 36 36)','light':'rgb(38 38 38)'};
-    const theme = {'dark':'rgb(23 23 23)','light':'#FBF6F3'};
-
     const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
     
@@ -66,7 +63,7 @@ const ChatIndex = () => {
     const [isToReply , setIsToReply] = useState(false);
     let show_reply_notif = useRef(true);
   
-    const [message, set_message] = useState('');
+    // const [message, set_message] = useState('');
 
 
     useEffect(() => {
@@ -76,15 +73,14 @@ const ChatIndex = () => {
             didMountRef.current = true;
             // ScrollView.current.addEventListener('touchstart',touch_start);
             // ScrollView.current.addEventListener('touchmove',touch_move);
-            console.log(user_context);
+            // console.log(user_context);
             touch_start();
             touch_move();
-            
             // fetch('http://localhost:5000/api/data').then(
             //     res_json => res_json.json()
             //     ).then( data => { set_message(data.message)});
         }
-    },[]);
+    });
 
     let temp_anim = useRef('');
     let isTouch = useRef(false);
@@ -116,25 +112,25 @@ const ChatIndex = () => {
     let page_number = useRef(0);
 
    
-    const has_char_dialogue = (dialogue_array = 'is a collection of character responses',char_name = "represent the character's name",char_dialogue_key = "a key that determines what char response should be use",possible_options) => {
+    // const has_char_dialogue = (dialogue_array = 'is a collection of character responses',char_name = "represent the character's name",char_dialogue_key = "a key that determines what char response should be use",possible_options) => {
 
-        page_number.current += 1;
+    //     page_number.current += 1;
 
 
-        setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  user_options = {possible_options}  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
-            setDialogueBlocks(DialogueBlocks);
-        },100);
+    //     setTimeout(() => {
+    //         DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  user_options = {possible_options}  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
+    //         setDialogueBlocks(DialogueBlocks);
+    //     },100);
         
-    };
+    // };
 
-    const add_user_dialogue = (user_text) => {
-        DialogueBlocks = [...DialogueBlocks,<UserDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  key={DialogueBlocks.length} value={user_text}  push_character_dialogue={() => {return}} />];
-        setDialogueBlocks(DialogueBlocks);
-    }
+    // const add_user_dialogue = (user_text) => {
+    //     DialogueBlocks = [...DialogueBlocks,<UserDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  key={DialogueBlocks.length} value={user_text}  push_character_dialogue={() => {return}} />];
+    //     setDialogueBlocks(DialogueBlocks);
+    // }
 
 
-    const has_option_selected = (option_text,option_key) => {
+    const has_option_selected = (option_chosen) => {
         // console.log(option_text,option_key);
 
         page_number.current += 1;
@@ -143,8 +139,8 @@ const ChatIndex = () => {
 
 
         setTimeout(() => {
-            DialogueBlocks = [...DialogueBlocks,<NarratorDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key,user_options) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key,user_options)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current}  key={DialogueBlocks.length} />];
-            setDialogueBlocks(DialogueBlocks);
+            // DialogueBlocks = [...DialogueBlocks,<NarratorDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key,user_options) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key,user_options)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current}  key={DialogueBlocks.length} />];
+            setDialogueBlocks('');
         },100);
 
 
@@ -175,16 +171,24 @@ const ChatIndex = () => {
 
         
     }
+    const ChatBubble = ({chat_dialogues}) => {
+        const chat =  chat_dialogues.map((item,index) => {
+            const keys = Object.keys(item)
+            // console.log( true : false);
+            return(
+                keys[0] === 'narration' ? <NarratorDialogue theme={theme} id={`dialogue_${index}`} key={index} value={item} option_selected={(option_chosen) => has_option_selected(option_chosen)} /> :
+                keys[0] === 'player' ?<UserDialogue theme={theme} id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
+                <CharacterDialogue theme={theme} id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
+            );
+        });
+        return chat;
+    };
 
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.light}} >
            <ChatHeader theme={theme} anim={header_anim}/> 
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
-               <NarratorDialogue theme={theme} id={`dialogue_${0}`}   done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar"/>
-               {
-                   AvailableDialogue
-               }
-             
+               <ChatBubble chat_dialogues={AvailableDialogue}/>
            </article>
            <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
                {
@@ -197,8 +201,8 @@ const ChatIndex = () => {
            } 
           
        </section>
-        
     )
+    // )done={() => Store.dispatch(set_onBusy(false))} option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} target="nar"
 }
 
 export default ChatApp;
