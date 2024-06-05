@@ -1,4 +1,4 @@
-import { useState , useEffect , useRef, useMemo, Suspense} from "react";
+import { useState , useEffect , useRef, useMemo, Suspense, createContext, useContext} from "react";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import { set_onBusy } from "../utils/ConfigureStore";
@@ -8,7 +8,44 @@ import CharacterDialogue from "../components/CharacterDialogue";
 import UserDialogue from "../components/UserDialogue";
 
 let DialogueBlocks  = [];
+
+const UserContext = createContext();
+
+const ChatApp = ({UserId}) => {
+    const fetch_data = useMemo(() => {
+        return{
+            caches:{},
+            read(Id){
+                if(!caches[Id]){
+                    caches[Id] = fetch('http://localhost:5000/autheticate-user',{
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json'
+                        },
+                        body:JSON.stringify({'UserID':UserId})
+                    }).
+                        then(res => res.json()).
+                        then(data => caches[Id] = data).catch(err => new Error('Invalid User ID'));
+                }
+                if(caches[Id] instanceof Promise){
+                    throw caches[Id];
+                }
+                return caches[Id];
+            }
+        }
+    },[UserId]);
+
+    return(
+        <UserContext.Provider value={fetch_data.read(UserId)}>
+            <ChatIndex/>
+        </UserContext.Provider>
+    );
+}
+
 const ChatIndex = () => {
+
+    //UserContext from Backend server
+    const user_context = useContext(UserContext);
 
     const [AvailableDialogue , setDialogueBlocks] = useState();
     let didMountRef = useRef(false);
@@ -28,21 +65,8 @@ const ChatIndex = () => {
     //Reply Panel variables
     const [isToReply , setIsToReply] = useState(false);
     let show_reply_notif = useRef(true);
-    // const ReplyPanel = useRef(null);
-    // const ScrollView = document.querySelector('#ScrollView');
-
-    // const hiRef = useRef(null);
-    // const {data} = useQuery({
-    //     queryKey:['apiData'],
-    //     queryFn:() => fetch('http://localhost:5000/api/data').then(
-    //         res => res.json()
-    //     )
-    //  });
-
-
-   
+  
     const [message, set_message] = useState('');
-
 
 
     useEffect(() => {
@@ -52,7 +76,7 @@ const ChatIndex = () => {
             didMountRef.current = true;
             // ScrollView.current.addEventListener('touchstart',touch_start);
             // ScrollView.current.addEventListener('touchmove',touch_move);
-            
+            console.log(user_context);
             touch_start();
             touch_move();
             
@@ -91,28 +115,12 @@ const ChatIndex = () => {
 
     let page_number = useRef(0);
 
-    // const remove_dialogue_from_parent = (id ,target) => {
-  
-    //     //This block filter out the invisible components e.g ["",""]
-     
-    //     page_number.current = target === 'nar' && page_number.current > 0 ? page_number.current - 1 : page_number.current;
-
-    //     DialogueBlocks = DialogueBlocks.filter((block) => {
-    //         return `dialogue_${block.key}` !== id;
-    //     });
-     
-    //     //Updates the available dialogue blocks to display
-    //     setDialogueBlocks(DialogueBlocks);
-    //     console.log("remove_dialogue_from_parent",id);
-        
-    // }
    
     const has_char_dialogue = (dialogue_array = 'is a collection of character responses',char_name = "represent the character's name",char_dialogue_key = "a key that determines what char response should be use",possible_options) => {
-        // console.log(dialogue_array , char_name, char_dialogue_key);  
-        // console.log(dialogue_array[char_name]);
+
         page_number.current += 1;
 
-        // Store.dispatch(set_onBusy(true));
+
         setTimeout(() => {
             DialogueBlocks = [...DialogueBlocks,<CharacterDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`}  user_options = {possible_options}  key={DialogueBlocks.length} value={dialogue_array[char_name][char_dialogue_key]} name={char_name} push_user_dialogue = {(text) => add_user_dialogue(text)} />];
             setDialogueBlocks(DialogueBlocks);
@@ -133,8 +141,6 @@ const ChatIndex = () => {
 
         Store.dispatch(set_onBusy(true));
 
-        // DialogueBlocks = [...DialogueBlocks,<Dialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} remove={(id,target) => remove_dialogue_from_parent(id,target)}  value={option_text} target="user" chapter_progress={option_key} key={DialogueBlocks.length} />];
-        // setDialogueBlocks(DialogueBlocks);
 
         setTimeout(() => {
             DialogueBlocks = [...DialogueBlocks,<NarratorDialogue theme={theme} id={`dialogue_${DialogueBlocks.length}`} char_dialogue = {(dialogue_array,char_name,char_dialogue_key,user_options) => has_char_dialogue(dialogue_array,char_name,char_dialogue_key,user_options)}  done={() => Store.dispatch(set_onBusy(false))}  option_selected ={(option_text,option_key) => has_option_selected(option_text,option_key)} chapter_progress={option_key} page_number={page_number.current}  key={DialogueBlocks.length} />];
@@ -145,11 +151,8 @@ const ChatIndex = () => {
 
     }
 
-    // style={{background:'url(./images/classroom_bg.jpg) center/cover no-repeat'}}
 
     const ReplyNotify = () =>{
-
-        // const show_checkbox = () => show_reply_notif.current = !show_reply_notif.current;
 
         return(
             <article className="w-3/4 border border-black absolute top-20 p-4 flex flex-col gap-2 rounded-lg justify-start items-start " style={{aspectRatio:4/3,background:theme.light}}>
@@ -198,4 +201,4 @@ const ChatIndex = () => {
     )
 }
 
-export default ChatIndex;
+export default ChatApp;

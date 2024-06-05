@@ -134,7 +134,7 @@ const NarratorDialogue = ({theme = {}, id = '',image_src = '/images/classroom_bg
                 </Suspense>  
 
                 <Suspense fallback={<div className="mt-std bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>}>
-                    <SuspenseImg theme={theme} src={image_src}/>
+                    <SuspenseImg theme={theme} src={'http://localhost:5000/images/image_01.png'}/>
                 </Suspense>
                 <div id={'optionNode'} className="mt-std flex cursor-pointer gap-3   flex flex-col rounded-lg py-2 w-full" style={{placeItems:'center',aspectRatio:4/3}}>   
                     <Suspense fallback={<p>Loading Options</p>}>
