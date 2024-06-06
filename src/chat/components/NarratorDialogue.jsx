@@ -1,18 +1,21 @@
-import {Suspense, useEffect, useRef, useState} from "react";
+import React ,{Suspense, useEffect, useRef, useState} from "react";
 // import Store from "../utils/ConfigureStore";
+// import { set_isOption } from "../utils/ConfigureStore";
 import SuspenseImg from "./SuspenseImg";
 // import { fetch_data } from "../utils/FetchData";
 
-const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '/images/classroom_bg.jpg' , done = () => {return;}, option_selected = () => {return;} , page_number = 0, chapter_progress = 0, char_dialogue = () => {return;}}) =>{
+const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '/images/classroom_bg.jpg' , option_selected = () => {return;} }) =>{
 
     const isLoaded = useRef(false);
 
     const {narration,img_src,qstn_optn} = value;
 
     // let char_observer = useRef(null);
-    const [isOptionChosen,set_isOptionChosen] = useState(false);
+    // let isOptionChosen = useRef(false);
 
-    // const last_component = useRef(null);
+    const [isOptionChosen, setOption] = useState(false);
+
+    // Store.subscribe(() => setOption(Store.getState().isOptionChosen));
     // const story_data = useMemo(() => {
     //     const story = Store.getState().story;
     //     const current_narration_progress = story[0][page_number][chapter_progress ? chapter_progress : 'init']; 
@@ -52,7 +55,7 @@ const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '
         }else{
             // document.querySelector('#ScrollView').addEventListener('touchmove',isMoving);
             isLoaded.current = true;
-            done();
+            console.log('is rendered' , id)
             // console.log('loaded',isLoaded.current);
             //add component observer
             // generate_char_dialogue();
@@ -65,7 +68,6 @@ const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '
         }
 
     });
-
     // useEffect(() => {
     //     const optionNode = document.querySelector('#optionNode');
     //         option_observer.current = new IntersectionObserver((items) => {
@@ -107,7 +109,7 @@ const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '
                     // const option_text = option[`option_0${index + 1}`];
                     // const option_key = option['key'];
                     return(
-                        <div onClick={isOptionChosen ? () => {return;} : () => {option_selected(option); set_isOptionChosen(true)} } className={` w-max min-w-52  h-12 hover:cursor-pointer font-medium text-black border border-black hover:scale-105 flex flex-row items-center justify-center rounded-lg `} key={index} id={`${option}`} style={{lineHeight:'1rem'}}>{option}</div> 
+                        <div onClick={isOptionChosen ? () => {return;} : () => {setOption(true); option_selected(option); } } className={` w-max min-w-52  h-12 hover:cursor-pointer font-small text-xl text-black hover:scale-105 flex flex-row items-center justify-center `} key={index} id={`${option}`} style={{lineHeight:'1rem'}}>{option}</div> 
                     );
                 })
             }
@@ -127,14 +129,11 @@ const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '
     //         </>
     //     )
     // }
-
+    
     return(
         <article className={`content  w-auto  min-h-20 h-auto flex justify-center`}>
             <div className="dialogue h-full flex flex-col w-full ">
                         
-                {/* <Suspense fallback={<div className="mt-std  mx-4 bg-neutral-300 w-3/4 h-36 loading rounded-md"> </div>}>
-                   
-                </Suspense>   */}
                  <Narration value={narration}/>
 
                 <Suspense fallback={<div className="mt-std bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>}>
@@ -150,4 +149,4 @@ const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '
         </article>
     );
 }
-export default NarratorDialogue;
+export default React.memo(NarratorDialogue);
