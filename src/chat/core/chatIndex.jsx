@@ -80,7 +80,6 @@ const ChatIndex = () => {
 
             // Set the Chat dialogues based on the current available logs from the server
             
-
             touch_start();
             touch_move();
             // fetch('http://localhost:5000/api/data').then(
@@ -119,13 +118,6 @@ const ChatIndex = () => {
 
     const has_option_selected = useCallback((option_chosen) => {
       
-        const create_narration = (data) => {
-            // DialogueBlocks = 
-            // console.log(AvailableDialogue);
-            setDialogueBlocks([...AvailableDialogue,data]);
-            setDialogueState(false);
-        }
-
         console.log('Fetching : ',option_chosen);
         setDialogueState(true);
         fetch('http://localhost:5000/get_responder',{method:'POST',
@@ -133,23 +125,22 @@ const ChatIndex = () => {
                     'Content-Type':'application/json'
             },body:JSON.stringify({'content':option_chosen})
             }).then(res => res.json()).then(data => {
-                const keys = Object.keys(data);
-
-                switch(keys[0]){
-                    case 'narration':
-                        console.log('narrator');
-                        create_narration(data);
-                        break
-                    default:
-                        break
-                }
+                setDialogueBlocks([...AvailableDialogue,data]);
+                setDialogueState(false);
             })
                 .catch(err => new Error(err, ' Invalid request'))
                     
     },[AvailableDialogue]);
-    const isExisting = useRef(false);
 
-    useEffect(() => {
+
+    // hahahah sa wakas napagana ko na ung auto add ng chat dialogues ng hindi nag rerender ulit ung mga previous dialogues
+    // > It was kinda hard , so ito ang nangayari , sa unang lunch gagana ung second useEffect na may parameters ng available dialogues
+    // > then mag gegenerate ng bagong component ung useEffect according sa data na currently available sa AvailableDialogues
+    // > Once na matapos ang mapping ng components is lalagay ito sa setChatDialogues para mairender
+    // > Everytime na may mabago sa AvailableDialogues gagana iton function na contniously nagegenerate ng components, but since nilalagay natin ung mapping output sa SET STATE na reretain nitop ung previous data at and nirerender lang ay yung new components, which solves the rerendering 
+    // issue sa mga dialogue components
+
+    useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
 
         const dialogues = AvailableDialogue;
             const chat =  dialogues.map((item,index) => {
@@ -172,8 +163,6 @@ const ChatIndex = () => {
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.light}} >
            <ChatHeader theme={theme} anim={header_anim}/> 
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
-               {/* { useMemo(() =>  <ChatBubble dialogues={AvailableDialogue}/>, [AvailableDialogue])}
-                */}
                 {ChatDialogues}
            </article>
            <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
