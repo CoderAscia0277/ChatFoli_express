@@ -1,8 +1,8 @@
-import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy,memo, useCallback } from "react";
+import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback } from "react";
 import React from "react";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
-import { set_onBusy } from "../utils/ConfigureStore";
+import {set_theme } from "../utils/ConfigureStore";
 
 const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
 const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
@@ -10,7 +10,7 @@ const UserDialogue = lazy(() => import("../components/UserDialogue"));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
-let DialogueBlocks  = [];
+// let DialogueBlocks  = [];
 
 const UserContext = createContext();
 
@@ -48,6 +48,7 @@ const ChatIndex = () => {
     //UserContext from Backend server
     const user_context = useContext(UserContext);
     const {theme,stored_progress} = user_context;
+    Store.dispatch(set_theme(theme));
 
     const [AvailableDialogue , setDialogueBlocks] = useState(stored_progress);
     const [ChatDialogues,SetChatDialogues] = useState(null);
@@ -63,7 +64,7 @@ const ChatIndex = () => {
     const ScrollView = useRef(null);
     
     //Reply Panel variables
-    const [isToReply , setIsToReply] = useState(false);
+    // const [isToReply , setIsToReply] = useState(false);
     // let show_reply_notif = useRef(true);
   
     // const [message, set_message] = useState('');
@@ -128,7 +129,7 @@ const ChatIndex = () => {
                 setDialogueBlocks([...AvailableDialogue,data]);
                 setDialogueState(false);
             })
-                .catch(err => new Error(err, ' Invalid request'))
+            .catch(err => new Error(err, ' Invalid request'))
                     
     },[AvailableDialogue]);
 
@@ -148,22 +149,21 @@ const ChatIndex = () => {
     
                 return(
                     keys[0] === 'narration' ? 
-                    <NarratorDialogue theme={theme} id={`dialogue_${index}`} key={index} value={item} option_selected={(option_chosen) => has_option_selected(option_chosen)} /> :
-                    keys[0] === 'player' ?<UserDialogue theme={theme} id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
-                    <CharacterDialogue theme={theme} id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
+                    <NarratorDialogue id={`dialogue_${index}`} key={index} value={item} option_selected={(option_chosen) => has_option_selected(option_chosen)} /> :
+                    keys[0] === 'player' ?<UserDialogue id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
+                    <CharacterDialogue id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
                 );
             });
         SetChatDialogues(chat);
 
-    },[AvailableDialogue]);
+    },[AvailableDialogue,has_option_selected]);
 
-    // let dialogues = useMemo(() => (AvailableDialogue),[]);
     
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.light}} >
-           <ChatHeader theme={theme} anim={header_anim}/> 
+           {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])} 
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
-                {ChatDialogues}
+                {useMemo(() => ChatDialogues,[ChatDialogues])}
            </article>
            <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
                {

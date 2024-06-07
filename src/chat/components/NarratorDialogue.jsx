@@ -1,13 +1,13 @@
-import React ,{Suspense, useEffect, useRef, useState} from "react";
-// import Store from "../utils/ConfigureStore";
+import React ,{Suspense, useEffect, useRef, useState , useMemo, useCallback} from "react";
+import Store from "../utils/ConfigureStore";
 // import { set_isOption } from "../utils/ConfigureStore";
 import SuspenseImg from "./SuspenseImg";
 // import { fetch_data } from "../utils/FetchData";
 
-const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '/images/classroom_bg.jpg' , option_selected = () => {return;} }) =>{
+const NarratorDialogue = ({value = [{},{},{}],  id = '', option_selected = () => {return;} }) =>{
 
     const isLoaded = useRef(false);
-
+    const theme = Store.getState().theme;
     const {narration,img_src,qstn_optn} = value;
 
     // let char_observer = useRef(null);
@@ -130,15 +130,16 @@ const NarratorDialogue = ({theme = {},value = [{},{},{}],  id = '',image_src = '
     //     )
     // }
     
+    
     return(
         <article className={`content  w-auto  min-h-20 h-auto flex justify-center`}>
             <div className="dialogue h-full flex flex-col w-full ">
                         
                  <Narration value={narration}/>
 
-                <Suspense fallback={<div className="mt-std bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>}>
-                    <SuspenseImg theme={theme} src={img_src}/>
-                </Suspense>
+                {useMemo(() => <Suspense fallback={<div className="mt-std bg-neutral-300 w-full loading rounded-md" style={{aspectRatio:3/4}}></div>}>
+                    <SuspenseImg  src={img_src} />
+                </Suspense>,[img_src])}
                 {
                     qstn_optn ? 
                     <div id={'optionNode'} className="mt-std flex cursor-pointer gap-3   flex flex-col rounded-lg py-2 w-full" style={{placeItems:'center',aspectRatio:4/3}}>   

@@ -1,10 +1,13 @@
 import { memo, useRef ,useEffect} from "react";
+import Store from "../utils/ConfigureStore";
 
 
-
-const ChatHeader = ({anim = '', theme}) => {
+const ChatHeader = ({anim = ''}) => {
    
     let didMountRef = useRef(false);
+
+    const theme = Store.getState().theme;
+    // Store.subscribe(() => set_Theme(Store.getState().theme));
 
     useEffect(() => {
         if(didMountRef.current){

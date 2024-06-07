@@ -1,7 +1,9 @@
 import { memo} from "react";
+import Store from "../utils/ConfigureStore";
 
-
-const UserDialogue = ({theme = {},id = '',value = '',name='Traveler' , push_character_dialogue = () => {return}}) => {
+const UserDialogue = ({id = '',value = '',name='Traveler'}) => {
+    
+    const theme = Store.getState().theme;
 
     return(
 

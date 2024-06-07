@@ -1,8 +1,8 @@
 import { memo, Suspense} from "react";
-// import Store from "../utils/ConfigureStore";
+import Store from "../utils/ConfigureStore";
 import SuspenseImg from "./SuspenseImg";
 
-const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options = ["is the option the user can choose from"],theme = {},value = '',show_reply_notif = () => {return;},name = '', push_user_dialogue = () => {return;}}) => {
+const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options = ["is the option the user can choose from"],value = '',show_reply_notif = () => {return;},name = '', push_user_dialogue = () => {return;}}) => {
     
     // variables for user text input
     // let user_text = useRef('');
@@ -16,12 +16,13 @@ const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options =
     //     const char_dialogue_available = story[0][page_number]['hasCharacterDialogue'];
     //     return({'story':story,'narr_prog':current_narration_progress,'options':current_available_options,'isCharAvailable':char_dialogue_available});
     // },[]);
+    const theme = Store.getState().theme;
 
     return(
 
         <article  className={`content mt-std w-auto  min-h-20 h-auto flex justify-center flex-col`}>
                     <Suspense fallback={<div className="w-full " style={{aspectRatio:1/1,background:theme.dark}}></div>}>
-                                <SuspenseImg icon={true} theme={theme} src={image_src}/>
+                                <SuspenseImg icon={true}  src={image_src}/>
                     </Suspense>
                     <div className=" px-4 justify-start items-start h-max flex flex-col gap-2 relative bottom-5 ">
 
