@@ -1,13 +1,12 @@
-import React ,{Suspense, useEffect, useRef, useState , useMemo, useCallback} from "react";
-import Store from "../utils/ConfigureStore";
-// import { set_isOption } from "../utils/ConfigureStore";
+import React ,{Suspense, useEffect, useRef, useState , useMemo} from "react";
+
+
 import SuspenseImg from "./SuspenseImg";
 // import { fetch_data } from "../utils/FetchData";
 
 const NarratorDialogue = ({value = [{},{},{}],  id = '', option_selected = () => {return;} }) =>{
 
     const isLoaded = useRef(false);
-    const theme = Store.getState().theme;
     const {narration,img_src,qstn_optn} = value;
 
     // let char_observer = useRef(null);

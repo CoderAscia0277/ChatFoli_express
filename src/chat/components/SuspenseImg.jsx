@@ -38,11 +38,11 @@ const SuspenseImg = ({src,icon = false}) => {
 
     return (
         <>
-            {useMemo(() => !icon ? 
-                <img src={url} className="w-full mt-std" style={{aspectRatio:3/4,background:theme.light}}></img>
+            { !icon ? 
+                <img src={url} alt='none' className="w-full mt-std" style={{aspectRatio:3/4,background:theme.light}}></img>
                  :
                 <img src={url} alt="none" className="w-full relative top-10" style={{aspectRatio:1/1}} />
-            ,[url])
+            
             }
         </>
         
