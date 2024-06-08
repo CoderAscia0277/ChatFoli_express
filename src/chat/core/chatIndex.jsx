@@ -16,6 +16,7 @@ const UserContext = createContext();
 const ChatApp = ({UserId}) => {
 
     const fetch_data = useMemo(() => {
+        console.log('rendered');
         return{
             caches:{},
             read(Id){
@@ -65,13 +66,19 @@ const ChatIndex = () => {
     // This block creates a session environment / web socket for the client
     // This is used to create a bidirectional and maintainable connection between the LLM and the client
     const socket = useMemo(() => wss.server,[]);
-    socket.onopen = () => {
-        console.log('is connected');
-    }
     socket.onmessage = (event) =>{
         const data = JSON.parse(event.data);
 
-        console.log(data.content);
+        console.log(data.logs);
+
+        switch(data.type){
+            case 'llm_request': //Runs when the user sent a request into the LLM
+                setDialogueBlocks([...AvailableDialogue,data.content]);
+                setDialogueState(false);
+                break;
+            default:
+                break;
+        }
     }
 
     useEffect(() => {
@@ -121,22 +128,14 @@ const ChatIndex = () => {
 
     const has_option_selected = useCallback((option_chosen) => {
 
+        setDialogueState(true);
+
         //convert the data into JSON then sent to the web socket
-        socket.send(JSON.stringify({'content':"Hello there!"})) 
+        socket.send(JSON.stringify({'content':"Hello there!",'type':"llm_request",'body':option_chosen})) 
 
         console.log('Fetching : ',option_chosen);
-        setDialogueState(true);
-        fetch('http://localhost:5000/get_responder',{method:'POST',
-            headers:{
-                    'Content-Type':'application/json'
-            },body:JSON.stringify({'content':option_chosen})
-            }).then(res => res.json()).then(data => {
-                setDialogueBlocks([...AvailableDialogue,data]);
-                setDialogueState(false);
-            })
-            .catch(err => new Error(err, ' Invalid request'))
                     
-    },[AvailableDialogue]);
+    },[socket]);
 
 
     // hahahah sa wakas napagana ko na ung auto add ng chat dialogues ng hindi nag rerender ulit ung mga previous dialogues

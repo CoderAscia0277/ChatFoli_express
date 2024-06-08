@@ -10,7 +10,7 @@ const AuthenticationPanel = lazy(()=>import('./chat/components/AuthenticationPan
 const ChatApp = lazy(()=>import('./chat/core/chatIndex'));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
+const UserId= 123789; 
 const router = createBrowserRouter([
   {
     path:'/',
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     element:<div>Hello World !</div>
   },{
     path:'/chat',
-    element:<Suspense fallback={<p>Loading...</p>}><ChatApp UserId={123789}/></Suspense>
+    element:<Suspense fallback={<p>Loading...</p>}><ChatApp UserId={UserId}/></Suspense>
   }]
 );
 root.render(
