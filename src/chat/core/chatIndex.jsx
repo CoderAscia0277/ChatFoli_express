@@ -131,7 +131,7 @@ const ChatIndex = () => {
         setDialogueState(true);
 
         //convert the data into JSON then sent to the web socket
-        socket.send(JSON.stringify({'content':"Hello there!",'type':"llm_request",'body':option_chosen})) 
+        socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})) 
 
         console.log('Fetching : ',option_chosen);
                     
