@@ -3,6 +3,7 @@ import React from "react";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import {set_theme } from "../utils/ConfigureStore";
+import {wss} from "../utils/WebSocketProvider";
 
 const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
 const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
@@ -10,11 +11,10 @@ const UserDialogue = lazy(() => import("../components/UserDialogue"));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
-// let DialogueBlocks  = [];
-
 const UserContext = createContext();
 
 const ChatApp = ({UserId}) => {
+
     const fetch_data = useMemo(() => {
         return{
             caches:{},
@@ -35,6 +35,7 @@ const ChatApp = ({UserId}) => {
             }
         }
     },[UserId]);
+
 
     return(
         <UserContext.Provider value={fetch_data.read(UserId)}>
@@ -58,17 +59,20 @@ const ChatIndex = () => {
 
     const [DialogueState ,setDialogueState] = useState(false);
 
-    // Store.subscribe(() => setDialogueState(Store.getState().onBusy));
-    
     const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
-    
-    //Reply Panel variables
-    // const [isToReply , setIsToReply] = useState(false);
-    // let show_reply_notif = useRef(true);
-  
-    // const [message, set_message] = useState('');
 
+    // This block creates a session environment / web socket for the client
+    // This is used to create a bidirectional and maintainable connection between the LLM and the client
+    const socket = useMemo(() => wss.server,[]);
+    socket.onopen = () => {
+        console.log('is connected');
+    }
+    socket.onmessage = (event) =>{
+        const data = JSON.parse(event.data);
+
+        console.log(data.content);
+    }
 
     useEffect(() => {
         if(didMountRef.current){
@@ -83,12 +87,11 @@ const ChatIndex = () => {
             
             touch_start();
             touch_move();
-            // fetch('http://localhost:5000/api/data').then(
-            //     res_json => res_json.json()
-            //     ).then( data => { set_message(data.message)});
         }
+
     });
 
+    
     let temp_anim = useRef('');
     let isTouch = useRef(false);
     let isMoving = useRef(false);
@@ -116,9 +119,11 @@ const ChatIndex = () => {
         }
     }
 
-
     const has_option_selected = useCallback((option_chosen) => {
-      
+
+        //convert the data into JSON then sent to the web socket
+        socket.send(JSON.stringify({'content':"Hello there!"})) 
+
         console.log('Fetching : ',option_chosen);
         setDialogueState(true);
         fetch('http://localhost:5000/get_responder',{method:'POST',
