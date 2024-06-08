@@ -34,9 +34,9 @@ const CharacterDialogue = ({image_src = '/images/terakomori.jpg' ,user_options =
                         </span>
 
                         {/* Display character message */}
-                        <div className="char_par pointer-events-none font-sans min-w-20 text-start px-4 py-4 gap-2 text-black text-break leading-8 border border-black rounded-xl font-medium flex flex-col items-end justify-end" style={{background:theme.light}}>
+                        <div className="char_par pointer-events-none font-sans w-full text-start px-4 py-4 gap-2 text-black text-break leading-8 border border-black rounded-xl font-medium flex flex-col " style={{background:theme.light}}>
                             {value} 
-                            <div className=" dialogue hidden  flex-row opacity-75  gap-4 justify-center items-center  rounded-xl ">
+                            <div className=" dialogue hidden  flex-row opacity-75 w-full gap-4 justify-end items-center  rounded-xl ">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="text-black hover:scale-110 cursor-pointer bi bi-arrow-clockwise  w-5 h-5 " viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
                                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
