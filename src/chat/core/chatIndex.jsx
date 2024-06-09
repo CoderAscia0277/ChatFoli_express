@@ -161,8 +161,9 @@ const ChatIndex = () => {
                 // );
 
                 return(
-                    keys[0] = 'narration' ?
-                       <Monologue key={index}/> : ''
+                    keys[0] === 'narration' ?
+                       <Monologue key={index} value={item.narration}/> : keys[0] === 'player' ? '' :
+                       <Character key={index} name={keys[0]} value={item[keys[0]]} img_src={item.img_src}/>
 
                 );
             });
@@ -174,7 +175,7 @@ const ChatIndex = () => {
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
            {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])} 
-           <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
+           <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll gap-4" style={{scrollBehavior:'smooth'}}>
                 {useMemo(() => ChatDialogues,[ChatDialogues])}
            </article>
            <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >

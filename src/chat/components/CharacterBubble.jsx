@@ -1,18 +1,18 @@
 import React, { Suspense } from "react"
 import SuspenseImg from "./SuspenseImg";
 
-const Character = ({name = 'Yuuki',value = 'none' }) => {
-    value = "Good evening Master! It's so nice to see you. nya! I've been playing with my new ball of yaarn all day, nya."
+const Character = ({name = 'Yuuki',value = 'none' , img_src = 'none'}) => {
+    // value = "Good evening Master! It's so nice to see you. nya! I've been playing with my new ball of yaarn all day, nya."
     return(
-        <section className="content w-full  h-max min-h-40 flex flex-col px-4">
+        <section className="content w-full  h-max min-h-40 flex flex-col px-4 pt-4">
             <article className="w-full  flex flex-row gap-4">
                 <Suspense fallback = {<div className="w-16 h-16 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
-                    <SuspenseImg src='http://localhost:5000/images/image_01.png' icon={true}/>
+                    <SuspenseImg src={img_src} icon={true}/>
                 </Suspense>
                 <div className=" text-white w-3/4  flex flex-col">
                     <span className="font-medium text-xl  ">{name}</span>
                     <span className="leading-loose pt-4 ">{value}</span>
-                    <span className="flex flex-row w-full  text-neutral-500 pt-4 gap-4">
+                    <span className="dialogue hidden flex-row w-full  text-neutral-500 pt-4 gap-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-clockwise w-5 h-5" viewBox="0 0 16 16">
                             <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
                             <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
