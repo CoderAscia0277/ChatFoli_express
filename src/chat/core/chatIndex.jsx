@@ -5,7 +5,8 @@ import Store from "../utils/ConfigureStore";
 import {set_theme } from "../utils/ConfigureStore";
 import {wss} from "../utils/WebSocketProvider";
 // import { Monologue } from "../components/MonologueBubble";
-const Character = lazy(() => import("../components/CharacterBubble"))
+const Character = lazy(() => import("../components/CharacterBubble"));
+const Monologue = lazy(() => import('../components/Monologue'));
 // const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
 // const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
 // const UserDialogue = lazy(() => import("../components/UserDialogue"));
@@ -161,7 +162,7 @@ const ChatIndex = () => {
 
                 return(
                     keys[0] = 'narration' ?
-                        <Character key={index}/> : ''
+                       <Monologue key={index}/> : ''
 
                 );
             });
