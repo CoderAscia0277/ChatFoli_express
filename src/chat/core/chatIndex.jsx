@@ -55,6 +55,8 @@ const ChatIndex = () => {
     Store.dispatch(set_theme(theme));
 
     const [AvailableDialogue , setDialogueBlocks] = useState(stored_progress);
+    const [options,setOptions] = useState(null);
+   
     const [ChatDialogues,SetChatDialogues] = useState(null);
 
     let didMountRef = useRef(false);
@@ -147,6 +149,13 @@ const ChatIndex = () => {
     // > Everytime na may mabago sa AvailableDialogues gagana iton function na contniously nagegenerate ng components, but since nilalagay natin ung mapping output sa SET STATE na reretain nitop ung previous data at and nirerender lang ay yung new components, which solves the rerendering 
     // issue sa mga dialogue components
 
+    useEffect(() => {
+        // const temp = ChatDialogues;
+        const container =  document.querySelector('#ScrollView');
+        container.scrollTop = container.scrollHeight;
+
+    },[ChatDialogues]);
+
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
 
         const dialogues = AvailableDialogue;
@@ -159,7 +168,9 @@ const ChatIndex = () => {
                 //     keys[0] === 'player' ?<UserDialogue id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
                 //     <CharacterDialogue id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
                 // );
-
+                if(item.optns && dialogues.length === index + 1){
+                    setOptions(item.optns);
+                }
                 return(
                     keys[0] === 'narration' ?
                        <Monologue key={index} value={item.narration}/> : keys[0] === 'player' ? '' :
@@ -172,20 +183,38 @@ const ChatIndex = () => {
     },[AvailableDialogue,has_option_selected]);
 
     
+    const Options = ({optns}) => {
+        return(
+            <article className="w-full h-16  grid grid-flow-col justify-start items-center px-4 gap-4 overflow-x-scroll  absolute bottom-0" style={{background:theme.dark}}>
+          
+                 { optns ? 
+                    optns.map((item,index) => {
+                        return(
+                            <span className="text-white px-4 flex py-2 border rounded-xl h-10 w-max" key={index}>{item}</span>
+                        )
+                    }) : ''
+                }
+
+               {/* </div> */}
+  
+            </article>
+        );
+    };
+    
     return(
         <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
            {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])} 
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
-                {useMemo(() => ChatDialogues,[ChatDialogues])}
+                <div className="w-full h-max flex flex-col gap-6">
+                    {useMemo(() => ChatDialogues,[ChatDialogues])}
+                </div>
            </article>
-           <article className=" absolute flex justify-center items-center z-10 min-h-14 bottom-0 bg-transparent w-full pointer-events-none"  >
+           <article className=" absolute flex justify-center items-center z-10 min-h-14  bottom-0 bg-transparent w-full pointer-events-none"  >
                {
-                   !DialogueState ? " " : <LoadingBubble theme={theme}/>
+                   !DialogueState ?  '' : <LoadingBubble/>
                }
            </article>
-           
-             
-          
+           {useMemo(() => <Options optns={options}/>,[options])}
        </section>
     )
 }

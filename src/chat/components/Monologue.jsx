@@ -5,10 +5,10 @@ const Monologue = ({value='none'}) => {
 
     // value = "I guess I got carried away. It's already past midnight. I should really get some sleep."
     return(
-        <section className="content w-full  min-h-40 flex flex-col pr-4 pb-4" style={{border:'solid 1px white',borderLeft:0,borderRight:0}}>
-            <span className="text-white border relative py-1 px-2 w-max" style={{top:'-2vh',left:'4vh',background:theme.dark}}>Monologue</span>
+        <section className="content w-full  min-h-30 flex flex-col px-4 pb-4 " style={{border:'solid 1px white',borderLeft:0,borderRight:0}}>
+            <span className="text-white border relative py-1 px-2 w-max" style={{top:'-2vh',left:'2vh',background:theme.dark}}>View point</span>
             <div className="w-full  flex-grow flex flex-col items-end justify-center">
-                <div className=" w-3/4 text-white leading-loose">
+                <div className=" w-full text-white leading-loose">
                     <span>{value}</span>
                     <span className="dialogue hidden flex-row w-full  text-neutral-500 pt-4 gap-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-clockwise w-5 h-5" viewBox="0 0 16 16">

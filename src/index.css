@@ -20,7 +20,7 @@ body{
   animation: collapse_down 100ms ease-in-out forwards;
 }
 .container .content:last-child{
-  margin-bottom: 200px;
+  margin-bottom: 15vh;
 }
 .container .content:first-child{
   margin-top: 10vh;
