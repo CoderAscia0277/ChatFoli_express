@@ -22,6 +22,9 @@ body{
 .container .content:last-child{
   margin-bottom: 200px;
 }
+.container .content:first-child{
+  margin-top: 10vh;
+}
 .pulse{
   animation: pulse 1s ease-in-out infinite;
 }

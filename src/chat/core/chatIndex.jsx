@@ -4,10 +4,11 @@ import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import {set_theme } from "../utils/ConfigureStore";
 import {wss} from "../utils/WebSocketProvider";
-
-const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
-const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
-const UserDialogue = lazy(() => import("../components/UserDialogue"));
+// import { Monologue } from "../components/MonologueBubble";
+const Character = lazy(() => import("../components/CharacterBubble"))
+// const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
+// const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
+// const UserDialogue = lazy(() => import("../components/UserDialogue"));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
@@ -86,8 +87,8 @@ const ChatIndex = () => {
            
         }else{
             didMountRef.current = true;
-            // ScrollView.current.addEventListener('touchstart',touch_start);
-            // ScrollView.current.addEventListener('touchmove',touch_move);
+            ScrollView.current.addEventListener('touchstart',touch_start);
+            ScrollView.current.addEventListener('touchmove',touch_move);
             // console.log(user_context);
 
             // Set the Chat dialogues based on the current available logs from the server
@@ -151,11 +152,17 @@ const ChatIndex = () => {
             const chat =  dialogues.map((item,index) => {
                 const keys = Object.keys(item);
     
+                // return(
+                //     keys[0] === 'narration' ? 
+                //     <NarratorDialogue id={`dialogue_${index}`} key={index} value={item} option_selected={(option_chosen) => has_option_selected(option_chosen)} /> :
+                //     keys[0] === 'player' ?<UserDialogue id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
+                //     <CharacterDialogue id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
+                // );
+
                 return(
-                    keys[0] === 'narration' ? 
-                    <NarratorDialogue id={`dialogue_${index}`} key={index} value={item} option_selected={(option_chosen) => has_option_selected(option_chosen)} /> :
-                    keys[0] === 'player' ?<UserDialogue id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
-                    <CharacterDialogue id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
+                    keys[0] = 'narration' ?
+                        <Character key={index}/> : ''
+
                 );
             });
         SetChatDialogues(chat);
@@ -164,7 +171,7 @@ const ChatIndex = () => {
 
     
     return(
-        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.light}} >
+        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
            {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])} 
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll " style={{scrollBehavior:'smooth'}}>
                 {useMemo(() => ChatDialogues,[ChatDialogues])}
