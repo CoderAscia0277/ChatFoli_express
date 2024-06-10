@@ -65,16 +65,21 @@ const ChatIndex = () => {
 
     const [DialogueState ,setDialogueState] = useState(false);
 
-    const [header_anim,setHeaderAnim] = useState('');
+    // const [header_anim,setHeaderAnim] = useState('');
     const ScrollView = useRef(null);
 
     // This block creates a session environment / web socket for the client
     // This is used to create a bidirectional and maintainable connection between the LLM and the client
     const socket = useMemo(() => wss.server,[]);
     socket.onmessage = (event) =>{
-        const data = JSON.parse(event.data);
-
-        console.log(data.logs);
+        
+        const data = new Promise(() => {
+            try{
+                return(JSON.parse(event.data))
+            }catch{
+                return {'content':'invalid'};
+            }
+        })
 
         switch(data.type){
             case 'llm_request': //Runs when the user sent a request into the LLM
@@ -91,45 +96,45 @@ const ChatIndex = () => {
            
         }else{
             didMountRef.current = true;
-            ScrollView.current.addEventListener('touchstart',touch_start);
-            ScrollView.current.addEventListener('touchmove',touch_move);
+            // ScrollView.current.addEventListener('touchstart',touch_start);
+            // ScrollView.current.addEventListener('touchmove',touch_move);
             // console.log(user_context);
 
             // Set the Chat dialogues based on the current available logs from the server
             
-            touch_start();
-            touch_move();
+            // touch_start();
+            // touch_move();
         }
 
     });
 
     
-    let temp_anim = useRef('');
-    let isTouch = useRef(false);
-    let isMoving = useRef(false);
+    // let temp_anim = useRef('');
+    // let isTouch = useRef(false);
+    // let isMoving = useRef(false);
 
-    const touch_start = () => {
-        isTouch.current = true;
-    }
+    // const touch_start = () => {
+    //     isTouch.current = true;
+    // }
 
-    const touch_move = () => {
-        if(isTouch.current && !isMoving.current){
-            isTouch.current = false;
-            isMoving.current = true;
-            temp_anim.current = 'collapse_down';
-            setHeaderAnim(temp_anim.current);
-            console.log('move');
+    // const touch_move = () => {
+    //     if(isTouch.current && !isMoving.current){
+    //         isTouch.current = false;
+    //         isMoving.current = true;
+    //         temp_anim.current = 'collapse_down';
+    //         setHeaderAnim(temp_anim.current);
+    //         console.log('move');
 
-            setTimeout(() => {
-                isMoving.current = false;
-                setHeaderAnim('collapse_up');
-                console.log('end');
-            },3000);
-        }
-        else{
-            return;
-        }
-    }
+    //         setTimeout(() => {
+    //             isMoving.current = false;
+    //             setHeaderAnim('collapse_up');
+    //             console.log('end');
+    //         },3000);
+    //     }
+    //     else{
+    //         return;
+    //     }
+    // }
 
     const has_option_selected = useCallback((option_chosen) => {
 
@@ -186,9 +191,9 @@ const ChatIndex = () => {
     
     const Options = ({optns}) => {
         return(
-            <article className="w-full h-max  px-4 pb-4 pt-1 flex flex-col absolute bottom-0 gap-4" >
-                <div className="w-full h-10 absolute bottom-20 left-0 pointer-events-none " style={{background:'linear-gradient(45deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0),rgba(23,23,23,0),rgba(23,23,23,0.5),rgb(23,23,23)'}}></div>
-                <div className="option_container grid grid-flow-col justify-start items-center gap-4 overflow-x-scroll px-4" >
+            <article className="w-full h-max pb-4 pt-2 flex flex-col absolute bottom-0" style={{background:'linear-gradient(180deg,rgba(23,23,23,0),rgba(23,23,23,0.5), rgba(23,23,23,0.95)'}} >
+                <div className="w-full h-14 absolute bottom-16  left-0 pointer-events-none " style={{background:'linear-gradient(45deg,rgb(23,23,23),rgba(23,23,23,0.1),rgba(23,23,23,0),rgba(23,23,23,0),rgba(23,23,23,0.5),rgb(23,23,23)'}}></div>
+                <div className="option_container grid grid-flow-col justify-start items-center gap-4 overflow-x-scroll px-4 py-4">
                 { optns ? 
                     optns.map((item,index) => {
                         return(
@@ -197,12 +202,15 @@ const ChatIndex = () => {
                     }) : ''
                 }
                 </div>
-                <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
-                    <input type='text' placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-8 h-8 text-neutral-400" viewBox="0 0 16 16">
-                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
-                    </svg>
+                <div className="w-full h-max px-4">
+                    <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
+                        <input type='text' placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-8 h-8 text-neutral-400" viewBox="0 0 16 16">
+                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+                        </svg>
+                    </div>
                 </div>
+                
                  
 
   
@@ -211,8 +219,9 @@ const ChatIndex = () => {
     };
     
     return(
-        <section className="lg:w-2/6 md:w-2/5 w-full lg:3/4 md:3/4 h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
-           {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])} 
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 xs:w-full h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
+           {/* {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])}  */}
+           <ChatHeader/>
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
                 <div className="w-full h-max flex flex-col gap-4">
                     {useMemo(() => ChatDialogues,[ChatDialogues])}

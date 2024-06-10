@@ -20,7 +20,7 @@ body{
   animation: collapse_down 100ms ease-in-out forwards;
 }
 .container .content:last-child{
-  margin-bottom: 15vh;
+  margin-bottom: 6rem;
 }
 .container .content:first-child{
   margin-top: 10vh;
@@ -34,10 +34,10 @@ body{
     }
 }
 .option_container .option:first-child{
-  margin-left: 25vw;
+  margin-left: 5.5rem;
 }
 .option_container .option:last-child{
-  margin-right: 25vw;
+  margin-right: 5.5rem;
 }
 .input_expandable:hover{
   animation: input_expand 100ms ease-in-out forwards;
