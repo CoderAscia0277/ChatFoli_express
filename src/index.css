@@ -20,8 +20,11 @@ body{
   animation: collapse_down 100ms ease-in-out forwards;
 }
 .container .content:last-child{
-  margin-bottom: 6rem;
+  margin-bottom: 10rem;
 }
+/* .container .monologue:last-child{
+  margin-bottom: 10rem;
+} */
 .container .content:first-child{
   margin-top: 10vh;
 }

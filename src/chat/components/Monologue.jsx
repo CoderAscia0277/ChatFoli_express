@@ -5,7 +5,7 @@ const Monologue = ({value='none'}) => {
 
     // value = "I guess I got carried away. It's already past midnight. I should really get some sleep."
     return(
-        <section className="content w-full  min-h-30 flex flex-row px-4 pb-4 " style={{border:'solid 1px white',borderLeft:0,borderRight:0,background:'rgba(255,255,255,0.03)'}}>
+        <section className="content w-full  min-h-40 flex flex-row px-4 pb-4 " style={{border:'solid 1px white',borderLeft:0,borderRight:0,background:'rgba(255,255,255,0.03)'}}>
             <span className="text-white border relative p-2 w-max h-max rounded-full" style={{top:'-3vh',left:'2vh',background:'rgb(30 30 30)'}}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-journals w-5 h-5" viewBox="0 0 16 16">
                     <path d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H3a2 2 0 0 1-2-2h1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1H1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2"/>

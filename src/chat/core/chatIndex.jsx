@@ -4,13 +4,9 @@ import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
 import {set_theme } from "../utils/ConfigureStore";
 import {wss} from "../utils/WebSocketProvider";
-// import { Monologue } from "../components/MonologueBubble";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const Monologue = lazy(() => import('../components/Monologue'));
 const User = lazy(() => import('../components/UserBubble'));
-// const NarratorDialogue = lazy(() => import("../components/NarratorDialogue"));
-// const CharacterDialogue = lazy(() => import("../components/CharacterDialogue"));
-// const UserDialogue = lazy(() => import("../components/UserDialogue"));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
@@ -19,7 +15,6 @@ const UserContext = createContext();
 const ChatApp = ({UserId}) => {
 
     const fetch_data = useMemo(() => {
-        console.log('rendered');
         return{
             caches:{},
             read(Id){
@@ -65,7 +60,7 @@ const ChatIndex = () => {
 
     const [DialogueState ,setDialogueState] = useState(false);
 
-    // const [header_anim,setHeaderAnim] = useState('');
+    const UserInputComponent = useRef(null);
     const ScrollView = useRef(null);
 
     // This block creates a session environment / web socket for the client
@@ -73,16 +68,17 @@ const ChatIndex = () => {
     const socket = useMemo(() => wss.server,[]);
     socket.onmessage = (event) =>{
         
-        const data = new Promise(() => {
-            try{
-                return(JSON.parse(event.data))
-            }catch{
-                return {'content':'invalid'};
-            }
-        })
+        let data;
+
+        try{
+            data = JSON.parse(event.data)
+        }catch(err){
+            data = {'type':null}
+        }
 
         switch(data.type){
             case 'llm_request': //Runs when the user sent a request into the LLM
+                console.log('runs')
                 setDialogueBlocks([...AvailableDialogue,data.content]);
                 setDialogueState(false);
                 break;
@@ -108,44 +104,21 @@ const ChatIndex = () => {
 
     });
 
-    
-    // let temp_anim = useRef('');
-    // let isTouch = useRef(false);
-    // let isMoving = useRef(false);
-
-    // const touch_start = () => {
-    //     isTouch.current = true;
-    // }
-
-    // const touch_move = () => {
-    //     if(isTouch.current && !isMoving.current){
-    //         isTouch.current = false;
-    //         isMoving.current = true;
-    //         temp_anim.current = 'collapse_down';
-    //         setHeaderAnim(temp_anim.current);
-    //         console.log('move');
-
-    //         setTimeout(() => {
-    //             isMoving.current = false;
-    //             setHeaderAnim('collapse_up');
-    //             console.log('end');
-    //         },3000);
-    //     }
-    //     else{
-    //         return;
-    //     }
-    // }
 
     const has_option_selected = useCallback((option_chosen) => {
 
         setDialogueState(true);
+        console.table(AvailableDialogue);
+        setDialogueBlocks([...AvailableDialogue,{'player':'Yuuta','value':option_chosen,'img_src':'image_01.png'}]) //Add new User Dialogue when option is pressed
 
         //convert the data into JSON then sent to the web socket
-        socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})) 
-
-        console.log('Fetching : ',option_chosen);
+        setTimeout(() => {
+            socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})); 
+            console.log('Fetching : ',option_chosen);
+        },1000);
+ 
                     
-    },[socket]);
+    },[socket,AvailableDialogue]);
 
 
     // hahahah sa wakas napagana ko na ung auto add ng chat dialogues ng hindi nag rerender ulit ung mga previous dialogues
@@ -159,7 +132,7 @@ const ChatIndex = () => {
         // const temp = ChatDialogues;
         const container =  document.querySelector('#ScrollView');
         container.scrollTop = container.scrollHeight;
-
+        UserInputComponent.current.focus(); // This line auto focus the input box whenever the chat updates
     },[ChatDialogues]);
 
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
@@ -168,26 +141,24 @@ const ChatIndex = () => {
             const chat =  dialogues.map((item,index) => {
                 const keys = Object.keys(item);
     
-                // return(
-                //     keys[0] === 'narration' ? 
-                //     <NarratorDialogue id={`dialogue_${index}`} key={index} value={item} option_selected={(option_chosen) => has_option_selected(option_chosen)} /> :
-                //     keys[0] === 'player' ?<UserDialogue id={`dialogue_${index}`}  key={index} value={item.player} name={item.name}  push_character_dialogue={() => {return}} />:
-                //     <CharacterDialogue id={`dialogue_${index}`} image_src={item.img_src} user_options = {item.options}  key={index} value={item.message} name={item.name}  />
-                // );
                 if(item.optns && dialogues.length === index + 1){
                     setOptions(item.optns);
                 }
                 return(
                     keys[0] === 'narration' ?
-                       <Monologue key={index} value={item.narration}/> : keys[0] === 'player' ? '' :
+                       <Monologue key={index} value={item.narration}/> : keys[0] === 'player' ? <User name={item[keys[0]]} key={index} value={item.value} img_src={item.img_src}/> :
                        <Character key={index} name={keys[0]} value={item[keys[0]]} img_src={item.img_src}/>
 
                 );
             });
         SetChatDialogues(chat);
 
-    },[AvailableDialogue,has_option_selected]);
+    },[AvailableDialogue]);
 
+    const submitText = useCallback(() => {
+        has_option_selected(UserInputComponent.current.value);
+        UserInputComponent.current.value = '';
+    },[has_option_selected,UserInputComponent]); 
     
     const Options = ({optns}) => {
         return(
@@ -197,23 +168,19 @@ const ChatIndex = () => {
                 { optns ? 
                     optns.map((item,index) => {
                         return(
-                            <span className="option text-white px-4 flex py-2 border rounded-xl h-10 w-max" key={index} style={{background:theme.dark}}>{item}</span>
+                            <span className="option text-white px-4 flex py-2 border rounded-xl h-10 w-max" onClick={() => has_option_selected(item)} key={index} style={{background:theme.dark}}>{item}</span>
                         )
                     }) : ''
                 }
                 </div>
                 <div className="w-full h-max px-4">
                     <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
-                        <input type='text' placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
+                        <input type='text' ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-8 h-8 text-neutral-400" viewBox="0 0 16 16">
                             <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
                         </svg>
                     </div>
-                </div>
-                
-                 
-
-  
+                </div>  
             </article>
         );
     };
@@ -225,14 +192,13 @@ const ChatIndex = () => {
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
                 <div className="w-full h-max flex flex-col gap-4">
                     {useMemo(() => ChatDialogues,[ChatDialogues])}
-                    <User name="Yuuta" value="Something I made up" img_src="image_01.png"/>
                 </div>
            </article>
-           <article className=" absolute flex justify-center items-center z-10 min-h-14  bottom-0 bg-transparent w-full pointer-events-none"  >
+           {/* <article className=" absolute flex justify-center items-center z-10 min-h-14  bottom-0 bg-transparent w-full pointer-events-none"  >
                {
                    !DialogueState ?  '' : <LoadingBubble/>
                }
-           </article>
+           </article> */}
            {useMemo(() => <Options optns={options}/>,[options])}
        </section>
     )
