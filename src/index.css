@@ -33,6 +33,12 @@ body{
       display: flex;
     }
 }
+.option_container .option:first-child{
+  margin-left: 25vw;
+}
+.option_container .option:last-child{
+  margin-right: 25vw;
+}
 .input_expandable:hover{
   animation: input_expand 100ms ease-in-out forwards;
 

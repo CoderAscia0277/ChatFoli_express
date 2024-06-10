@@ -5,10 +5,15 @@ const Monologue = ({value='none'}) => {
 
     // value = "I guess I got carried away. It's already past midnight. I should really get some sleep."
     return(
-        <section className="content w-full  min-h-30 flex flex-col px-4 pb-4 " style={{border:'solid 1px white',borderLeft:0,borderRight:0}}>
-            <span className="text-white border relative py-1 px-2 w-max" style={{top:'-2vh',left:'2vh',background:theme.dark}}>View point</span>
-            <div className="w-full  flex-grow flex flex-col items-end justify-center">
-                <div className=" w-full text-white leading-loose">
+        <section className="content w-full  min-h-30 flex flex-row px-4 pb-4 " style={{border:'solid 1px white',borderLeft:0,borderRight:0}}>
+            <span className="text-white border relative p-2 w-max h-max rounded-full" style={{top:'-3vh',left:'2vh',background:theme.dark}}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-journals w-5 h-5" viewBox="0 0 16 16">
+                    <path d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H3a2 2 0 0 1-2-2h1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1H1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2"/>
+                    <path d="M1 6v-.5a.5.5 0 0 1 1 0V6h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V9h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 2.5v.5H.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H2v-.5a.5.5 0 0 0-1 0"/>
+                </svg>
+            </span>
+            <div className="w-full  flex-grow flex flex-col items-center  justify-center">
+                <div className=" w-3/4 text-white leading-loose pt-4">
                     <span>{value}</span>
                     <span className="dialogue hidden flex-row w-full  text-neutral-500 pt-4 gap-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-clockwise w-5 h-5" viewBox="0 0 16 16">

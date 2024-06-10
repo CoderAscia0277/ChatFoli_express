@@ -1,7 +1,7 @@
 import React, { Suspense } from "react"
 import SuspenseImg from "./SuspenseImg";
 
-const Character = ({name = 'Yuuki',value = 'none' , img_src = 'none'}) => {
+const User = ({name = 'Yuuki',value = 'none' , img_src = 'none'}) => {
     // value = "Good evening Master! It's so nice to see you. nya! I've been playing with my new ball of yaarn all day, nya."
     return(
         <section className="content w-full  h-max min-h-40 flex flex-col px-4">
@@ -32,4 +32,4 @@ const Character = ({name = 'Yuuki',value = 'none' , img_src = 'none'}) => {
     );
 }
 
-export default Character;
+export default User;
