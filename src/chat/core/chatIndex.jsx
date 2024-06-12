@@ -50,13 +50,12 @@ const ChatIndex = () => {
     const {theme,stored_progress} = user_context;
     Store.dispatch(set_theme(theme));
 
+    const [inputText , setText] = useState('');
+
     const [AvailableDialogue , setDialogueBlocks] = useState(stored_progress);
     const [options,setOptions] = useState(null);
    
     const [ChatDialogues,SetChatDialogues] = useState(null);
-
-    let didMountRef = useRef(false);
-
 
     const [DialogueState ,setDialogueState] = useState(false);
 
@@ -82,34 +81,22 @@ const ChatIndex = () => {
                 setDialogueBlocks([...AvailableDialogue,data.content]);
                 setDialogueState(false);
                 break;
+
+            case 'generate_dialogue':
+                setDialogueBlocks([...AvailableDialogue,data.content]);
+                setDialogueState(false);
+                break;
             default:
                 break;
         }
     }
-
-    useEffect(() => {
-        if(didMountRef.current){
-           
-        }else{
-            didMountRef.current = true;
-            // ScrollView.current.addEventListener('touchstart',touch_start);
-            // ScrollView.current.addEventListener('touchmove',touch_move);
-            // console.log(user_context);
-
-            // Set the Chat dialogues based on the current available logs from the server
-            
-            // touch_start();
-            // touch_move();
-        }
-
-    });
 
 
     const has_option_selected = useCallback((option_chosen) => {
 
         setDialogueState(true);
         console.table(AvailableDialogue);
-        setDialogueBlocks([...AvailableDialogue,{'player':'Yuuta','value':option_chosen,'img_src':'image_01.png'}]) //Add new User Dialogue when option is pressed
+        setDialogueBlocks([...AvailableDialogue,{'value':option_chosen,'img_src':'image_01.png',ws_socket : socket}]) //Add new User Dialogue when option is pressed
 
         //convert the data into JSON then sent to the web socket
         setTimeout(() => {
@@ -136,7 +123,7 @@ const ChatIndex = () => {
     },[ChatDialogues]);
 
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
-
+        console.table(AvailableDialogue);
         const dialogues = AvailableDialogue;
             const chat =  dialogues.map((item,index) => {
                 const keys = Object.keys(item);
@@ -146,8 +133,8 @@ const ChatIndex = () => {
                 }
                 return(
                     keys[0] === 'narration' ?
-                       <Monologue key={index} value={item.narration}/> : keys[0] === 'player' ? <User name={item[keys[0]]} key={index} value={item.value} img_src={item.img_src}/> :
-                       <Character key={index} name={keys[0]} value={item[keys[0]]} img_src={item.img_src}/>
+                       <Monologue key={index} value={item.narration}/> : keys[0] === 'value' ? <User key={index} value={item.value} img_src={item.img_src}/> :
+                       <Character key={index} name={item.name} value={item.value} img_src={item.img_src} socket={item.ws_socket}/>
 
                 );
             });
@@ -162,21 +149,21 @@ const ChatIndex = () => {
     
     const Options = ({optns}) => {
         return(
-            <article className="w-full h-max pb-4 pt-2 flex flex-col absolute bottom-0" style={{background:'linear-gradient(180deg,rgba(23,23,23,0),rgba(23,23,23,0.5), rgba(23,23,23,0.95)'}} >
-                <div className="w-full h-14 absolute bottom-16  left-0 pointer-events-none " style={{background:'linear-gradient(45deg,rgb(23,23,23),rgba(23,23,23,0.1),rgba(23,23,23,0),rgba(23,23,23,0),rgba(23,23,23,0.5),rgb(23,23,23)'}}></div>
-                <div className="option_container grid grid-flow-col justify-start items-center gap-4 overflow-x-scroll px-4 py-4">
+            <article className="w-full h-max  flex flex-col absolute bottom-0"  >
+                <div className="w-full h-14 absolute bottom-16  left-0 pointer-events-none " style={{background:'linear-gradient(45deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0),rgba(23,23,23,0),rgba(23,23,23,0.5),rgb(23,23,23)'}}></div>
+                <div className="option_container grid grid-flow-col justify-start items-center gap-4 overflow-x-scroll px-4 pb-4">
                 { optns ? 
                     optns.map((item,index) => {
                         return(
-                            <span className="option text-white px-4 flex py-2 border rounded-xl h-10 w-max" onClick={() => has_option_selected(item)} key={index} style={{background:theme.dark}}>{item}</span>
+                            <span className="option text-white sm:text-sm xs:text-md px-4 flex py-1 rounded-xl border h-max w-max" onClick={() => has_option_selected(item)} key={index} style={{background:theme.dark}}>{item}</span>
                         )
                     }) : ''
                 }
                 </div>
-                <div className="w-full h-max px-4">
+                <div className="w-full h-max px-4 pb-4" style={{background:'linear-gradient(90deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0.3),rgba(23,23,23,0.3),rgba(23,23,23,0.5),rgb(23,23,23)'}}>
                     <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
-                        <input type='text' ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-8 h-8 text-neutral-400" viewBox="0 0 16 16">
+                        <input type='text' onChange={(e) => setText(e.target.value)} ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-6 h-6 text-neutral-400" viewBox="0 0 16 16">
                             <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
                         </svg>
                     </div>
