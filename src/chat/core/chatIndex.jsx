@@ -50,7 +50,6 @@ const ChatIndex = () => {
     const {theme,stored_progress} = user_context;
     Store.dispatch(set_theme(theme));
 
-    const [inputText , setText] = useState('');
 
     const [AvailableDialogue , setDialogueBlocks] = useState(stored_progress);
     const [options,setOptions] = useState(null);
@@ -76,16 +75,48 @@ const ChatIndex = () => {
         }
 
         switch(data.type){
-            case 'llm_request': //Runs when the user sent a request into the LLM
-                console.log('runs')
-                setDialogueBlocks([...AvailableDialogue,data.content]);
-                setDialogueState(false);
-                break;
 
-            case 'generate_dialogue':
-                setDialogueBlocks([...AvailableDialogue,data.content]);
+            // Frontend recieves a data which contains data from the LLM
+            case 'llm_request': 
+                console.log('runs');
                 setDialogueState(false);
+                setDialogueBlocks( prev_logs => [...prev_logs,data.content]);
                 break;
+            case 'chunks':
+                console.log("I'm here");
+                console.table(data);
+                // const update_chat = ChatDialogues.map((item,index) => {
+                //     if(index === ChatDialogues.length - 1){
+                //         const props = item.props;
+                //         const new_data = {value:data.content,name:props.name,img_src:props.img_src}
+                //         item = {...item,props:new_data };
+                //         console.log('if',item);
+                //         return item;
+                //     }else{
+                //         console.log('else',item);
+                //         return item;
+                //     }
+                // });
+                // SetChatDialogues(update_chat);
+                const d = AvailableDialogue;
+                const update_logs = d.map((item,index) => {
+                    if(index === d.length - 1){
+                        item = {...item,value:data.content};
+                        console.log('if',item);
+                        return item;
+                    }else{
+                        console.log('else',item);
+                        return item;
+                    }
+                });
+                // setDialogueBlocks(d);
+                // const update_block = <Character key={d.length - 1} value={data.content} img_src='image_02.jpg' name='Yuuki'/>;
+                // const update_log = {name}
+                setDialogueBlocks(update_logs);
+            // case 'generate_dialogue':
+            //     setDialogueBlocks([...AvailableDialogue,data.content]);
+            //     setDialogueState(false);
+            //     break;
             default:
                 break;
         }
@@ -94,18 +125,23 @@ const ChatIndex = () => {
 
     const has_option_selected = useCallback((option_chosen) => {
 
+        //Set Loading state to true
         setDialogueState(true);
-        console.table(AvailableDialogue);
-        setDialogueBlocks([...AvailableDialogue,{'value':option_chosen,'img_src':'image_01.png',ws_socket : socket}]) //Add new User Dialogue when option is pressed
+        
 
-        //convert the data into JSON then sent to the web socket
+         //Add new User Dialogue when option is pressed
+        setDialogueBlocks(prev_logs => [...prev_logs,{'value':option_chosen,'img_src':'image_01.png'}]);
+
+        // Request new Character or Narration dialogue
         setTimeout(() => {
+
+            //REQUEST TO WEBSOCKET FOR AN LLM RESPONSE
             socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})); 
-            console.log('Fetching : ',option_chosen);
+            // console.log('Fetching : ',option_chosen);
         },1000);
- 
+        
                     
-    },[socket,AvailableDialogue]);
+    },[AvailableDialogue]);
 
 
     // hahahah sa wakas napagana ko na ung auto add ng chat dialogues ng hindi nag rerender ulit ung mga previous dialogues
@@ -116,35 +152,51 @@ const ChatIndex = () => {
     // issue sa mga dialogue components
 
     useEffect(() => {
-        // const temp = ChatDialogues;
-        const container =  document.querySelector('#ScrollView');
+        const container =  ScrollView.current;
+
+        //SCROLL TO RECENT DIALOGUE
         container.scrollTop = container.scrollHeight;
-        UserInputComponent.current.focus(); // This line auto focus the input box whenever the chat updates
+        // ScrollView.current.target.scrollTop = ScrollView.current.target.scrollHeight;
+        console.log('scroll',container.scrollHeight)
+
+        //FOCUS INPUT TEXT BOX
+        UserInputComponent.current.focus(); 
+
     },[ChatDialogues]);
 
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
-        console.table(AvailableDialogue);
+        // console.table(AvailableDialogue);
+
+        // INITIALLIZE THE AVAILABLE DATA LOGS
         const dialogues = AvailableDialogue;
+
+            //GENERATE NEW ARRAY OF JSX DILOGUES
             const chat =  dialogues.map((item,index) => {
                 const keys = Object.keys(item);
-    
+                
+                //GENERATE OPTION IF THERE IS
                 if(item.optns && dialogues.length === index + 1){
                     setOptions(item.optns);
                 }
                 return(
                     keys[0] === 'narration' ?
                        <Monologue key={index} value={item.narration}/> : keys[0] === 'value' ? <User key={index} value={item.value} img_src={item.img_src}/> :
-                       <Character key={index} name={item.name} value={item.value} img_src={item.img_src} socket={item.ws_socket}/>
+                       <Character key={index} name={item.name} value={item.value} img_src={item.img_src}/>
 
                 );
             });
         SetChatDialogues(chat);
-
+  
     },[AvailableDialogue]);
 
     const submitText = useCallback(() => {
+
+        //GENRATE NEW USER DIALOGUE BASED ON THE USER'S INPUT
         has_option_selected(UserInputComponent.current.value);
+
+        //CLEAR THE USER'S INPUT
         UserInputComponent.current.value = '';
+
     },[has_option_selected,UserInputComponent]); 
     
     const Options = ({optns}) => {
@@ -162,7 +214,7 @@ const ChatIndex = () => {
                 </div>
                 <div className="w-full h-max px-4 pb-4" style={{background:'linear-gradient(90deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0.3),rgba(23,23,23,0.3),rgba(23,23,23,0.5),rgb(23,23,23)'}}>
                     <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
-                        <input type='text' onChange={(e) => setText(e.target.value)} ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
+                        <input type='text' ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-6 h-6 text-neutral-400" viewBox="0 0 16 16">
                             <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
                         </svg>

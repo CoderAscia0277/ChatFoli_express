@@ -1,40 +1,7 @@
-import React, { Suspense, useEffect ,useRef, useState,useMemo} from "react"
+import React, { Suspense} from "react"
 import SuspenseImg from "./SuspenseImg";
 
-const Character = ({name = 'Yuuki',value='none' , img_src = 'none', socket = null}) => {
-    // value = "Good evening Master! It's so nice to see you. nya! I've been playing with my new ball of yaarn all day, nya."
-    // let didMount = useRef(false);
-    const [textValue, setTextValue] = useState('');
-
-    useEffect(() => {
-        setTextValue(value);
-    },[value]);
-
-    // useEffect(() => {
-    //     if(didMount.current){
-
-    //     }else{
-    //         didMount.current = true;
-            
-    //         if(socket){
-    //             console.log('running char ws')
-    //             socket.send(JSON.stringify({user_prompt:'',target:name,type:'generate_script'}));
-
-    //             socket.onmessage((event) =>{
-
-    //                 const {content,type} = JSON.parse(event.data);
-    //                 console.table(event.data)
-    //                 if(type === 'character_response'){
-    //                     setTextValue(content);
-                        
-    //                 }else{
-    //                     return;
-    //                 }
-    //             })
-    //         }
-    //     }
-    // })
-
+const Character = ({name = 'Yuuki',value='none' , img_src = 'none' , socket = null}) => {
 
     return(
         <section className="content w-full   h-max  flex flex-col p-4">
@@ -44,7 +11,7 @@ const Character = ({name = 'Yuuki',value='none' , img_src = 'none', socket = nul
                 </Suspense>
                 <div className=" text-white w-3/4  flex flex-col">
                     <span className="font-medium text-xl  ">{name}</span>
-                    <span className="leading-loose pt-4 ">{useMemo(() => textValue, [textValue])}</span>
+                    <span className="leading-loose pt-4 ">{value}</span>
                     <span className="dialogue hidden flex-row w-full  text-neutral-500 pt-4 gap-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-clockwise w-5 h-5" viewBox="0 0 16 16">
                             <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
