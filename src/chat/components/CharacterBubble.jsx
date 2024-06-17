@@ -1,8 +1,11 @@
 import React, { Suspense} from "react"
 import SuspenseImg from "./SuspenseImg";
+import Store from "../utils/ConfigureStore";
+const Character = ({name = 'Yuuki',value='none'}) => {
 
-const Character = ({name = 'Yuuki',value='none' , img_src = 'none' , socket = null}) => {
+    const img_src = Store.getState().character_icon;
 
+    
     return(
         <section className="content w-full   h-max  flex flex-col p-4">
             <article className="w-full  flex flex-row gap-4">

@@ -1,7 +1,11 @@
 import React, { Suspense } from "react"
 import SuspenseImg from "./SuspenseImg";
+import Store from "../utils/ConfigureStore";
 
-const User = ({value = 'none' , img_src = 'none'}) => {
+const User = ({value = 'none'}) => {
+
+    const img_src= Store.getState().user_icon;
+
     // value = "Good evening Master! It's so nice to see you. nya! I've been playing with my new ball of yaarn all day, nya."
     return(
         <section className="content w-full  h-max py-4 flex flex-col px-4">

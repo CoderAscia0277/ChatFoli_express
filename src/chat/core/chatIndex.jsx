@@ -2,15 +2,16 @@ import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy
 import React from "react";
 import LoadingBubble from "../components/LoadingComponent";
 import Store from "../utils/ConfigureStore";
-import {set_theme } from "../utils/ConfigureStore";
-import {wss} from "../utils/WebSocketProvider";
+import {set_default_context} from "../utils/ConfigureStore";
+import { current } from "@reduxjs/toolkit";
+// import {wss} from "../utils/WebSocketProvider";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const Monologue = lazy(() => import('../components/Monologue'));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
-const UserContext = createContext();
+export const UserContext = createContext();
 
 const ChatApp = ({UserId}) => {
 
@@ -43,15 +44,17 @@ const ChatApp = ({UserId}) => {
     );
 }
 
-const ChatIndex = () => {
+const ChatIndex = ({socket = null}) => {
 
     //UserContext from Backend server
     const user_context = useContext(UserContext);
-    const {theme,stored_progress} = user_context;
-    Store.dispatch(set_theme(theme));
+    
+    
+    //Spreading the default variables to all components
+    Store.dispatch(set_default_context(user_context));
 
-
-    const [AvailableDialogue , setDialogueBlocks] = useState(stored_progress);
+    const theme = Store.getState().theme;
+    const [AvailableDialogue , setDialogueBlocks] = useState(Store.getState().stored_progress);
     const [options,setOptions] = useState(null);
    
     const [ChatDialogues,SetChatDialogues] = useState(null);
@@ -60,67 +63,77 @@ const ChatIndex = () => {
 
     const UserInputComponent = useRef(null);
     const ScrollView = useRef(null);
-
+    
     // This block creates a session environment / web socket for the client
     // This is used to create a bidirectional and maintainable connection between the LLM and the client
-    const socket = useMemo(() => wss.server,[]);
-    socket.onmessage = (event) =>{
-        
-        let data;
+    const isSocketMounted = useRef(false);
+    
 
-        try{
-            data = JSON.parse(event.data)
-        }catch(err){
-            data = {'type':null}
-        }
-
-        switch(data.type){
-
-            // Frontend recieves a data which contains data from the LLM
-            case 'llm_request': 
-                console.log('runs');
-                setDialogueState(false);
-                setDialogueBlocks( prev_logs => [...prev_logs,data.content]);
-                break;
-            case 'chunks':
-                console.log("I'm here");
-                console.table(data);
-                // const update_chat = ChatDialogues.map((item,index) => {
-                //     if(index === ChatDialogues.length - 1){
-                //         const props = item.props;
-                //         const new_data = {value:data.content,name:props.name,img_src:props.img_src}
-                //         item = {...item,props:new_data };
-                //         console.log('if',item);
-                //         return item;
-                //     }else{
-                //         console.log('else',item);
-                //         return item;
-                //     }
-                // });
-                // SetChatDialogues(update_chat);
-                const d = AvailableDialogue;
-                const update_logs = d.map((item,index) => {
-                    if(index === d.length - 1){
-                        item = {...item,value:data.content};
-                        console.log('if',item);
-                        return item;
-                    }else{
-                        console.log('else',item);
-                        return item;
-                    }
-                });
-                // setDialogueBlocks(d);
-                // const update_block = <Character key={d.length - 1} value={data.content} img_src='image_02.jpg' name='Yuuki'/>;
-                // const update_log = {name}
-                setDialogueBlocks(update_logs);
-            // case 'generate_dialogue':
-            //     setDialogueBlocks([...AvailableDialogue,data.content]);
-            //     setDialogueState(false);
-            //     break;
-            default:
-                break;
+    const send_to_server = (data,purpose) => {
+        if(socket){
+            switch(purpose){
+                case 'initialize':
+                    console.table(data);
+                    socket.send(JSON.stringify(data));
+                default:
+                    break;
+            }
         }
     }
+
+    useEffect(() => {
+        if(isSocketMounted.current){
+
+        }else{
+            isSocketMounted.current = new WebSocket('ws://localhost:8080');
+            socket = isSocketMounted.current;
+           
+        }
+    },[isSocketMounted]);
+    
+    useEffect(() => {
+        if(socket){
+            socket.onopen = () => {
+                console.log('opened')
+                send_to_server({...user_context,type:'default_context'},'initialize');
+            }
+            socket.onmessage = (event) => {
+                try{
+                    const parse_message = JSON.parse(event.data);
+                    console.table(parse_message.content);
+                }catch{
+                    console.log(event.data);
+                }
+                
+            }
+        }
+
+    },[socket]);
+
+
+
+    // socket.onmessage = (event) =>{
+        
+    //     let data;
+
+    //     try{
+    //         data = JSON.parse(event.data)
+    //     }catch(err){
+    //         data = {'type':null}
+    //     }
+
+    //     switch(data.type){
+
+    //         // Frontend recieves a data which contains data from the LLM
+    //         case 'llm_request': 
+    //             console.log('runs');
+    //             setDialogueState(false);
+    //             setDialogueBlocks( prev_logs => [...prev_logs,data.content]);
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
 
     const has_option_selected = useCallback((option_chosen) => {
@@ -130,15 +143,15 @@ const ChatIndex = () => {
         
 
          //Add new User Dialogue when option is pressed
-        setDialogueBlocks(prev_logs => [...prev_logs,{'value':option_chosen,'img_src':'image_01.png'}]);
+        setDialogueBlocks(prev_logs => [...prev_logs,{name:'user',value:option_chosen}]);
 
-        // Request new Character or Narration dialogue
-        setTimeout(() => {
+        // // Request new Character or Narration dialogue
+        // setTimeout(() => {
 
-            //REQUEST TO WEBSOCKET FOR AN LLM RESPONSE
-            socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})); 
-            // console.log('Fetching : ',option_chosen);
-        },1000);
+        //     //REQUEST TO WEBSOCKET FOR AN LLM RESPONSE
+        //     socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})); 
+        //     // console.log('Fetching : ',option_chosen);
+        // },1000);
         
                     
     },[AvailableDialogue]);
@@ -164,29 +177,37 @@ const ChatIndex = () => {
 
     },[ChatDialogues]);
 
+
+
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
         // console.table(AvailableDialogue);
 
         // INITIALLIZE THE AVAILABLE DATA LOGS
         const dialogues = AvailableDialogue;
 
+        if(AvailableDialogue){
             //GENERATE NEW ARRAY OF JSX DILOGUES
             const chat =  dialogues.map((item,index) => {
-                const keys = Object.keys(item);
+                // const keys = Object.keys(item);
                 
                 //GENERATE OPTION IF THERE IS
-                if(item.optns && dialogues.length === index + 1){
-                    setOptions(item.optns);
-                }
-                return(
-                    keys[0] === 'narration' ?
-                       <Monologue key={index} value={item.narration}/> : keys[0] === 'value' ? <User key={index} value={item.value} img_src={item.img_src}/> :
-                       <Character key={index} name={item.name} value={item.value} img_src={item.img_src}/>
+                // if(item.optns && dialogues.length === index + 1){
+                //     setOptions(item.optns);
+                // }
 
-                );
+                if(item){
+                    return(
+                        item.name === 'user' ? <User key={index} value={item.value}/> :
+                        <Character key={index} name={item.name} value={item.value}/>
+                    )
+                }else{
+                    return item;
+                }
             });
-        SetChatDialogues(chat);
-  
+ 
+            SetChatDialogues(chat);
+
+        }
     },[AvailableDialogue]);
 
     const submitText = useCallback(() => {
@@ -242,6 +263,8 @@ const ChatIndex = () => {
        </section>
     )
 }
+
+
 
 export default ChatApp;
 
