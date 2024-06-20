@@ -1,10 +1,28 @@
-import React, { Suspense} from "react"
+import React, { Suspense, useMemo} from "react"
 import SuspenseImg from "./SuspenseImg";
 import Store from "../utils/ConfigureStore";
-const Character = ({name = 'Yuuki',value='none'}) => {
+import { api_requester } from "../utils/API_REQUESTER";
+
+
+
+const AI_Response =  ({prompt = ''}) => {
+    
+    const requester = api_requester;
+
+    const response = useMemo(() => {
+        return(requester.read(prompt));
+    },[prompt]);
+
+    return(
+        <span className="leading-loose pt-4 ">{response}</span>
+    )
+
+}
+
+const Character = ({name = 'Yuuki',value=null}) => {
 
     const img_src = Store.getState().character_icon;
-
+    const userText = ' hahahah';
     
     return(
         <section className="content w-full   h-max  flex flex-col p-4">
@@ -14,7 +32,13 @@ const Character = ({name = 'Yuuki',value='none'}) => {
                 </Suspense>
                 <div className=" text-white w-3/4  flex flex-col">
                     <span className="font-medium text-xl  ">{name}</span>
-                    <span className="leading-loose pt-4 ">{value}</span>
+
+                    { value ?  <span className="leading-loose pt-4 ">{value}</span> :
+                        <Suspense fallback={<span className="w-3 h-3 mx-1 my-5 rounded-full loading bg-white"></span>}>
+                            <AI_Response prompt={userText}/>
+                        </Suspense>
+                    }
+
                     <span className="dialogue hidden flex-row w-full  text-neutral-500 pt-4 gap-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-clockwise w-5 h-5" viewBox="0 0 16 16">
                             <path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>

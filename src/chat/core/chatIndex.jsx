@@ -12,6 +12,7 @@ const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
 export const UserContext = createContext();
+export const ws = createContext();
 
 const ChatApp = ({UserId}) => {
 
@@ -81,34 +82,34 @@ const ChatIndex = ({socket = null}) => {
         }
     }
 
-    useEffect(() => {
-        if(isSocketMounted.current){
+    // useEffect(() => {
+    //     if(isSocketMounted.current){
 
-        }else{
-            isSocketMounted.current = new WebSocket('ws://localhost:8080');
-            socket = isSocketMounted.current;
+    //     }else{
+    //         isSocketMounted.current = new WebSocket('ws://localhost:8080');
+    //         socket = isSocketMounted.current;
            
-        }
-    },[isSocketMounted]);
+    //     }
+    // },[isSocketMounted]);
     
-    useEffect(() => {
-        if(socket){
-            socket.onopen = () => {
-                console.log('opened')
-                send_to_server({...user_context,type:'default_context'},'initialize');
-            }
-            socket.onmessage = (event) => {
-                try{
-                    const parse_message = JSON.parse(event.data);
-                    console.table(parse_message.content);
-                }catch{
-                    console.log(event.data);
-                }
+    // useEffect(() => {
+    //     if(socket){
+    //         socket.onopen = () => {
+    //             console.log('opened')
+    //             send_to_server({...user_context,type:'default_context'},'initialize');
+    //         }
+    //         socket.onmessage = (event) => {
+    //             try{
+    //                 const parse_message = JSON.parse(event.data);
+    //                 console.table(parse_message.content);
+    //             }catch{
+    //                 console.log(event.data);
+    //             }
                 
-            }
-        }
+    //         }
+    //     }
 
-    },[socket]);
+    // },[socket]);
 
 
 
@@ -169,8 +170,9 @@ const ChatIndex = ({socket = null}) => {
 
         //SCROLL TO RECENT DIALOGUE
         container.scrollTop = container.scrollHeight;
+        
         // ScrollView.current.target.scrollTop = ScrollView.current.target.scrollHeight;
-        console.log('scroll',container.scrollHeight)
+        // console.log('scroll',container.scrollHeight)
 
         //FOCUS INPUT TEXT BOX
         UserInputComponent.current.focus(); 
@@ -246,12 +248,14 @@ const ChatIndex = ({socket = null}) => {
     };
     
     return(
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 xs:w-full h-full absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
+    // <ws.Provider value={socket}>
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
            {/* {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])}  */}
            <ChatHeader/>
-           <article ref={ScrollView} id="ScrollView" className="super_parent w-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
+           <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
                 <div className="w-full h-max flex flex-col gap-4">
                     {useMemo(() => ChatDialogues,[ChatDialogues])}
+                    {/* <Character key={0} name={'Kana'} value={'default'}/> */}
                 </div>
            </article>
            {/* <article className=" absolute flex justify-center items-center z-10 min-h-14  bottom-0 bg-transparent w-full pointer-events-none"  >
@@ -261,6 +265,9 @@ const ChatIndex = ({socket = null}) => {
            </article> */}
            {useMemo(() => <Options optns={options}/>,[options])}
        </section>
+
+    // </ws.Provider>
+
     )
 }
 
