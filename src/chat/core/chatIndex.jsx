@@ -1,18 +1,17 @@
 import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback } from "react";
 import React from "react";
-import LoadingBubble from "../components/LoadingComponent";
-import Store from "../utils/ConfigureStore";
-import {set_default_context} from "../utils/ConfigureStore";
-import { current } from "@reduxjs/toolkit";
+// import LoadingBubble from "../components/LoadingComponent";
+import Store, {set_default_context,update_userText} from "../utils/ConfigureStore";
+// import { current } from "@reduxjs/toolkit";
 // import {wss} from "../utils/WebSocketProvider";
 const Character = lazy(() => import("../components/CharacterBubble"));
-const Monologue = lazy(() => import('../components/Monologue'));
+// const Monologue = lazy(() => import('../components/Monologue'));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 
 export const UserContext = createContext();
-export const ws = createContext();
+// export const ws = createContext();
 
 const ChatApp = ({UserId}) => {
 
@@ -45,7 +44,7 @@ const ChatApp = ({UserId}) => {
     );
 }
 
-const ChatIndex = ({socket = null}) => {
+const ChatIndex = ({}) => {
 
     //UserContext from Backend server
     const user_context = useContext(UserContext);
@@ -56,106 +55,30 @@ const ChatIndex = ({socket = null}) => {
 
     const theme = Store.getState().theme;
     const [AvailableDialogue , setDialogueBlocks] = useState(Store.getState().stored_progress);
-    const [options,setOptions] = useState(null);
+
+    const [options,setOptions] = useState(null); //This contains the options that can be chose from
    
     const [ChatDialogues,SetChatDialogues] = useState(null);
 
-    const [DialogueState ,setDialogueState] = useState(false);
+    // const [DialogueState ,setDialogueState] = useState(false);
 
     const UserInputComponent = useRef(null);
     const ScrollView = useRef(null);
     
-    // This block creates a session environment / web socket for the client
-    // This is used to create a bidirectional and maintainable connection between the LLM and the client
-    const isSocketMounted = useRef(false);
-    
-
-    const send_to_server = (data,purpose) => {
-        if(socket){
-            switch(purpose){
-                case 'initialize':
-                    console.table(data);
-                    socket.send(JSON.stringify(data));
-                default:
-                    break;
-            }
-        }
-    }
-
-    // useEffect(() => {
-    //     if(isSocketMounted.current){
-
-    //     }else{
-    //         isSocketMounted.current = new WebSocket('ws://localhost:8080');
-    //         socket = isSocketMounted.current;
-           
-    //     }
-    // },[isSocketMounted]);
-    
-    // useEffect(() => {
-    //     if(socket){
-    //         socket.onopen = () => {
-    //             console.log('opened')
-    //             send_to_server({...user_context,type:'default_context'},'initialize');
-    //         }
-    //         socket.onmessage = (event) => {
-    //             try{
-    //                 const parse_message = JSON.parse(event.data);
-    //                 console.table(parse_message.content);
-    //             }catch{
-    //                 console.log(event.data);
-    //             }
-                
-    //         }
-    //     }
-
-    // },[socket]);
+  
 
 
-
-    // socket.onmessage = (event) =>{
-        
-    //     let data;
-
-    //     try{
-    //         data = JSON.parse(event.data)
-    //     }catch(err){
-    //         data = {'type':null}
-    //     }
-
-    //     switch(data.type){
-
-    //         // Frontend recieves a data which contains data from the LLM
-    //         case 'llm_request': 
-    //             console.log('runs');
-    //             setDialogueState(false);
-    //             setDialogueBlocks( prev_logs => [...prev_logs,data.content]);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
-
-
-    const has_option_selected = useCallback((option_chosen) => {
-
-        //Set Loading state to true
-        setDialogueState(true);
-        
+    const has_option_selected = useCallback((text_value) => {
 
          //Add new User Dialogue when option is pressed
-        setDialogueBlocks(prev_logs => [...prev_logs,{name:'user',value:option_chosen}]);
+        setDialogueBlocks(prev_logs => [...prev_logs,{name:'user',value:text_value}]);
 
-        // // Request new Character or Narration dialogue
-        // setTimeout(() => {
-
-        //     //REQUEST TO WEBSOCKET FOR AN LLM RESPONSE
-        //     socket.send(JSON.stringify({'type':"llm_request",'body':option_chosen})); 
-        //     // console.log('Fetching : ',option_chosen);
-        // },1000);
+        setTimeout(() => {
+            setDialogueBlocks(prev_logs => [...prev_logs,{name:'Kana',value:null}]);
+        },100);
         
                     
-    },[AvailableDialogue]);
+    },[setDialogueBlocks]);
 
 
     // hahahah sa wakas napagana ko na ung auto add ng chat dialogues ng hindi nag rerender ulit ung mga previous dialogues
@@ -200,7 +123,7 @@ const ChatIndex = ({socket = null}) => {
                 if(item){
                     return(
                         item.name === 'user' ? <User key={index} value={item.value}/> :
-                        <Character key={index} name={item.name} value={item.value}/>
+                        <Character key={index} name={item.name} value={item.value} userText={'hi'}/>
                     )
                 }else{
                     return item;
@@ -217,6 +140,9 @@ const ChatIndex = ({socket = null}) => {
         //GENRATE NEW USER DIALOGUE BASED ON THE USER'S INPUT
         has_option_selected(UserInputComponent.current.value);
 
+        // Storing the recent message of the user into centralized store
+        Store.dispatch(update_userText(UserInputComponent.current.value));
+        
         //CLEAR THE USER'S INPUT
         UserInputComponent.current.value = '';
 
@@ -248,25 +174,23 @@ const ChatIndex = ({socket = null}) => {
     };
     
     return(
-    // <ws.Provider value={socket}>
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
            {/* {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])}  */}
            <ChatHeader/>
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
+                
                 <div className="w-full h-max flex flex-col gap-4">
-                    {useMemo(() => ChatDialogues,[ChatDialogues])}
-                    {/* <Character key={0} name={'Kana'} value={'default'}/> */}
-                </div>
-           </article>
-           {/* <article className=" absolute flex justify-center items-center z-10 min-h-14  bottom-0 bg-transparent w-full pointer-events-none"  >
-               {
-                   !DialogueState ?  '' : <LoadingBubble/>
-               }
-           </article> */}
-           {useMemo(() => <Options optns={options}/>,[options])}
-       </section>
 
-    // </ws.Provider>
+                    {useMemo(() => ChatDialogues,[ChatDialogues])}
+                    {/* <Character key={0} name={'Kana'} value={null}/> */}
+
+                </div>
+
+           </article>
+
+           {useMemo(() => <Options optns={options}/>,[options])}
+
+       </section>
 
     )
 }

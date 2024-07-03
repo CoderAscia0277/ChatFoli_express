@@ -11,6 +11,7 @@ const GlobalSlice = createSlice({
         user_icon:'',
         character_icon:'',
         stored_progress:[],
+        userText: '',
     },
     reducers:{
      set_onBusy : (state,data) => {
@@ -24,11 +25,14 @@ const GlobalSlice = createSlice({
         state.user_icon = user_icon;
         state.character_icon = character_icon;
         state.stored_progress = stored_progress;
+     },
+     update_userText:(state,data) => {
+         state.userText = data.payload;
      }
     }
 });
 
-export const {set_onBusy,set_isOption,set_default_context} = GlobalSlice.actions;
+export const {set_onBusy,set_isOption,set_default_context,update_userText} = GlobalSlice.actions;
 
 const Store = configureStore({reducer:GlobalSlice.reducer});
 
