@@ -1,30 +1,29 @@
-import React, { Suspense, useEffect, useRef, useState} from "react"
+import React, { Suspense, useEffect, useRef, useMemo, useState} from "react"
 import SuspenseImg from "./SuspenseImg";
 import Store from "../utils/ConfigureStore";
 import { api_requester } from "../utils/API_REQUESTER";
 
 let AI_response = null;
 
-const AI_Requester =  ({prompt = ''}) => {
+const AI_Requester =  async ({prompt = null}) => {
     
     const requester = api_requester;
 
-    const [response,set_response] = useState('');
+    // const [response,set_response] = useState(null);
 
-    const hasRequested = useRef(false);
+    // const hasRequested = useRef(false);
+    const response = useMemo(() => requester.read(prompt),[prompt]);
+    // useEffect(() => {
+    //     if(prompt && !response){
+    //         console.log('promise')
+            
+    //     }else{
+    //         return;
+    //     }
+    // },[prompt])
+    
 
-    useEffect( async () => {
-        if(hasRequested.current){
-
-        }else{
-            response = requester.read(prompt);
-            console.log('req: ',prompt);
-            set_response( response);
-            hasRequested.current = true;
-              
-        } 
-    });
-
+  
     return(
         <span className="leading-loose pt-4 ">{response}</span>
     )
@@ -47,7 +46,7 @@ const Character = ({name = 'Yuuki',value=null}) => {
                     <span className="font-medium text-xl  ">{name}</span>
 
                     { AI_response ?  <span className="leading-loose pt-4 ">{value}</span> :
-                        <Suspense fallback={<span className="w-3 h-3 relative top-5 rounded-full loading bg-white"></span>}>
+                         <Suspense fallback={<span className="w-3 h-3 relative top-5 rounded-full loading bg-white"></span>}>
                             <AI_Requester prompt={userText}/>
                         </Suspense>
                     }
