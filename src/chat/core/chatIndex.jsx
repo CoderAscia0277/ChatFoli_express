@@ -151,7 +151,7 @@ const ChatIndex = ({}) => {
     const Options = ({optns}) => {
         return(
             <article className="w-full h-max  flex flex-col absolute bottom-0"  >
-                <div className="w-full h-14 absolute bottom-16  left-0 pointer-events-none " style={{background:'linear-gradient(45deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0),rgba(23,23,23,0),rgba(23,23,23,0.5),rgb(23,23,23)'}}></div>
+                {/* <div className="w-full h-14 absolute bottom-16  left-0 pointer-events-none " style={{background:'linear-gradient(45deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0),rgba(23,23,23,0),rgba(23,23,23,0.5),rgb(23,23,23)'}}></div>
                 <div className="option_container grid grid-flow-col justify-start items-center gap-4 overflow-x-scroll px-4 pb-4">
                 { optns ? 
                     optns.map((item,index) => {
@@ -160,7 +160,7 @@ const ChatIndex = ({}) => {
                         )
                     }) : ''
                 }
-                </div>
+                </div> */}
                 <div className="w-full h-max px-4 pb-4" style={{background:'linear-gradient(90deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0.3),rgba(23,23,23,0.3),rgba(23,23,23,0.5),rgb(23,23,23)'}}>
                     <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
                         <input type='text' ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
