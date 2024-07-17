@@ -13,6 +13,13 @@ const ChatHeader = lazy(() => import("../components/ChatHeader"));
 export const UserContext = createContext();
 // export const ws = createContext();
 
+// Im trying to add a loading suspense on the chat dialogue once its launch
+// also I'm trying to implement a new logic which retrieve the chat logs of specific person from the server then display its contents
+// because current all chat logs are initially retrieved when appp once launch which is not smart once the chat
+// logs grows larger and fewer.
+
+
+
 const ChatApp = ({UserId}) => {
 
     const fetch_data = useMemo(() => {
@@ -179,7 +186,7 @@ const ChatIndex = ({}) => {
            <ChatHeader/>
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
                 
-                <div className="w-full h-max flex flex-col gap-4">
+                <div className="w-full h-max flex flex-col gap-4 pt-4">
 
                     {useMemo(() => ChatDialogues,[ChatDialogues])}
                     {/* <Character key={0} name={'Kana'} value={null}/> */}

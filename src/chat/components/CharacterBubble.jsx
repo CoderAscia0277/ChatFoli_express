@@ -13,7 +13,7 @@ const AI_Requester =   ({prompt = ''}) => {
         hasRequested.current = true;
         AI_response = api_requester.read(prompt);
         return(
-            <span className="leading-loose  ">{AI_response}</span>
+            <span className="leading-loose ">{AI_response}</span>
         )
     }
 
