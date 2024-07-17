@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     element:<div>Hello World !</div>
   },{
     path:'/chat',
-    element:<Suspense fallback={<p>Loading...</p>}><ChatApp UserId={UserId}/></Suspense>
+    element:<Suspense fallback={<p>Fetching user data...</p>}><ChatApp UserId={UserId}/></Suspense>
   }]
 );
 root.render(

@@ -30,7 +30,7 @@ const get_url =  {
 
 
 
-const SuspenseImg = ({src,icon = false}) => {
+const SuspenseImg = ({src,icon = false, w = 0,h = 0}) => {
     const theme = Store.getState().theme;
     const getImage = imgCache;
     const url = useMemo(() => get_url.read(src),[src]);
@@ -41,7 +41,7 @@ const SuspenseImg = ({src,icon = false}) => {
             { !icon ? 
                 <img src={url} alt='none' className="w-full mt-std" style={{aspectRatio:3/4,background:theme.light}}></img>
                  :
-                <img src={url} alt="none" className="w-10 h-10 rounded-full"/>
+                <img src={url} alt="none" className={`${ w > 0 && h > 0 ? `w-${w} h-${h}`: 'w-10 h-10'} rounded-full`}/>
             
             }
         </>
