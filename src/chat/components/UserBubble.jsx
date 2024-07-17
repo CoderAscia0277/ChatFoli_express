@@ -10,7 +10,7 @@ const User = ({value = 'none'}) => {
     return(
         <section className="content w-full  h-max py-4 flex flex-col px-4">
             <article className="w-full  flex flex-row gap-4">
-                <Suspense fallback = {<div className="w-14 h-14 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
+                <Suspense fallback = {<div className="w-12 h-12 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
                     <SuspenseImg src={img_src} icon={true}/>
                 </Suspense>
 

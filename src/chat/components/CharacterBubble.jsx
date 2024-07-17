@@ -32,7 +32,7 @@ const Character = ({name = 'Yuuki',value=null}) => {
     return(
         <section className="content w-full   h-max  flex flex-col p-4">
             <article className="w-full  flex flex-row gap-4">
-                <Suspense fallback = {<div className="w-14 h-14 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
+                <Suspense fallback = {<div className="w-12 h-12 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
                     <SuspenseImg src={img_src} icon={true}/>
                 </Suspense>
                 <div className="cursor-default text-neutral-300 w-3/4  flex flex-row">

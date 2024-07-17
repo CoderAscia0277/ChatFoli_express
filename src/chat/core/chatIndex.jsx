@@ -1,11 +1,7 @@
-import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback } from "react";
+import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback, Suspense } from "react";
 import React from "react";
-// import LoadingBubble from "../components/LoadingComponent";
 import Store, {set_default_context,update_userText} from "../utils/ConfigureStore";
-// import { current } from "@reduxjs/toolkit";
-// import {wss} from "../utils/WebSocketProvider";
 const Character = lazy(() => import("../components/CharacterBubble"));
-// const Monologue = lazy(() => import('../components/Monologue'));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
@@ -14,7 +10,7 @@ export const UserContext = createContext();
 // export const ws = createContext();
 
 // Im trying to add a loading suspense on the chat dialogue once its launch
-// also I'm trying to implement a new logic which retrieve the chat logs of specific person from the server then display its contents
+// also Im trying to implement a new logic which retrieve the chat logs of specific person from the server then display its contents
 // because current all chat logs are initially retrieved when appp once launch which is not smart once the chat
 // logs grows larger and fewer.
 
@@ -46,22 +42,62 @@ const ChatApp = ({UserId}) => {
 
     return(
         <UserContext.Provider value={fetch_data.read(UserId)}>
-            <ChatIndex/>
+            <Suspense fallback={<p>Loading</p>}>
+                <ChatIndex SessionID={'2468'}/>
+            </Suspense>
         </UserContext.Provider>
     );
 }
 
-const ChatIndex = ({}) => {
+const ChatIndex = ({SessionID = null}) => {
 
     //UserContext from Backend server
-    const user_context = useContext(UserContext);
+    // const user_context = useContext(UserContext);
     
     
     //Spreading the default variables to all components
-    Store.dispatch(set_default_context(user_context));
+    // Store.dispatch(set_default_context(user_context));
+
+    const SessionLogs = useMemo(() => {
+        if(SessionID){
+            // console.log('run');
+            return{
+                caches:{},
+                read(Id){
+                    if(!caches[Id]){
+                        caches[Id] = fetch('http://localhost:5000/session',{
+                            method:'POST',
+                            headers:{
+                                'Content-Type':'application/json'
+                            },
+                            body:JSON.stringify({'SessionID':Id})
+                        }).then(res => res.json()).then(data => caches[Id] = data.SessionLogs).catch(err => new Error('Invalid User ID'));
+                    }
+                    if(caches[Id] instanceof Promise){
+                        throw caches[Id];
+                    }
+                    return caches[Id];
+                }
+            }
+        }
+    },[SessionID]);
+
+    // useEffect(() => {
+        // if(SessionLogs.read(SessionID)){
+        //     console.table(SessionLogs.read(SessionID));
+        // }
+    // },[SessionID]);
+
+    const [AvailableDialogue , setDialogueBlocks] = useState(null);
+
+    // useEffect(() => {
+        if(SessionLogs.read(SessionID) && !AvailableDialogue){
+            setDialogueBlocks(SessionLogs.read(SessionID)); 
+        }
+    // },[SessionID]);
 
     const theme = Store.getState().theme;
-    const [AvailableDialogue , setDialogueBlocks] = useState(Store.getState().stored_progress);
+    // const [AvailableDialogue , setDialogueBlocks] = useState(); //Store.getState().stored_progress);
 
     const [options,setOptions] = useState(null); //This contains the options that can be chose from
    
@@ -100,9 +136,6 @@ const ChatIndex = ({}) => {
 
         //SCROLL TO RECENT DIALOGUE
         container.scrollTop = container.scrollHeight;
-        
-        // ScrollView.current.target.scrollTop = ScrollView.current.target.scrollHeight;
-        // console.log('scroll',container.scrollHeight)
 
         //FOCUS INPUT TEXT BOX
         UserInputComponent.current.focus(); 
@@ -112,7 +145,6 @@ const ChatIndex = ({}) => {
 
 
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
-        // console.table(AvailableDialogue);
 
         // INITIALLIZE THE AVAILABLE DATA LOGS
         const dialogues = AvailableDialogue;
@@ -120,12 +152,6 @@ const ChatIndex = ({}) => {
         if(AvailableDialogue){
             //GENERATE NEW ARRAY OF JSX DILOGUES
             const chat =  dialogues.map((item,index) => {
-                // const keys = Object.keys(item);
-                
-                //GENERATE OPTION IF THERE IS
-                // if(item.optns && dialogues.length === index + 1){
-                //     setOptions(item.optns);
-                // }
 
                 if(item){
                     return(
@@ -182,15 +208,11 @@ const ChatIndex = ({}) => {
     
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
-           {/* {useMemo(() => <ChatHeader anim={header_anim}/>,[header_anim])}  */}
            <ChatHeader/>
            <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
                 
                 <div className="w-full h-max flex flex-col gap-4 pt-4">
-
                     {useMemo(() => ChatDialogues,[ChatDialogues])}
-                    {/* <Character key={0} name={'Kana'} value={null}/> */}
-
                 </div>
 
            </article>

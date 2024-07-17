@@ -23,7 +23,7 @@ const ChatHeader = ({}) => {
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-arrow-left-short w-10 h-10  hover:cursor-pointer hover:scale-110" viewBox="0 0 16 16" style={{color:theme.light}}>
             <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
         </svg> 
-        <Suspense fallback = {<div className="w-14 h-14 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
+        <Suspense fallback = {<div className="w-12 h-12 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
                     <SuspenseImg src={img_src} w={12} h={12} icon={true}/>
         </Suspense>
         <div className="flex-grow h-full flex flex-row items-start justify-start">
