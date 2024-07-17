@@ -41,7 +41,7 @@ const SuspenseImg = ({src,icon = false}) => {
             { !icon ? 
                 <img src={url} alt='none' className="w-full mt-std" style={{aspectRatio:3/4,background:theme.light}}></img>
                  :
-                <img src={url} alt="none" className="w-14 h-14 rounded-full"/>
+                <img src={url} alt="none" className="w-10 h-10 rounded-full"/>
             
             }
         </>

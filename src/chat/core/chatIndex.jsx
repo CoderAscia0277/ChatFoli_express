@@ -161,7 +161,7 @@ const ChatIndex = ({}) => {
                     }) : ''
                 }
                 </div> */}
-                <div className="w-full h-max px-4 pb-4" style={{background:'linear-gradient(90deg,rgb(23,23,23),rgba(23,23,23,0.5),rgba(23,23,23,0.3),rgba(23,23,23,0.3),rgba(23,23,23,0.5),rgb(23,23,23)'}}>
+                <div className="w-full h-max px-4 pb-4 bg-neutral-900" >
                     <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
                         <input type='text' ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-send-fill w-6 h-6 text-neutral-400" viewBox="0 0 16 16">

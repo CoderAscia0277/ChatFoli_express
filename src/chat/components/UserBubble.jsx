@@ -13,8 +13,9 @@ const User = ({value = 'none'}) => {
                 <Suspense fallback = {<div className="w-14 h-14 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
                     <SuspenseImg src={img_src} icon={true}/>
                 </Suspense>
-                <div className=" text-white w-max  max-w-3/4 bg-neutral-800 px-4 h-max min-h-12  rounded-2xl  flex flex-row items-center justify-center">
-                    {/* <span className="font-medium text-xl  ">{name}</span> */}
+
+                <div className="cursor-default text-neutral-300 w-max  max-w-3/4  h-max min-h-12  rounded-2xl  flex flex-row  justify-center">
+                    {/* <span className="font-medium text-xl ">{'You'}</span> */}
                     <span className="leading-loose flex flex h-full ">{value}</span>
                 </div>
             </article>

@@ -35,10 +35,10 @@ const Character = ({name = 'Yuuki',value=null}) => {
                 <Suspense fallback = {<div className="w-14 h-14 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
                     <SuspenseImg src={img_src} icon={true}/>
                 </Suspense>
-                <div className=" text-white w-3/4  flex flex-col">
+                <div className="cursor-default text-neutral-300 w-3/4  flex flex-col">
                     <span className="font-medium text-xl  ">{name}</span>
 
-                    { useMemo(() => AI_response ?  <span className="leading-loose pt-4 ">{value}</span> :
+                    { useMemo(() => AI_response ?  <span className="leading-loose pt-2 ">{value}</span> :
                          <Suspense fallback={<span className="w-3 h-3 relative top-5 rounded-full loading bg-white"></span>}>
                             <AI_Requester prompt={userText}/>
                         </Suspense>
