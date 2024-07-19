@@ -18,19 +18,33 @@ export const UserContext = createContext();
 
 const ChatApp = ({UserId}) => {
 
-    const fetch_data = useMemo(() => {
+    const fetch_data = useMemo( () => {
         return{
             caches:{},
             read(Id){
                 if(!caches[Id]){
-                    caches[Id] = fetch('http://localhost:5000/autheticate-user',{
-                        method:'POST',
-                        headers:{
-                            'Content-Type':'application/json'
-                        },
-                        body:JSON.stringify({'UserID':UserId})
-                    }).then(res => res.json()).then(data => caches[Id] = data).catch(err => new Error('Invalid User ID'));
-                }
+                    
+                        this.caches[Id] = fetch('http://localhost:5000/autheticate-user',{
+                            method:'POST',
+                            headers:{
+                                'Content-Type':'application/json'
+                            },
+                            body:JSON.stringify({'UserID':UserId})
+                        }).then(res => {
+                            if(!res.ok){ //This how you handle error
+                                throw new Error(`Status Error: ${res.status}`);
+                            }
+                            return res.json();
+                        }).then(data => caches[Id] = data).catch(
+                            err => {
+                                console.log(err);
+                                this.caches[Id] = null;
+                            }
+
+                        );
+
+                    }
+
                 if(caches[Id] instanceof Promise){
                     throw caches[Id];
                 }
@@ -51,11 +65,11 @@ const ChatApp = ({UserId}) => {
 
 const ChatIndex = ({SessionID = null}) => {
 
-    //UserContext from Backend server
+    // UserContext from Backend server
     // const user_context = useContext(UserContext);
     
     
-    //Spreading the default variables to all components
+    // Spreading the default variables to all components
     // Store.dispatch(set_default_context(user_context));
 
     const SessionLogs = useMemo(() => {
@@ -82,19 +96,13 @@ const ChatIndex = ({SessionID = null}) => {
         }
     },[SessionID]);
 
-    // useEffect(() => {
-        // if(SessionLogs.read(SessionID)){
-        //     console.table(SessionLogs.read(SessionID));
-        // }
-    // },[SessionID]);
-
     const [AvailableDialogue , setDialogueBlocks] = useState(null);
 
-    // useEffect(() => {
+  //This part retrieves the chat logs from the server
         if(SessionLogs.read(SessionID) && !AvailableDialogue){
             setDialogueBlocks(SessionLogs.read(SessionID)); 
         }
-    // },[SessionID]);
+   
 
     const theme = Store.getState().theme;
     // const [AvailableDialogue , setDialogueBlocks] = useState(); //Store.getState().stored_progress);

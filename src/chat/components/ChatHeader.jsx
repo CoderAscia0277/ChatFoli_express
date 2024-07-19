@@ -26,13 +26,14 @@ const ChatHeader = ({}) => {
         <Suspense fallback = {<div className="w-12 h-12 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
                     <SuspenseImg src={img_src} w={12} h={12} icon={true}/>
         </Suspense>
-        <div className="flex-grow h-full flex flex-row items-start justify-start">
-            <span className="font-sans text-xl font-medium min-h-10  flex flex-row items-center px-4" style={{color:theme.light}} >
+        <div className="flex-grow h-full flex flex-col items-start justify-start px-4">
+            <span className="font-sans text-xl font-medium min-h-10  flex flex-row items-center " style={{color:theme.light}} >
                {name}
             </span>
+            <span className="text-neutral-400 text-sm">It's time to study again...</span>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-9 h-9 hover:cursor-pointer hover:scale-110 rounded-md " style={{color:theme.light}} viewBox="0 0 16 16">
-            <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-three-dots-vertical w-8 h-8 hover:cursor-pointer hover:scale-110 rounded-md " style={{color:theme.light}} viewBox="0 0 16 16">
+            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
         </svg>
     </article>
     );
