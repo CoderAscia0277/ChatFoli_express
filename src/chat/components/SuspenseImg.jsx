@@ -13,12 +13,20 @@ const get_url =  {
             if(!this.cache[text]){
                 this.cache[text] = fetch('http://localhost:5000/generate_image',{
                     method:'POST',headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({'prompt':text})}).then( res => res.json())
+                    body:JSON.stringify({'prompt':text})}).then( res => {
+                        if(!res.ok){ // Handle Error
+                            throw new Error(`Status error ${res.status}`);
+                        }
+                        return res.json()
+                    })
                     .then(data => {
         
                         this.cache[text] = data.image_url;
                 
-                     }).catch(err => new Error('Invalid request: ' , err))
+                     }).catch(err => {
+                        console.log(err);
+                        this.cache[text] = null;
+                     });
             }if(this.cache[text] instanceof Promise){
                     throw this.cache[text]
             }
@@ -41,7 +49,7 @@ const SuspenseImg = ({src,icon = false, w = 0,h = 0}) => {
             { !icon ? 
                 <img src={url} alt='none' className="w-full mt-std" style={{aspectRatio:3/4,background:theme.light}}></img>
                  :
-                <img src={url} alt="none" className={`${ w > 0 && h > 0 ? `w-${w} h-${h}`: 'w-10 h-10'} rounded-full`}/>
+                <img src={url} alt="none" className={`${ w && h  ? `${w} ${h}`: 'w-10 h-10'} rounded-full`}/>
             
             }
         </>

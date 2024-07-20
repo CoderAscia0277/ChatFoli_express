@@ -34,7 +34,10 @@ const ChatApp = ({UserId}) => {
                             if(!res.ok){ //This how you handle error
                                 throw new Error(`Status Error: ${res.status}`);
                             }
+                            
                             return res.json();
+                            
+                            
                         }).then(data => caches[Id] = data).catch(
                             err => {
                                 console.log(err);

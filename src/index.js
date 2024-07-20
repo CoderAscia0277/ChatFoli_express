@@ -8,9 +8,10 @@ import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 
 const AuthenticationPanel = lazy(()=>import('./chat/components/AuthenticationPanel'));
 const ChatApp = lazy(()=>import('./chat/core/chatIndex'));
-
+const LoadingIdle = lazy(() => import('./chat/components/Loading_Idle'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const UserId= 123789; 
+
 const router = createBrowserRouter([
   {
     path:'/',
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
     element:<div>Hello World !</div>
   },{
     path:'/chat',
-    element:<Suspense fallback={<p>Fetching user data...</p>}><ChatApp UserId={UserId}/></Suspense>
+    element: <Suspense fallback={<LoadingIdle/>}><ChatApp UserId={UserId}/></Suspense> 
   }]
 );
 root.render(

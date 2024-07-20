@@ -24,7 +24,7 @@ const ChatHeader = ({}) => {
             <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
         </svg> 
         <Suspense fallback = {<div className="w-12 h-12 bg-neutral-600 loading rounded-full" style={{aspectRatio:1/1}}></div>}>
-                    <SuspenseImg src={img_src} w={12} h={12} icon={true}/>
+                    <SuspenseImg src={img_src} w={'w-12'} h={'h-12'} icon={true}/>
         </Suspense>
         <div className="flex-grow h-full flex flex-col items-start justify-start px-4">
             <span className="font-sans text-xl font-medium min-h-10  flex flex-row items-center " style={{color:theme.light}} >
