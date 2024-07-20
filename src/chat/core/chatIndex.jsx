@@ -59,89 +59,40 @@ const ChatApp = ({UserId}) => {
 
     return(
         <UserContext.Provider value={fetch_data.read(UserId)}>
-            <Suspense fallback={<p>Loading</p>}>
-                <ChatIndex SessionID={'2468'}/>
-            </Suspense>
+            <ChatIndex/>
         </UserContext.Provider>
     );
 }
 
-const ChatIndex = ({SessionID = null}) => {
 
-    // UserContext from Backend server
-    // const user_context = useContext(UserContext);
-    
-    
-    // Spreading the default variables to all components
-    // Store.dispatch(set_default_context(user_context));
+const ChatContainer = ({setAvailableBlocks = () => null, ChatLogs = null,SessionID = '',userFocus = () => null}) =>{
 
-    const SessionLogs = useMemo(() => {
-        if(SessionID){
-            // console.log('run');
-            return{
-                caches:{},
-                read(Id){
-                    if(!caches[Id]){
-                        caches[Id] = fetch('http://localhost:5000/session',{
-                            method:'POST',
-                            headers:{
-                                'Content-Type':'application/json'
-                            },
-                            body:JSON.stringify({'SessionID':Id})
-                        }).then(res => res.json()).then(data => caches[Id] = data.SessionLogs).catch(err => new Error('Invalid User ID'));
+    const ScrollView = useRef(null);
+
+    const GET_SESSION_DATA = useMemo( () => { return{ 
+            caches:{},
+            read(Id){
+                        if(!caches[Id]){
+                            caches[Id] = fetch('http://localhost:5000/session',{
+                                method:'POST',
+                                headers:{
+                                    'Content-Type':'application/json'
+                                },
+                                body:JSON.stringify({'SessionID':Id})
+                            }).then(res => res.json()).then(data => caches[Id] = data.SessionLogs).catch(err => new Error('Invalid User ID'));
+                        }
+                        if(caches[Id] instanceof Promise){
+                            throw caches[Id];
+                        }
+                        return caches[Id];
                     }
-                    if(caches[Id] instanceof Promise){
-                        throw caches[Id];
-                    }
-                    return caches[Id];
-                }
-            }
         }
     },[SessionID]);
 
-    const [AvailableDialogue , setDialogueBlocks] = useState(null);
-
-  //This part retrieves the chat logs from the server
-        if(SessionLogs.read(SessionID) && !AvailableDialogue){
-            setDialogueBlocks(SessionLogs.read(SessionID)); 
-        }
-   
-
-    const theme = Store.getState().theme;
-    // const [AvailableDialogue , setDialogueBlocks] = useState(); //Store.getState().stored_progress);
-
-    const [options,setOptions] = useState(null); //This contains the options that can be chose from
-   
-    const [ChatDialogues,SetChatDialogues] = useState(null);
-
-    // const [DialogueState ,setDialogueState] = useState(false);
-
-    const UserInputComponent = useRef(null);
-    const ScrollView = useRef(null);
+    if(GET_SESSION_DATA.read(SessionID) && !ChatLogs){
+        setAvailableBlocks(GET_SESSION_DATA.read(SessionID));
+    }
     
-  
-
-
-    const has_option_selected = useCallback((text_value) => {
-
-         //Add new User Dialogue when option is pressed
-        setDialogueBlocks(prev_logs => [...prev_logs,{name:'user',value:text_value}]);
-
-        setTimeout(() => {
-            setDialogueBlocks(prev_logs => [...prev_logs,{name:'Kana',value:null}]);
-        },100);
-        
-                    
-    },[setDialogueBlocks]);
-
-
-    // hahahah sa wakas napagana ko na ung auto add ng chat dialogues ng hindi nag rerender ulit ung mga previous dialogues
-    // > It was kinda hard , so ito ang nangayari , sa unang lunch gagana ung second useEffect na may parameters ng available dialogues
-    // > then mag gegenerate ng bagong component ung useEffect according sa data na currently available sa AvailableDialogues
-    // > Once na matapos ang mapping ng components is lalagay ito sa setChatDialogues para mairender
-    // > Everytime na may mabago sa AvailableDialogues gagana iton function na contniously nagegenerate ng components, but since nilalagay natin ung mapping output sa SET STATE na reretain nitop ung previous data at and nirerender lang ay yung new components, which solves the rerendering 
-    // issue sa mga dialogue components
-
     useEffect(() => {
         const container =  ScrollView.current;
 
@@ -149,14 +100,31 @@ const ChatIndex = ({SessionID = null}) => {
         container.scrollTop = container.scrollHeight;
 
         //FOCUS INPUT TEXT BOX
-        UserInputComponent.current.focus(); 
+        userFocus();
 
-    },[ChatDialogues]);
+    },[ChatLogs]);
+
+    return(
+
+    <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
+        <div className="w-full h-max flex flex-col gap-4 pt-4">
+            {useMemo(() => ChatLogs,[ChatLogs])}
+        </div>
+    </article>
+    );
+}
+
+const ChatIndex = () => {
 
 
+    const SessionData = useRef(null);
+    const [AvailableDialogue , setDialogueBlocks] = useState(null);
+    const [ChatDialogues,SetChatDialogues] = useState(null);
+
+  
 
     useEffect(() => { //RUNS EVRYTIME THE AVAILABLE DIALOGUE CHANGES
-
+        
         // INITIALLIZE THE AVAILABLE DATA LOGS
         const dialogues = AvailableDialogue;
 
@@ -178,6 +146,33 @@ const ChatIndex = ({SessionID = null}) => {
 
         }
     },[AvailableDialogue]);
+
+    const theme = Store.getState().theme;
+
+    const [options,setOptions] = useState(null); //This contains the options that can be chose from
+
+    const UserInputComponent = useRef(null);
+  
+    
+  
+
+
+    const has_option_selected = useCallback((text_value) => {
+
+         //Add new User Dialogue when option is pressed
+        setDialogueBlocks(prev_logs => [...prev_logs,{name:'user',value:text_value}]);
+
+        setTimeout(() => {
+            setDialogueBlocks(prev_logs => [...prev_logs,{name:'Kana',value:null}]);
+        },100);
+        
+                    
+    },[setDialogueBlocks]);
+
+
+
+
+
 
     const submitText = useCallback(() => {
 
@@ -220,13 +215,9 @@ const ChatIndex = ({SessionID = null}) => {
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
            <ChatHeader/>
-           <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
-                
-                <div className="w-full h-max flex flex-col gap-4 pt-4">
-                    {useMemo(() => ChatDialogues,[ChatDialogues])}
-                </div>
-
-           </article>
+            <Suspense fallback={<p>hi</p>}>
+                <ChatContainer setAvailableBlocks={logs => setDialogueBlocks(logs)} ChatLogs={ChatDialogues} userFocus ={() => UserInputComponent.current.focus() } SessionID='2468'/>
+            </Suspense>
 
            {useMemo(() => <Options optns={options}/>,[options])}
 
