@@ -38,7 +38,7 @@ const get_url =  {
 
 
 
-const SuspenseImg = ({src,icon = false, w = 0,h = 0}) => {
+const SuspenseImg = ({child,src,icon = false, w = 0,h = 0}) => {
     const theme = Store.getState().theme;
     const getImage = imgCache;
     const url = useMemo(() => get_url.read(src),[src]);

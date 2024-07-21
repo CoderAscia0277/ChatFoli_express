@@ -10,44 +10,6 @@ const UserContext = createContext();
 
 const ChatApp = ({UserId}) => {
 
-    const fetch_data = useMemo( () => {
-        return{
-            caches:{},
-            read(Id){
-                if(!caches[Id]){
-                    
-                        this.caches[Id] = fetch('http://localhost:5000/autheticate-user',{
-                            method:'POST',
-                            headers:{
-                                'Content-Type':'application/json'
-                            },
-                            body:JSON.stringify({'UserID':UserId})
-                        }).then(res => {
-                            if(!res.ok){ //This how you handle error
-                                throw new Error(`Status Error: ${res.status}`);
-                            }
-                            
-                            return res.json();
-                
-                        }).then(data => caches[Id] = data).catch(
-                            err => {
-                                console.log(err);
-                                this.caches[Id] = null;
-                            }
-
-                        );
-
-                    }
-
-                if(caches[Id] instanceof Promise){
-                    throw caches[Id];
-                }
-                return caches[Id];
-            }
-        }
-    },[UserId]);
-
-
     return(
         <UserContext.Provider value={TestFetcher.read('456')}>
            <ChatConvoDisplay/>
@@ -56,13 +18,15 @@ const ChatApp = ({UserId}) => {
 }
 
 
+// ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''}
 const ChatConvoDisplay = () => {
 
     const theme = Store.getState().theme;
 
+
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
-            <ChatHeader/>
+            <ChatHeader tag="It's time to study again..." name="Kana Hanazawa" icon="http://localhost:5000/images/image_02.jpg"/>
             <Suspense fallback={<ChatContainerHolder/>}>
                 <ChatContainer SessionId={'345'}/>
             </Suspense>
@@ -105,6 +69,7 @@ const ChatContainer = (SessionId = null) => {
 
 
     const ScrollView = useRef(null);
+    const UserInput = useRef(null);
     useEffect(() => {
         //Scroll to view 
         if(CONVO){
@@ -113,6 +78,7 @@ const ChatContainer = (SessionId = null) => {
             container.scrollTop = container.scrollHeight;
         }
     },[CONVO]);
+
 
     if(GET_SESSION_DATA && !SESSION_LOG){
         UPDATE_SESSION_LOG(GET_SESSION_DATA);
@@ -136,12 +102,48 @@ const ChatContainer = (SessionId = null) => {
         }
     },[SESSION_LOG]);
 
+    const SEND = useCallback(() => {
+        const TEXT = UserInput.current.value;
+        if(TEXT){
+            ADD_SESSION_LOG(TEXT);
+            //STORE TO GLOBAL
+            Store.dispatch(update_userText(TEXT));
+            //CLEAR USER TEXT
+            UserInput.current.value = null;
+            UserInput.current.focus();
+        }
+    },[UserInput]);
+
+    const ADD_SESSION_LOG = data => {
+        //ADDS AND STORES NEW USER BUBBLE
+        UPDATE_SESSION_LOG( EXISTING_LOG => [...EXISTING_LOG,{name:'user',value:data}]);
+        //ADDS AND STORES NEW CHARACTER BUBBLE
+        setTimeout(() => {
+            UPDATE_SESSION_LOG(EXISTING_LOG => [...EXISTING_LOG,{name:'Kana',value:null}]);
+        },100);
+        
+    };
+
+
     return(
+    <>
         <article ref={ScrollView} id="ScrollView" className="super_parent w-full min-h-full flex-grow container overflow-y-scroll" style={{scrollBehavior:'smooth'}}>
             <div className="w-full h-max flex flex-col gap-4 pt-4">
                 {useMemo(() => CONVO,[CONVO])}
             </div>
         </article>
+
+        <article className="w-full h-max  flex flex-col absolute bottom-0"  >
+                <div className="w-full h-max px-4 pb-4 bg-neutral-900" >
+                    <div className="bg-neutral-800 rounded-lg h-12 w-full flex flex-row gap-4 items-center px-4">
+                        <input type='text' ref={UserInput} onKeyDown={e => e.key === 'Enter' ?  SEND() : null} placeholder="Write reply" className=" flex-grow  bg-transparent h-full  outline-0 text-white"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => SEND()} fill="currentColor" className="bi bi-send-fill w-6 h-6 text-neutral-400" viewBox="0 0 16 16">
+                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+                        </svg>
+                    </div>
+                </div>  
+        </article>
+    </>
     )
 }
 export default ChatApp
