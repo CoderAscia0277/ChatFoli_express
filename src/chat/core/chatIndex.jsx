@@ -1,6 +1,7 @@
 import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback, Suspense } from "react";
 import React from "react";
 import Store, {set_default_context,update_userText} from "../utils/ConfigureStore";
+import { TestFetcher } from "../utils/TestFetcher";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
@@ -58,7 +59,7 @@ const ChatApp = ({UserId}) => {
 
 
     return(
-        <UserContext.Provider value={fetch_data.read(UserId)}>
+        <UserContext.Provider value={TestFetcher.read(UserId)}>
             <ChatIndex/>
         </UserContext.Provider>
     );

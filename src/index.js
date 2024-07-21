@@ -7,7 +7,7 @@ import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 // import ChatIndex from './chat/core/chatIndex';
 
 const AuthenticationPanel = lazy(()=>import('./chat/components/AuthenticationPanel'));
-const ChatApp = lazy(()=>import('./chat/core/chatIndex'));
+const ChatApp = lazy(()=>import('./chat/core/ChatIndexer'));
 const LoadingIdle = lazy(() => import('./chat/components/Loading_Idle'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const UserId= 123789; 
