@@ -12,13 +12,24 @@ const ChatApp = ({UserId}) => {
 
     return(
         <UserContext.Provider value={TestFetcher.read('456')}>
-           <ChatConvoDisplay/>
+           {/* <ChatConvoDisplay/> */}
+           <ChatMenu/>
         </UserContext.Provider>
     );
 }
 
+const ChatMenu = () => {
 
-// ref={UserInputComponent} onKeyDown={(e) => e.key === 'Enter' ?  submitText() : ''}
+    const theme = Store.getState().theme;
+    return(
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}}  >
+            <nav className="absolute top w-full min-h-14 border flex flex-row items-center justify-start gap-2 px-4 ">
+                <span className="text-neutral-100 text-xl font-sans">ChatBotify</span>
+            </nav>
+        </section>
+    );
+}
+
 const ChatConvoDisplay = () => {
 
     const theme = Store.getState().theme;
