@@ -18,14 +18,38 @@ const ChatApp = ({UserId}) => {
     );
 }
 
+const ProfileIconLoader = () => {
+    return(
+        <span className="w-16 h-16 bg-neutral-800  rounded-full flex items-end justify-end">
+            <span className="w-4 h-4 bg-neutral-200 block relative rounded-full" ></span>
+        </span>
+    );
+}
+
+
+
 const ChatMenu = () => {
 
     const theme = Store.getState().theme;
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}}  >
-            <nav className="absolute top w-full min-h-14 border flex flex-row items-center justify-start gap-2 px-4 ">
-                <span className="text-neutral-100 text-xl font-sans">ChatBotify</span>
+            <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-1 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 " style={{color:theme.light}} viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
             </nav>
+            <article className="w-full min-h-20 items-center overflow-x-scroll px-2 py-2">
+                <li className="w-max h-full flex flex-row gap-2">
+                   <ProfileIconLoader/>
+                   <ProfileIconLoader/>
+                   <ProfileIconLoader/>
+                   <ProfileIconLoader/>
+                   <ProfileIconLoader/>
+                   <ProfileIconLoader/>
+                </li>
+                
+            </article>
         </section>
     );
 }
