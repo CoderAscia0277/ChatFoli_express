@@ -1,14 +1,14 @@
 import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback, Suspense } from "react";
 import React from "react";
 import Store, {set_default_context,update_userText} from "../utils/ConfigureStore";
-import { TestFetcher , SessionFetcher} from "../utils/TestFetcher";
+import { TestFetcher , SessionFetcher ,CONNECT_WEBSOCKET} from "../utils/TestFetcher";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 
 const UserContext = createContext();
 
-const ChatApp = ({UserId}) => {
+const ChatApp = () => {
 
     return(
         <UserContext.Provider value={TestFetcher.read('456')}>
@@ -20,19 +20,57 @@ const ChatApp = ({UserId}) => {
 
 const ProfileIconLoader = () => {
     return(
-        <span className="w-16 h-16 bg-neutral-800  rounded-full flex items-end justify-end">
-            <span className="w-4 h-4 bg-neutral-200 block relative rounded-full" ></span>
+        <span className="w-16 h-16 bg-neutral-800 loading rounded-full flex items-end justify-end">
+            <span className="w-4 h-4 bg-neutral-700 block relative rounded-full" ></span>
         </span>
     );
 }
+const ContactListLoader = () => {
+    return(
+        <article className="w-full h-3/4 px-4 flex flex-col justify-evenly ">
+            <ContactLoader/>
+            <ContactLoader/>
+            <ContactLoader/>
+            <ContactLoader/>
+            <ContactLoader/>
+            <ContactLoader/>
+        </article>
+    );
+}
+const ContactLoader = () => {
+    return(
+        <div className="w-full min-h-16 flex flex-row gap-4 ">
+            <span className="bg-neutral-800 w-14 h-14 rounded-full block loading"></span>
+            <ul className="flex-grow h-full flex flex-col gap-2">
+                <span className="block bg-neutral-800 loading w-2/6 min-h-4  "></span>
+                <span className="block bg-neutral-800 loading w-3/4 min-h-6  "></span>
+            </ul>
+        </div>
+    );
+}
 
-
+const Sample = ({USER_ID}) => {
+    const [USER_DATA,UPDATE_USER_DATA] = useState(null);
+    if(CONNECT_WEBSOCKET.read(USER_ID) && !USER_DATA){
+        UPDATE_USER_DATA(CONNECT_WEBSOCKET.read(USER_ID));
+     
+    }
+    useEffect(() => {
+        console.table(USER_DATA);
+    },[USER_DATA]);
+    return(
+        <p>
+           done
+        </p>
+    );
+}
 
 const ChatMenu = () => {
 
-    const theme = Store.getState().theme;
+    const theme = useContext(UserContext);
+
     return(
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}}  >
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}}  >
             <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-1 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 " style={{color:theme.light}} viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
@@ -40,7 +78,7 @@ const ChatMenu = () => {
                 <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
             </nav>
             <article className="w-full min-h-20 items-center overflow-x-scroll px-2 py-2">
-                <li className="w-max h-full flex flex-row gap-2">
+                <li className="w-max h-max flex flex-row gap-2">
                    <ProfileIconLoader/>
                    <ProfileIconLoader/>
                    <ProfileIconLoader/>
@@ -48,15 +86,18 @@ const ChatMenu = () => {
                    <ProfileIconLoader/>
                    <ProfileIconLoader/>
                 </li>
-                
             </article>
+            <Suspense fallback={<ContactListLoader/>}>
+                <Sample USER_ID={'2468'}/>
+            </Suspense>
+            
         </section>
     );
 }
 
 const ChatConvoDisplay = () => {
 
-    const theme = Store.getState().theme;
+    const theme = useContext(UserContext);
 
 
     return(

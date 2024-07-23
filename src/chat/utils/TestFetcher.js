@@ -6,7 +6,7 @@ export const TestFetcher = {
             this.caches[Id] = new Promise(resolve => {
                 setTimeout(() =>{
                     console.log('done');
-                    this.caches[Id] = 'done';
+                    this.caches[Id] = { 'dark':'rgb(23 23 23)','light':'#FBF6F3'};
                     resolve('done')
                 },7000);
             })
@@ -49,3 +49,31 @@ export const SessionFetcher = {
         return this.caches[SESSION_ID];
     }
 }
+
+export const CONNECT_WEBSOCKET = {
+    USERDATA: [],
+    read(USER_ID){
+        if(!this.USERDATA[USER_ID]){
+            this.USERDATA[USER_ID] = new Promise( resolve => {
+                const socket = new WebSocket('ws://localhost:8080');
+                socket.onopen = () => {
+                    this.USERDATA[USER_ID] = 'done';
+                    resolve(this.USERDATA[USER_ID]);
+                }
+            })
+
+            // const socket = new WebSocket('ws://localhost:8080');
+            
+            // socket.onmessage = message => {
+            //     const PARSER = data => JSON.parse(data);
+            //     this.USERDATA[USER_ID] = PARSER(message.data);
+            // }
+                
+        }
+        if(this.USERDATA[USER_ID] instanceof Promise){
+            return this.USERDATA[USER_ID];
+        }
+        return this.USERDATA[USER_ID];
+    }
+}
+
