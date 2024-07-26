@@ -1,7 +1,7 @@
 import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy, useCallback, Suspense } from "react";
 import React from "react";
 import Store, {set_default_context,update_userText} from "../utils/ConfigureStore";
-import { TestFetcher , SessionFetcher ,CONNECT_WEBSOCKET} from "../utils/TestFetcher";
+import { TestFetcher , SessionFetcher ,CONNECT_WEBSOCKET, CLIENT_DATA} from "../utils/TestFetcher";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
@@ -11,7 +11,7 @@ const UserContext = createContext();
 const ChatApp = () => {
 
     return(
-        <UserContext.Provider value={TestFetcher.read('456')}>
+        <UserContext.Provider value={CLIENT_DATA.read('2468')}>
            {/* <ChatConvoDisplay/> */}
            <ChatMenu/>
         </UserContext.Provider>
@@ -67,12 +67,19 @@ const Sample = ({USER_ID}) => {
 
 const ChatMenu = () => {
 
-    const theme = useContext(UserContext);
+
+    const [{THEME,RECENT_ACTIVE,RECENT_MESSAGES},UPDATE_DATA] = useState(useContext(UserContext));
+
+    useEffect( () => {
+        console.table(THEME);
+        console.table(RECENT_ACTIVE);
+        console.table(RECENT_MESSAGES);
+    },[RECENT_ACTIVE]);
 
     return(
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}}  >
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:THEME.dark}}  >
             <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-1 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 " style={{color:theme.light}} viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-1 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 " style={{color:THEME.light}} viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                 </svg>
                 <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
@@ -87,9 +94,10 @@ const ChatMenu = () => {
                    <ProfileIconLoader/>
                 </li>
             </article>
-            <Suspense fallback={<ContactListLoader/>}>
+            <ContactListLoader/>
+            {/* <Suspense fallback={<ContactListLoader/>}>
                 <Sample USER_ID={'2468'}/>
-            </Suspense>
+            </Suspense> */}
             
         </section>
     );
@@ -97,11 +105,11 @@ const ChatMenu = () => {
 
 const ChatConvoDisplay = () => {
 
-    const theme = useContext(UserContext);
+    const [{THEME,RECENT_ACTIVE,RECENT_MESSAGE},UPDATE_DATA] = useState(useContext(UserContext));
 
 
     return(
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:theme.dark}} >
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:THEME.dark}} >
             <ChatHeader tag="It's time to study again..." name="Kana Hanazawa" icon="http://localhost:5000/images/image_02.jpg"/>
             <Suspense fallback={<ChatContainerHolder/>}>
                 <ChatContainer SessionId={'345'}/>

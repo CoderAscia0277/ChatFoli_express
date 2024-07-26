@@ -77,3 +77,27 @@ export const CONNECT_WEBSOCKET = {
     }
 }
 
+export const CLIENT_DATA =  {
+    CLIENT_DATA:[],
+    read(USER_ID){
+        if(!this.CLIENT_DATA[USER_ID]){
+            this.CLIENT_DATA[USER_ID] = fetch('http://localhost:5000/data',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({USER_ID:USER_ID})
+            }).then( res => {
+                if(!res.ok){
+                    throw new Error(res.status);
+                }
+                return res.json();
+            }).then( data => this.CLIENT_DATA[USER_ID] = data).catch( err => {
+                    console.error('Ops! something went wrong');
+                    this.CLIENT_DATA[USER_ID] = null;
+                }
+            )
+        }if( this.CLIENT_DATA[USER_ID] instanceof Promise){
+            throw this.CLIENT_DATA[USER_ID];
+        }
+        return this.CLIENT_DATA[USER_ID];
+    }
+}
