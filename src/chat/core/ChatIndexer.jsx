@@ -105,7 +105,7 @@ const ChatMenu = () => {
 
 const ChatConvoDisplay = () => {
 
-    const [{THEME,RECENT_ACTIVE,RECENT_MESSAGE},UPDATE_DATA] = useState(useContext(UserContext));
+    const [{THEME},UPDATE_DATA] = useState(useContext(UserContext));
 
 
     return(
