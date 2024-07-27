@@ -8,6 +8,7 @@ const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
 const UserContext = createContext();
 
+//MAIN COMPONENT WHICH COMMUNICATES WITH THE INDEX JS
 const ChatApp = () => {
 
     return(
@@ -17,7 +18,7 @@ const ChatApp = () => {
         </UserContext.Provider>
     );
 }
-
+//HANDLES THE PROFILE LOADING DISPLAY
 const ProfileIconLoader = () => {
     return(
         <span className="w-16 h-16 bg-neutral-800 loading rounded-full flex items-end justify-end">
@@ -25,6 +26,7 @@ const ProfileIconLoader = () => {
         </span>
     );
 }
+//DISPLAYS THE PROFILE ICON
 const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}}) => {
     const {USER_ID,USER_NAME,ICON} = VALUE;
     const LOAD_IMAGE = imgCache;
@@ -48,9 +50,7 @@ const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}}) => {
         return(<ProfileIconLoader/>);
     }
 }
-
-
-
+//HANDLES THE CONTACT LIST LOADING DISPLAY
 const ContactListLoader = () => {
     return(
         <article className="w-full h-3/4 p-4 flex flex-col justify-evenly gap-2">
@@ -63,6 +63,7 @@ const ContactListLoader = () => {
         </article>
     );
 }
+// HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
 const ContactLoader = () => {
     return(
         <div className="w-full min-h-16 flex flex-row gap-4 ">
@@ -90,7 +91,7 @@ const Sample = ({USER_ID}) => {
         </p>
     );
 }
-
+// HOLDS MOST THE COMPONENTS LIKE A BACKBONE
 const ChatMenu = () => {
 
 
@@ -136,7 +137,7 @@ const ChatMenu = () => {
         </section>
     );
 }
-
+// DISPLAYS THE UI CONVO LOG OF A SPECIFIC PROFILE
 const ChatConvoDisplay = () => {
 
     const [{THEME},UPDATE_DATA] = useState(useContext(UserContext));
@@ -152,7 +153,7 @@ const ChatConvoDisplay = () => {
         </section>
     );
 }
-
+// CONTAINS A LIST OF LOADER COMPONENTS , DISPLAYS WHEN THE UI CONVO LOG IS ACTIVATES
 const ChatContainerHolder = () => {
     const ContentHolder = () => {
         return(
@@ -178,7 +179,7 @@ const ChatContainerHolder = () => {
         </section>
     );
 }
-
+// THE ROOT COMPONENT FOR THE LIST OF CHAT CONTAINER HOLDERS ABOVE
 const ChatContainer = (SessionId = null) => {
 
     const GET_SESSION_DATA = SessionFetcher.read(SessionId);
