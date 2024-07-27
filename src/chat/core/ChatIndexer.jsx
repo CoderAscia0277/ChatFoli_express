@@ -2,10 +2,10 @@ import { useState , useEffect , useRef, useMemo, createContext, useContext ,lazy
 import React from "react";
 import Store, {set_default_context,update_userText} from "../utils/ConfigureStore";
 import { TestFetcher , SessionFetcher ,CONNECT_WEBSOCKET, CLIENT_DATA} from "../utils/TestFetcher";
+import imgCache from "../utils/ImageCache";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const User = lazy(() => import('../components/UserBubble'));
 const ChatHeader = lazy(() => import("../components/ChatHeader"));
-
 const UserContext = createContext();
 
 const ChatApp = () => {
@@ -25,9 +25,35 @@ const ProfileIconLoader = () => {
         </span>
     );
 }
+const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}}) => {
+    const {USER_ID,USER_NAME,ICON} = VALUE;
+    const LOAD_IMAGE = imgCache;
+
+    const Icon = ({src}) => {
+        LOAD_IMAGE.read(src);
+        return(
+            <span className="w-16 h-16  rounded-full flex items-end justify-end hover:cursor-pointer hover:scale-110" style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+                <span className="w-4 h-4 bg-lime-600 border-neutral-900 border block relative rounded-full" ></span>
+            </span>
+        );
+    }
+    try{
+        new URL(ICON);
+        return(
+            <Suspense fallback={<ProfileIconLoader/>}>
+                <Icon src={ICON}/>
+            </Suspense>
+        );
+    }catch{
+        return(<ProfileIconLoader/>);
+    }
+}
+
+
+
 const ContactListLoader = () => {
     return(
-        <article className="w-full h-3/4 px-4 flex flex-col justify-evenly ">
+        <article className="w-full h-3/4 p-4 flex flex-col justify-evenly gap-2">
             <ContactLoader/>
             <ContactLoader/>
             <ContactLoader/>
@@ -42,8 +68,8 @@ const ContactLoader = () => {
         <div className="w-full min-h-16 flex flex-row gap-4 ">
             <span className="bg-neutral-800 w-14 h-14 rounded-full block loading"></span>
             <ul className="flex-grow h-full flex flex-col gap-2">
-                <span className="block bg-neutral-800 loading w-2/6 min-h-4  "></span>
-                <span className="block bg-neutral-800 loading w-3/4 min-h-6  "></span>
+                <span className="block bg-neutral-800 loading w-2/6 min-h-4 rounded-sm "></span>
+                <span className="block bg-neutral-800 loading w-3/4 min-h-6 rounded-sm "></span>
             </ul>
         </div>
     );
@@ -76,6 +102,22 @@ const ChatMenu = () => {
         console.table(RECENT_MESSAGES);
     },[RECENT_ACTIVE]);
 
+    const [ACTIVE_LIST,UPDATE_ACTIVE_LIST] = useState(null);
+
+
+    useEffect((ACTIVES,LIST_PROFILE_ICON) => { //CREATES BUNCH OF PROFILE ICONS
+        ACTIVES = RECENT_ACTIVE;
+        if(ACTIVES){
+            LIST_PROFILE_ICON = ACTIVES.map((data,index) => {
+                return(
+                    <ProfileIcon VALUE={data} key={index}/>
+                    
+                );
+            });
+            UPDATE_ACTIVE_LIST(LIST_PROFILE_ICON);
+        } 
+    },[RECENT_ACTIVE]);
+
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:THEME.dark}}  >
             <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
@@ -86,18 +128,10 @@ const ChatMenu = () => {
             </nav>
             <article className="w-full min-h-20 items-center overflow-x-scroll px-2 py-2">
                 <li className="w-max h-max flex flex-row gap-2">
-                   <ProfileIconLoader/>
-                   <ProfileIconLoader/>
-                   <ProfileIconLoader/>
-                   <ProfileIconLoader/>
-                   <ProfileIconLoader/>
-                   <ProfileIconLoader/>
+                   {useMemo(() => ACTIVE_LIST,[ACTIVE_LIST])}
                 </li>
             </article>
             <ContactListLoader/>
-            {/* <Suspense fallback={<ContactListLoader/>}>
-                <Sample USER_ID={'2468'}/>
-            </Suspense> */}
             
         </section>
     );
