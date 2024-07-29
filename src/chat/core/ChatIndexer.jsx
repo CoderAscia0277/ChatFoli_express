@@ -18,24 +18,26 @@ const ChatApp = () => {
         </UserContext.Provider>
     );
 }
-//HANDLES THE PROFILE LOADING DISPLAY
-const ProfileIconLoader = () => {
-    return(
-        <span className="w-16 h-16 bg-neutral-800 loading rounded-full flex items-end justify-end">
-            <span className="w-4 h-4 bg-neutral-700 block relative rounded-full" ></span>
-        </span>
-    );
-}
+
 //DISPLAYS THE PROFILE ICON
-const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}},size={w:null,h:null},isActive = true) => {
+const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''},size={w:null,h:null},isActive = true, isHover = true}) => {
     const {ICON} = VALUE;
     const LOAD_IMAGE = imgCache;
+
+    //HANDLES THE PROFILE LOADING DISPLAY
+    const ProfileIconLoader = () => {
+        return(
+            <span className="w-16 h-16 bg-neutral-800 loading rounded-full flex items-end justify-end">
+                <span className="w-4 h-4 bg-neutral-700 block relative rounded-full" ></span>
+            </span>
+        );
+    }
 
     const Icon = ({src}) => {
         LOAD_IMAGE.read(src);
         return(
-            <span className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-16 h-16'}  rounded-full flex items-end justify-end hover:cursor-pointer hover:scale-110`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
-                <span className={`w-4 h-4 ${isActive ? 'bg-lime-600' : 'bg-neutral-800'} border-neutral-900 border block relative rounded-full`} ></span>
+            <span className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-16 h-16'}  rounded-full flex items-end justify-end ${isHover ? 'hover:cursor-pointer hover:scale-110' : ''}`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+                <span className={`w-4 h-4 ${isActive ? 'bg-lime-600' : 'bg-neutral-600'} border-neutral-900 border-2 block relative rounded-full`} ></span>
             </span>
         );
     }
@@ -61,7 +63,7 @@ const ContactListDisplay = () => {
             PROFILES = RECENT_MESSAGES;
             PROFILE_COMPONENTS = PROFILES.map((item,index) => {
                 return(
-                    <ContactProfile VALUE={item} key={index}/>
+                    <ContactProfile VALUE={item} key={index} isSeen={Math.random() < 0.5}/>
                 );
             });
 
@@ -71,39 +73,40 @@ const ContactListDisplay = () => {
 
 
     return(
-        <article className="w-full h-3/4 p-4 flex flex-col  gap-4">
+        <article className="w-full h-3/4 flex flex-col ">
             {useMemo(() => CONTACT_LIST,[CONTACT_LIST])}
         </article>
     );
 }
 
-// HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
-const ContactProfileLoader = () => {
-    return(
-        <div className="w-full min-h-16 flex flex-row gap-4 ">
-            <span className="bg-neutral-800 w-14 h-14 rounded-full block loading"></span>
-            <ul className="flex-grow h-full flex flex-col gap-2">
-                <span className="block bg-neutral-800 loading w-2/6 min-h-4 rounded-sm "></span>
-                <span className="block bg-neutral-800 loading w-3/4 min-h-6 rounded-sm "></span>
-            </ul>
-        </div>
-    );
-}
-
-const ContactProfile = ({VALUE = {USER_ID:null,USER_NAME:null,RECENT_MESSAGE:null,ICON:''}}) => {
+const ContactProfile = ({VALUE = {USER_ID:null,USER_NAME:null,RECENT_MESSAGE:null,ICON:''}, isSeen = false}) => {
 
     const {USER_ID,USER_NAME,RECENT_MESSAGE,ICON} = VALUE;
     console.table(VALUE);
+
+    // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
+    const ContactProfileLoader = () => {
+        return(
+            <div className="w-full min-h-16 flex flex-row gap-4 p-4">
+                <span className="bg-neutral-800 w-14 h-14 rounded-full block loading"></span>
+                <ul className="flex-grow h-full flex flex-col gap-2">
+                    <span className="block bg-neutral-800 loading w-2/6 min-h-4 rounded-sm "></span>
+                    <span className="block bg-neutral-800 loading w-3/4 min-h-6 rounded-sm "></span>
+                </ul>
+            </div>
+         );
+    }
+
     const Profile = () => {
         const img_loader = imgCache;
         img_loader.read(ICON);
         return(
-                <div className="w-full min-h-16 flex flex-row gap-4 ">
+                <div className="w-full min-h-16 flex flex-row gap-4 p-4  hover:cursor-pointer hover:bg-neutral-800">
                     {/* <span className=" w-14 h-14 rounded-full block"  style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}></span> */}
-                    <ProfileIcon VALUE={VALUE} size={{w:'w-14',h:'h-14'}} isActive={true}/>
+                    <ProfileIcon VALUE={VALUE} size={{w:'w-14',h:'h-14'}} isActive={Math.random() < 0.5} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col gap-1">
                         <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300 font-semibold">{USER_NAME}</span>
-                        <span className=" flex w-max max-w-3/4 w-3/4 min-h-6 text-neutral-500 ">{RECENT_MESSAGE}</span>
+                        <span className={`flex w-max max-w-3/4 min-h-6 h-max ${ !isSeen ? 'text-neutral-300':'text-neutral-500'} text-break `}>{RECENT_MESSAGE}</span>
                     </ul>
                 </div>
         );  
@@ -116,7 +119,6 @@ const ContactProfile = ({VALUE = {USER_ID:null,USER_NAME:null,RECENT_MESSAGE:nul
 
     );
 }
-
 
 const Sample = ({USER_ID}) => {
     const [USER_DATA,UPDATE_USER_DATA] = useState(null);
@@ -133,17 +135,11 @@ const Sample = ({USER_ID}) => {
         </p>
     );
 }
+
 // HOLDS MOST THE COMPONENTS LIKE A BACKBONE
 const ChatMenu = () => {
 
-
-    const [{THEME,RECENT_ACTIVE,RECENT_MESSAGES},UPDATE_DATA] = useState(useContext(UserContext));
-
-    useEffect( () => {
-        console.table(THEME);
-        console.table(RECENT_ACTIVE);
-        console.table(RECENT_MESSAGES);
-    },[RECENT_ACTIVE]);
+    const [{THEME,RECENT_ACTIVE},UPDATE_DATA] = useState(useContext(UserContext));
 
     const [ACTIVE_LIST,UPDATE_ACTIVE_LIST] = useState(null);
 
@@ -164,7 +160,7 @@ const ChatMenu = () => {
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col " style={{background:THEME.dark}}  >
             <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-1 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 " style={{color:THEME.light}} viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 " style={{color:THEME.light}} viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                 </svg>
                 <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
