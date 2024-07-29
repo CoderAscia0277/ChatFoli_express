@@ -27,15 +27,15 @@ const ProfileIconLoader = () => {
     );
 }
 //DISPLAYS THE PROFILE ICON
-const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}}) => {
-    const {USER_ID,USER_NAME,ICON} = VALUE;
+const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}},size={w:null,h:null},isActive = true) => {
+    const {ICON} = VALUE;
     const LOAD_IMAGE = imgCache;
 
     const Icon = ({src}) => {
         LOAD_IMAGE.read(src);
         return(
-            <span className="w-16 h-16  rounded-full flex items-end justify-end hover:cursor-pointer hover:scale-110" style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
-                <span className="w-4 h-4 bg-lime-600 border-neutral-900 border block relative rounded-full" ></span>
+            <span className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-16 h-16'}  rounded-full flex items-end justify-end hover:cursor-pointer hover:scale-110`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+                <span className={`w-4 h-4 ${isActive ? 'bg-lime-600' : 'bg-neutral-800'} border-neutral-900 border block relative rounded-full`} ></span>
             </span>
         );
     }
@@ -50,21 +50,35 @@ const ProfileIcon = ({VALUE = {USER_ID:null,USER_NAME:null,ICON:''}}) => {
         return(<ProfileIconLoader/>);
     }
 }
-//HANDLES THE CONTACT LIST LOADING DISPLAY
-const ContactListLoader = () => {
+//HANDLES THE CONTACT LIST DISPLAY , CONTAINS GROUP OF CONTACT PROFILE COMPONENTS
+const ContactListDisplay = () => {
+
+    const {RECENT_MESSAGES} = useContext(UserContext);
+    const [CONTACT_LIST,UPDATE_LIST] = useState(null);
+
+    useEffect((PROFILES,PROFILE_COMPONENTS) => {
+        if(!CONTACT_LIST && RECENT_MESSAGES){
+            PROFILES = RECENT_MESSAGES;
+            PROFILE_COMPONENTS = PROFILES.map((item,index) => {
+                return(
+                    <ContactProfile VALUE={item} key={index}/>
+                );
+            });
+
+            UPDATE_LIST(PROFILE_COMPONENTS);
+        }
+    },[CONTACT_LIST]);
+
+
     return(
-        <article className="w-full h-3/4 p-4 flex flex-col justify-evenly gap-2">
-            <ContactLoader/>
-            <ContactLoader/>
-            <ContactLoader/>
-            <ContactLoader/>
-            <ContactLoader/>
-            <ContactLoader/>
+        <article className="w-full h-3/4 p-4 flex flex-col  gap-4">
+            {useMemo(() => CONTACT_LIST,[CONTACT_LIST])}
         </article>
     );
 }
+
 // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
-const ContactLoader = () => {
+const ContactProfileLoader = () => {
     return(
         <div className="w-full min-h-16 flex flex-row gap-4 ">
             <span className="bg-neutral-800 w-14 h-14 rounded-full block loading"></span>
@@ -75,6 +89,34 @@ const ContactLoader = () => {
         </div>
     );
 }
+
+const ContactProfile = ({VALUE = {USER_ID:null,USER_NAME:null,RECENT_MESSAGE:null,ICON:''}}) => {
+
+    const {USER_ID,USER_NAME,RECENT_MESSAGE,ICON} = VALUE;
+    console.table(VALUE);
+    const Profile = () => {
+        const img_loader = imgCache;
+        img_loader.read(ICON);
+        return(
+                <div className="w-full min-h-16 flex flex-row gap-4 ">
+                    {/* <span className=" w-14 h-14 rounded-full block"  style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}></span> */}
+                    <ProfileIcon VALUE={VALUE} size={{w:'w-14',h:'h-14'}} isActive={true}/>
+                    <ul className="flex-grow h-full flex flex-col gap-1">
+                        <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300 font-semibold">{USER_NAME}</span>
+                        <span className=" flex w-max max-w-3/4 w-3/4 min-h-6 text-neutral-500 ">{RECENT_MESSAGE}</span>
+                    </ul>
+                </div>
+        );  
+    }
+
+    return(
+        <Suspense fallback={<ContactProfileLoader/>}>
+            <Profile/>
+        </Suspense>
+
+    );
+}
+
 
 const Sample = ({USER_ID}) => {
     const [USER_DATA,UPDATE_USER_DATA] = useState(null);
@@ -111,7 +153,7 @@ const ChatMenu = () => {
         if(ACTIVES){
             LIST_PROFILE_ICON = ACTIVES.map((data,index) => {
                 return(
-                    <ProfileIcon VALUE={data} key={index}/>
+                    <ProfileIcon isActive={true} VALUE={data} key={index}/>
                     
                 );
             });
@@ -132,7 +174,7 @@ const ChatMenu = () => {
                    {useMemo(() => ACTIVE_LIST,[ACTIVE_LIST])}
                 </li>
             </article>
-            <ContactListLoader/>
+            <ContactListDisplay/>
             
         </section>
     );
