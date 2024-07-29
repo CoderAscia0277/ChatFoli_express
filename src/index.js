@@ -11,6 +11,7 @@ const ChatApp = lazy(()=>import('./chat/core/ChatIndexer'));
 const LoadingIdle = lazy(() => import('./chat/components/Loading_Idle'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const UserId= 123789; 
+const WebSocket = lazy(() => import('./chat/core/WebSocket'));
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,9 @@ const router = createBrowserRouter([
   },{
     path:'/chat',
     element: <Suspense fallback={<LoadingIdle/>}><ChatApp UserId={UserId}/></Suspense> 
+  },{
+    path:'/web',
+    element:<WebSocket/>
   }]
 );
 root.render(
