@@ -1,6 +1,6 @@
 
 import { useRef, useState } from "react";
-
+//LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 const ws = new WebSocket('ws://localhost:8080');
 
 
@@ -33,7 +33,7 @@ const MessageBox = ({option = [],my_id = ''}) => {
             </article>
             <article className="w-full  block flex-grow"></article>
             <article className="w-full h-16 flex  py-2 px-4">
-                <input type="text" ref={text_box} onKeyDown={e => e.key === 'Enter' ? SEND({msg_box:text_box.current,target:target_chosen.current,message:e.target.value,current_id:my_id}) : null} className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
+                <input type="text" ref={text_box} onKeyDown={e => e.key === 'Enter' && e.target.value && target_chosen.current ? SEND({msg_box:text_box.current,target:target_chosen.current,message:e.target.value,current_id:my_id}) : null} className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
             </article>
         </section>
     );
