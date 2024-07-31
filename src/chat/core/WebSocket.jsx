@@ -1,18 +1,19 @@
 
-import { useEffect, useRef, useState,useMemo } from "react";
+import { useRef, useState } from "react";
 
 const ws = new WebSocket('ws://localhost:8080');
 
 
-const SEND = ({target,message,current_id}) => {
+const SEND = ({msg_box,target,message,current_id}) => {
     ws.send(JSON.stringify({target:target.value,message:message,my_id:current_id}));
+    msg_box.value = '';
     // console.log(target.value,msg);
 }
 
 const MessageBox = ({option = [],my_id = ''}) => {
 
     const target_chosen = useRef(null);
-
+    const text_box = useRef(null)
     return(
         <section className="w-1/4 h-max min-h-28 border text-neutral-300 rounded-lg border-neutral-500 absolute bg-neutral-800 flex flex-col" style={{right:'15%',top:'20%'}}>
             <span className="w-max p-1 border rounded-lg border-neutral-500 absolute text-sm bg-neutral-800" style={{top:'-1rem',left:'1rem'}}>Message</span>
@@ -32,7 +33,7 @@ const MessageBox = ({option = [],my_id = ''}) => {
             </article>
             <article className="w-full  block flex-grow"></article>
             <article className="w-full h-16 flex  py-2 px-4">
-                <input type="text" onKeyDown={e => e.key === 'Enter' ? SEND({target:target_chosen.current,message:e.target.value,current_id:my_id}) : null} className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
+                <input type="text" ref={text_box} onKeyDown={e => e.key === 'Enter' ? SEND({msg_box:text_box.current,target:target_chosen.current,message:e.target.value,current_id:my_id}) : null} className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
             </article>
         </section>
     );
@@ -51,64 +52,41 @@ const Notif = ({message = '',name='name'}) => {
 const Sample = () => {
 
     
-    const isMounted = useRef(false);
-    const [{id,online,other_id,msg_sender,msg_sent,},set_data] = useState({id:'null',msg_sender:'',msg_sent:'',online:0,other_id:[]});
+    const [data,update_data] = useState({id:'null',msg_sender:'',msg_sent:'',online:0,other_id:[]});
 
     ws.onopen = () => {
         // set_text('Connected!');
     };
 
-    //NOT FINISHED YET
     ws.onmessage = event => {
         let parse = JSON.parse(event.data);
-        const reverse_arr = parse.other_id ? parse.other_id.reverse() : other_id;
-        parse = {...parse, other_id : reverse_arr};
-        set_data(parse);
+        update_data( prev => {return{...prev,...parse}}); //MERGE && UPDATE DATA
     }
     ws.onerror = err => {
         console.log('Oppss!');
     }
-    useEffect(() => {
-        const arr = {};
-        
-        if(!isMounted.current){
-            isMounted.current = true;
-            for(let c = 0; c < 10; c++){
-                arr[Math.random().toString(36).substring(7)] = Math.random().toString(36).substring(7);
-            }
-            const keys = Object.keys(arr);
-
-            keys.forEach(id => {
-                console.log(`Id: ${id} | Content: ${arr[id]}`);
-            });
-            
-        }
-        
-    },[]);
-    
+  
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
-                <span>Your unique Id is: {id}</span>
-                <span>Active: {online}</span>
+                <span>Your unique Id is: {data.id}</span>
+                <span>Active: {data.online}</span>
             </p>
             <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
                 <p className="text-neutral-300">List of Online:</p>
-                <div className="overflow-y-scroll w-full h-full">
-                    <li className="flex flex-col h-max">
+                <div className="overflow-y-scroll w-full h-full py-2">
+                    <li className="flex flex-col h-max gap-2">
                         {
-                            other_id.map((name,index) => {
-                            return(<p className={`${name === id ? 'text-neutral-300' : 'text-neutral-700'}`} key={index}>{name}</p>);
+                            data.other_id.map((name,index) => {
+                            return(<p className={`text-neutral-400 text-sm`} key={index}>{index + 1}. {name}</p>);
                             })
 
                         }
                     </li>
                 </div>
             </article>
-            
-
-            <Notif message={msg_sent} name={msg_sender}/>
-            <MessageBox option={other_id} my_id={id}/>
+            <Notif message={data.msg_sent} name={data.msg_sender}/>
+            <MessageBox option={data.other_id} my_id={data.id}/>
         </section>
 
     );
