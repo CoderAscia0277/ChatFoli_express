@@ -12,11 +12,15 @@ const LoadingIdle = lazy(() => import('./chat/components/Loading_Idle'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const UserId= 123789; 
 const WebSocket = lazy(() => import('./chat/core/WebSocket'));
+const LoginPage = lazy( () => import('./chat/core/LoginPage'));
 
 const router = createBrowserRouter([
   {
-    path:'/',
+    path:'/au',
     element:  <AuthenticationPanel/>
+  },{
+    path:'/',
+    element:<LoginPage/>
   },
   {
     path:'/helloworld',

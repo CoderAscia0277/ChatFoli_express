@@ -1,7 +1,7 @@
 
 import { useRef, useState } from "react";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
-const ws = new WebSocket('ws://localhost:8080');
+import ws from '../ws/socket';
 
 
 const SEND = ({msg_box,target,message,current_id}) => {
