@@ -1,7 +1,8 @@
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 import ws from '../_utils/ws/socket';
+import { Store } from "../_utils/store/store";
 
 
 const SEND = ({msg_box,target,message,current_id}) => {
@@ -52,7 +53,12 @@ const Notif = ({message = '',name='name'}) => {
 const Sample = () => {
 
     
-    const [data,update_data] = useState({id:'null',msg_sender:'',msg_sent:'',online:0,other_id:[]});
+    // const [data,update_data] = useState({id:'null',msg_sender:'',msg_sent:'',online:0,other_id:[]});
+    const [data,update_data] = useState(Store.getState());
+
+    Store.subscribe(() => update_data(Store.getState()));
+    Store.subscribe(() => console.table(Store.getState()));
+    // const temp = data => update_data(data);
 
     ws.onopen = () => {
         // set_text('Connected!');
@@ -69,24 +75,26 @@ const Sample = () => {
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
-                <span>Your unique Id is: {data.id}</span>
-                <span>Active: {data.online}</span>
+                <span>Your unique Id is: {data.USERNAME}</span>
+                <span>Active: {data.ONLINE}</span>
             </p>
             <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
                 <p className="text-neutral-300">List of Online:</p>
                 <div className="overflow-y-scroll w-full h-full py-2">
                     <li className="flex flex-col h-max gap-2">
                         {
-                            data.other_id.map((name,index) => {
-                            return(<p className={`text-neutral-400 text-sm`} key={index}>{index + 1}. {name}</p>);
-                            })
+                            data ?
+                            data.LIST_ACTIVE.map((name,index) => {
+                                return(<p className={`text-neutral-400 text-sm`} key={index}>{index + 1}. {name}</p>);
+                                })
+                            : null
 
                         }
                     </li>
                 </div>
             </article>
-            <Notif message={data.msg_sent} name={data.msg_sender}/>
-            <MessageBox option={data.other_id} my_id={data.id}/>
+            <Notif message={data.MSG_SENT} name={data.MSG_SENDER}/>
+            <MessageBox option={data.LIST_ACTIVE} my_id={data.USERNAME}/>
         </section>
 
     );
