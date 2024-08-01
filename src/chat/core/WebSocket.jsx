@@ -1,7 +1,7 @@
 
 import { useRef, useState } from "react";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
-import ws from '../ws/socket';
+import ws from '../_utils/ws/socket';
 
 
 const SEND = ({msg_box,target,message,current_id}) => {
