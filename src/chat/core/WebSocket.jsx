@@ -1,12 +1,12 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
-import ws from '../_utils/ws/socket';
+import socket from '../_utils/ws/socket';
 import { Store } from "../_utils/store/store";
 
-
 const SEND = ({msg_box,target,message,current_id}) => {
-    ws.send(JSON.stringify({target:target.value,message:message,my_id:current_id}));
+    // ws.send(JSON.stringify({target:target.value,message:message,my_id:current_id}));
     msg_box.value = '';
     // console.log(target.value,msg);
 }
@@ -54,24 +54,19 @@ const Sample = () => {
 
     
     // const [data,update_data] = useState({id:'null',msg_sender:'',msg_sent:'',online:0,other_id:[]});
+    const {USERNAME,SESSION} = useParams();
     const [data,update_data] = useState(Store.getState());
-
+    console.log(USERNAME,SESSION);
     Store.subscribe(() => update_data(Store.getState()));
-    Store.subscribe(() => console.table(Store.getState()));
+    // Store.subscribe(() => console.table(Store.getState()));
     // const temp = data => update_data(data);
+    const ws = useMemo(() => socket.connect(SESSION),[SESSION]);
 
-    ws.onopen = () => {
-        // set_text('Connected!');
-    };
-
-    ws.onmessage = event => {
-        let parse = JSON.parse(event.data);
-        update_data( prev => {return{...prev,...parse}}); //MERGE && UPDATE DATA
-    }
-    ws.onerror = err => {
-        console.log('Oppss!');
-    }
-  
+    // ws.onmessage = e => {
+    //     const parse = JSON.parse(e.data);
+    //     const merge = {...data,...parse};
+    //     Store.dispatch(update_data(merge));
+    // }
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
@@ -84,8 +79,8 @@ const Sample = () => {
                     <li className="flex flex-col h-max gap-2">
                         {
                             data ?
-                            data.LIST_ACTIVE.map((name,index) => {
-                                return(<p className={`text-neutral-400 text-sm`} key={index}>{index + 1}. {name}</p>);
+                            data.IGN_LIST.map((name,index) => {
+                                return(<p className={`text-neutral-400 text-sm`} key={index}>- {name}</p>);
                                 })
                             : null
 
@@ -94,7 +89,7 @@ const Sample = () => {
                 </div>
             </article>
             <Notif message={data.MSG_SENT} name={data.MSG_SENDER}/>
-            <MessageBox option={data.LIST_ACTIVE} my_id={data.USERNAME}/>
+            <MessageBox option={data.IGN_LIST} my_id={data.USERNAME}/>
         </section>
 
     );

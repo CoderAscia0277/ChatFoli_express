@@ -78,15 +78,26 @@ const Validate = async({username,password}) => {
     //     console.table(GET_SESSION.req(encrypt.UID,encrypt.KEY));
     // }
 
-    const submit = await fetch(`http://localhost:5000/${encrypt.UID}/${encrypt.KEY}`);
-    if(submit.ok){
-        const parse = submit.json();
-        if(submit.ok){
-            console.table(parse);
-        }else{
-            console.log(parse.status);
+    const submit = await fetch(`http://localhost:5000/${encrypt.UID}/${encrypt.KEY}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
+    // console.log(encrypt.UID,encrypt.KEY);
+    if(submit){
+        switch(submit.STATUS){
+            case 'Successful':
+                window.location.href = `/${submit.USERNAME}/${submit.SESSION}`;
+                break;
+            case 'Invalid':
+                username.value = '';
+                password.value = '';
+                break;
+            case 'Wrong Password':
+                password.value = '';
+                break;
+            default:
+                break;
         }
     }
+    
+
 };
 
 

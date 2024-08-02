@@ -5,7 +5,8 @@ const Slice = createSlice({
     initialState:{
         USERNAME:'',
         ONLINE:0,
-        LIST_ACTIVE:[],
+        IGN_LIST:[],
+        SESSION_IDS:[],
         MSG_SENDER:'',
         MSG_SENT:'',
     },reducers:{
