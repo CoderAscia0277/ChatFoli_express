@@ -3,10 +3,9 @@ import { createSlice ,configureStore} from "@reduxjs/toolkit";
 const Slice = createSlice({
     name:'Slice',
     initialState:{
-        USERNAME:'',
         ONLINE:0,
+        UID_IGN_LIST:{},
         IGN_LIST:[],
-        SESSION_IDS:[],
         MSG_SENDER:'',
         MSG_SENT:'',
     },reducers:{

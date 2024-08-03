@@ -1,5 +1,5 @@
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo,useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 import socket from '../_utils/ws/socket';
@@ -11,10 +11,15 @@ const SEND = ({msg_box,target,message,current_id}) => {
     // console.log(target.value,msg);
 }
 
-const MessageBox = ({option = [],my_id = ''}) => {
+const MessageBox = ({UID_IGN_LIST = {},my_id = ''}) => {
 
     const target_chosen = useRef(null);
     const text_box = useRef(null)
+    let option = UID_IGN_LIST;
+    delete option[my_id];
+    const TEMP_UID = Object.keys(option); 
+    const IGN_LIST = TEMP_UID.map(UID => option[UID]);
+
     return(
         <section className="w-1/4 h-max min-h-28 border text-neutral-300 rounded-lg border-neutral-500 absolute bg-neutral-800 flex flex-col" style={{right:'15%',top:'20%'}}>
             <span className="w-max p-1 border rounded-lg border-neutral-500 absolute text-sm bg-neutral-800" style={{top:'-1rem',left:'1rem'}}>Message</span>
@@ -23,8 +28,8 @@ const MessageBox = ({option = [],my_id = ''}) => {
                 <input list="user_list" ref={target_chosen} className="bg-transparent w-max h-6 outline-0 text-neutral-300 px-2" placeholder="Select here" />
                 <datalist id="user_list">
                     {
-                        option ?
-                            option.map((item,index)=>{
+                        IGN_LIST ?
+                            IGN_LIST.map((item,index)=>{
                                 return <option value={item} key={index}/>
                             })
                         : null  
@@ -40,7 +45,7 @@ const MessageBox = ({option = [],my_id = ''}) => {
     );
 }
 
-const Notif = ({message = '',name='name'}) => {
+const Notification = ({message = '',name='name'}) => {
     return(
         <section className="w-1/4 h-1/4 border rounded-md border-neutral-500 absolute bg-neutral-800 flex flex-col text-neutral-300" style={{left:'10%',top:'20%'}}>
             <span className="text-neutral-300 p-1 text-sm relative border border-neutral-500 rounded-md w-max bg-neutral-800" style={{top:'-1rem',right:'-1rem'}}>Notification</span>
@@ -50,27 +55,18 @@ const Notif = ({message = '',name='name'}) => {
     );
 }
 
-const Sample = () => {
+const IndexPage = () => {
 
-    
-    // const [data,update_data] = useState({id:'null',msg_sender:'',msg_sent:'',online:0,other_id:[]});
-    const {USERNAME,SESSION} = useParams();
+    const {IGN,SESSION_KEY} = useParams();
     const [data,update_data] = useState(Store.getState());
-    console.log(USERNAME,SESSION);
+    // console.log(USERNAME,SESSION);
     Store.subscribe(() => update_data(Store.getState()));
-    // Store.subscribe(() => console.table(Store.getState()));
-    // const temp = data => update_data(data);
-    const ws = useMemo(() => socket.connect(SESSION),[SESSION]);
-
-    // ws.onmessage = e => {
-    //     const parse = JSON.parse(e.data);
-    //     const merge = {...data,...parse};
-    //     Store.dispatch(update_data(merge));
-    // }
+    const ws = useMemo(() => socket.connect(SESSION_KEY),[SESSION_KEY]);
+    
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
-                <span>Your unique Id is: {data.USERNAME}</span>
+                <span>Your unique Id is: {IGN}</span>
                 <span>Active: {data.ONLINE}</span>
             </p>
             <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
@@ -78,21 +74,21 @@ const Sample = () => {
                 <div className="overflow-y-scroll w-full h-full py-2">
                     <li className="flex flex-col h-max gap-2">
                         {
-                            data ?
+                            // data ?
                             data.IGN_LIST.map((name,index) => {
                                 return(<p className={`text-neutral-400 text-sm`} key={index}>- {name}</p>);
-                                })
-                            : null
+                            })
+                            // : null
 
                         }
                     </li>
                 </div>
             </article>
-            <Notif message={data.MSG_SENT} name={data.MSG_SENDER}/>
-            <MessageBox option={data.IGN_LIST} my_id={data.USERNAME}/>
+            <Notification message={data.MSG_SENT} name={data.MSG_SENDER}/>
+            <MessageBox list={data.UID_IGN_LIST} my_id={data.SESSION_KEY}/>
         </section>
 
     );
 }
 
-export default Sample;
+export default IndexPage;
