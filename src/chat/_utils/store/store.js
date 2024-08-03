@@ -6,8 +6,8 @@ const Slice = createSlice({
         ONLINE:0,
         UID_IGN_LIST:{},
         IGN_LIST:[],
-        MSG_SENDER:'',
-        MSG_SENT:'',
+        SENDER:'',
+        MESSAGE:'',
     },reducers:{
         UPDATE_DATA : (state,new_data) => {
             const updated = new_data.payload;

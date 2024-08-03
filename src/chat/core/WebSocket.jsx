@@ -1,24 +1,39 @@
 
-import { useMemo,useEffect, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 import socket from '../_utils/ws/socket';
-import { Store } from "../_utils/store/store";
+import { Store ,UPDATE_DATA} from "../_utils/store/store";
 
-const SEND = ({msg_box,target,message,current_id}) => {
+const SEND = ({MESSAGE_BOX,RECIEVER ,SENDER = '',CONTACTS = []}) => {
     // ws.send(JSON.stringify({target:target.value,message:message,my_id:current_id}));
-    msg_box.value = '';
-    // console.log(target.value,msg);
+    // msg_box.value = '';
+    const ws = socket.connect(SENDER);
+
+    ws.send(JSON.stringify({PURPOSE:'SEND_MESSAGE',MESSAGE:MESSAGE_BOX.value,RECIEVER:CONTACTS[RECIEVER.value],SENDER:SENDER}));
+
 }
 
-const MessageBox = ({UID_IGN_LIST = {},my_id = ''}) => {
+const MessageBox = ({list,my_id = ''}) => {
 
     const target_chosen = useRef(null);
     const text_box = useRef(null)
-    let option = UID_IGN_LIST;
-    delete option[my_id];
-    const TEMP_UID = Object.keys(option); 
-    const IGN_LIST = TEMP_UID.map(UID => option[UID]);
+    let option = list;
+    // delete option[my_id];
+
+
+    const IGN_UID_LIST = {
+        data:{},
+        convert(UID_LIST,IGN_LIST){
+            this.data = {};
+            IGN_LIST.forEach((item,index) => {
+                this.data[item] = UID_LIST[index];
+            });
+        }
+    }
+    
+    IGN_UID_LIST.convert(Object.keys(option),Object.keys(option).map(UID => option[UID])); //OUTPUT [{'B3SA_027':'Lmp56'},{'Ascia_027':'tynf5'}]
+
 
     return(
         <section className="w-1/4 h-max min-h-28 border text-neutral-300 rounded-lg border-neutral-500 absolute bg-neutral-800 flex flex-col" style={{right:'15%',top:'20%'}}>
@@ -28,8 +43,8 @@ const MessageBox = ({UID_IGN_LIST = {},my_id = ''}) => {
                 <input list="user_list" ref={target_chosen} className="bg-transparent w-max h-6 outline-0 text-neutral-300 px-2" placeholder="Select here" />
                 <datalist id="user_list">
                     {
-                        IGN_LIST ?
-                            IGN_LIST.map((item,index)=>{
+                        IGN_UID_LIST.data ?
+                            Object.keys(IGN_UID_LIST.data).map((item,index)=>{
                                 return <option value={item} key={index}/>
                             })
                         : null  
@@ -39,13 +54,19 @@ const MessageBox = ({UID_IGN_LIST = {},my_id = ''}) => {
             </article>
             <article className="w-full  block flex-grow"></article>
             <article className="w-full h-16 flex  py-2 px-4">
-                <input type="text" ref={text_box} onKeyDown={e => e.key === 'Enter' && e.target.value && target_chosen.current ? SEND({msg_box:text_box.current,target:target_chosen.current,message:e.target.value,current_id:my_id}) : null} className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
+                <input type="text" ref={text_box} onKeyDown={
+                    e => e.key === 'Enter' && e.target.value && target_chosen.current ? 
+                        SEND({MESSAGE_BOX:text_box.current,RECIEVER:target_chosen.current,CONTACTS:IGN_UID_LIST.data,SENDER:my_id}) 
+                        : null
+                    }
+                className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
+
             </article>
         </section>
     );
 }
 
-const Notification = ({message = '',name='name'}) => {
+const Notification = ({message = '',name=''}) => {
     return(
         <section className="w-1/4 h-1/4 border rounded-md border-neutral-500 absolute bg-neutral-800 flex flex-col text-neutral-300" style={{left:'10%',top:'20%'}}>
             <span className="text-neutral-300 p-1 text-sm relative border border-neutral-500 rounded-md w-max bg-neutral-800" style={{top:'-1rem',right:'-1rem'}}>Notification</span>
@@ -54,7 +75,7 @@ const Notification = ({message = '',name='name'}) => {
         </section>
     );
 }
-
+let count = 0;
 const IndexPage = () => {
 
     const {IGN,SESSION_KEY} = useParams();
@@ -63,6 +84,25 @@ const IndexPage = () => {
     Store.subscribe(() => update_data(Store.getState()));
     const ws = useMemo(() => socket.connect(SESSION_KEY),[SESSION_KEY]);
     
+    ws.onmessage = e => {
+        
+        const parse = JSON.parse(e.data);
+        count+=1;
+        console.log('Update',count,parse)
+
+        if(parse.UID_IGN_LIST[SESSION_KEY]){
+            delete parse.UID_IGN_LIST[SESSION_KEY];
+        }
+        //REMOVE MY ISN FROM THE LIST
+        parse.IGN_LIST = parse.IGN_LIST.filter(item => item !== IGN);
+
+        //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
+        const MERGE_DATA = {...data,...parse};
+
+        //SAVE IT INTO THE STORE , SO THE COMPONENTS WILL UPDATE
+        Store.dispatch(UPDATE_DATA(MERGE_DATA));
+    };
+
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
@@ -84,8 +124,8 @@ const IndexPage = () => {
                     </li>
                 </div>
             </article>
-            <Notification message={data.MSG_SENT} name={data.MSG_SENDER}/>
-            <MessageBox list={data.UID_IGN_LIST} my_id={data.SESSION_KEY}/>
+            <Notification message={data.MESSAGE} name={data.SENDER}/>
+            <MessageBox list={data.UID_IGN_LIST} my_id={SESSION_KEY}/>
         </section>
 
     );
