@@ -83,7 +83,7 @@ const Validate = async({username,password}) => {
     if(submit){
         switch(submit.STATUS){
             case 'Successful':
-                window.location.href = `/${submit.USERNAME}/${submit.SESSION}`;
+                window.location.href = `/${submit.USERNAME}/${submit.TEMPORARY_ID}`;
                 break;
             case 'Invalid':
                 username.value = '';

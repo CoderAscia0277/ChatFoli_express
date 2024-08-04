@@ -35,7 +35,7 @@ const MessageBox = ({list,my_id = ''}) => {
 
     return(
         <section className="w-1/4 h-max min-h-28 border text-neutral-300 rounded-lg border-neutral-500 absolute bg-neutral-800 flex flex-col" style={{right:'15%',top:'20%'}}>
-            <span className="w-max p-1 border rounded-lg border-neutral-500 absolute text-sm bg-neutral-800" style={{top:'-1rem',left:'1rem'}}>Message</span>
+            <span className="w-max p-1 border rounded-lg border-neutral-500 absolute text-sm bg-neutral-800" style={{top:'-1rem',left:'1rem'}}>1 to 1 message</span>
             <article className="w-full h-10 p-4 flex flex-row gap-2">
                 <p className="text-neutral-300">Contact:</p>
                 <input list="user_list" ref={target_chosen} className="bg-transparent w-max h-6 outline-0 text-neutral-300 px-2" placeholder="Select here" />
@@ -67,7 +67,7 @@ const MessageBox = ({list,my_id = ''}) => {
 const Notification = ({message = '',name=''}) => {
     return(
         <section className="w-1/4 h-1/4 border rounded-md border-neutral-500 absolute bg-neutral-800 flex flex-col text-neutral-300" style={{left:'10%',top:'20%'}}>
-            <span className="text-neutral-300 p-1 text-sm relative border border-neutral-500 rounded-md w-max bg-neutral-800" style={{top:'-1rem',right:'-1rem'}}>Notification</span>
+            <span className="text-neutral-300 p-1 text-sm relative border border-neutral-500 rounded-md w-max bg-neutral-800" style={{top:'-1rem',right:'-1rem'}}>Recieved:</span>
             <p className="px-4 text-sm w-full flex-grow">{message}</p>
             <span className="w-max absolute" style={{right:'1rem',bottom:'0.5rem'}}>- {name}</span>
         </section>
@@ -96,11 +96,11 @@ const IndexPage = () => {
                 Store.dispatch(UPDATE_DATA(MERGE_DATA));
                 break;
             default:
-                if(parse.UID_IGN_LIST[SESSION_KEY]){
-                    delete parse.UID_IGN_LIST[SESSION_KEY];
+                if(parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY]){
+                    delete parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY];
                 }
                 //REMOVE MY ISN FROM THE LIST
-                parse.IGN_LIST = parse.IGN_LIST.filter(item => item !== IGN);
+                parse.LIST_OF_ACTIVE_USERNAMES = parse.LIST_OF_ACTIVE_USERNAMES.filter(USERNAME => USERNAME !== IGN);
         
                 //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
                 MERGE_DATA = {...data,...parse};
@@ -123,18 +123,18 @@ const IndexPage = () => {
                 <div className="overflow-y-scroll w-full h-full py-2">
                     <li className="flex flex-col h-max gap-2">
                         {
-                            // data ?
-                            data.IGN_LIST.map((name,index) => {
+                            data ?
+                            data.LIST_OF_ACTIVE_USERNAMES.map((name,index) => {
                                 return(<p className={`text-neutral-400 text-sm`} key={index}>- {name}</p>);
                             })
-                            // : null
+                            : null
 
                         }
                     </li>
                 </div>
             </article>
             <Notification message={data.MESSAGE} name={data.SENDER}/>
-            <MessageBox list={data.UID_IGN_LIST} my_id={SESSION_KEY}/>
+            <MessageBox list={data.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS} my_id={SESSION_KEY}/>
         </section>
 
     );
