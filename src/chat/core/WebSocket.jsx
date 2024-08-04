@@ -7,11 +7,9 @@ import { Store ,UPDATE_DATA} from "../_utils/store/store";
 
 const SEND = ({MESSAGE_BOX,RECIEVER ,SENDER = '',CONTACTS = []}) => {
     // ws.send(JSON.stringify({target:target.value,message:message,my_id:current_id}));
-    // msg_box.value = '';
     const ws = socket.connect(SENDER);
-
     ws.send(JSON.stringify({PURPOSE:'SEND_MESSAGE',MESSAGE:MESSAGE_BOX.value,RECIEVER:CONTACTS[RECIEVER.value],SENDER:SENDER}));
-
+    MESSAGE_BOX.value = '';
 }
 
 const MessageBox = ({list,my_id = ''}) => {
@@ -90,17 +88,28 @@ const IndexPage = () => {
         count+=1;
         console.log('Update',count,parse)
 
-        if(parse.UID_IGN_LIST[SESSION_KEY]){
-            delete parse.UID_IGN_LIST[SESSION_KEY];
+        let MERGE_DATA = {};
+
+        switch(parse.PURPOSE){
+            case 'RECIEVE_MESSAGE':
+                MERGE_DATA = {...data,...parse};
+                Store.dispatch(UPDATE_DATA(MERGE_DATA));
+                break;
+            default:
+                if(parse.UID_IGN_LIST[SESSION_KEY]){
+                    delete parse.UID_IGN_LIST[SESSION_KEY];
+                }
+                //REMOVE MY ISN FROM THE LIST
+                parse.IGN_LIST = parse.IGN_LIST.filter(item => item !== IGN);
+        
+                //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
+                MERGE_DATA = {...data,...parse};
+        
+                //SAVE IT INTO THE STORE , SO THE COMPONENTS WILL UPDATE
+                Store.dispatch(UPDATE_DATA(MERGE_DATA));
+                break;
         }
-        //REMOVE MY ISN FROM THE LIST
-        parse.IGN_LIST = parse.IGN_LIST.filter(item => item !== IGN);
-
-        //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
-        const MERGE_DATA = {...data,...parse};
-
-        //SAVE IT INTO THE STORE , SO THE COMPONENTS WILL UPDATE
-        Store.dispatch(UPDATE_DATA(MERGE_DATA));
+        
     };
 
     return(
