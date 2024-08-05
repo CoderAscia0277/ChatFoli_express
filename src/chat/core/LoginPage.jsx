@@ -5,91 +5,33 @@ import CryptoJS from "crypto-js";
 
 
 const Validate = async({username,password}) => {
-    // Store.subscribe(() => console.table(Store.getState()));
-
-    // ws.onmessage = e => {
-    //     const response = JSON.parse(e.data);
-    //     switch(response.STATUS){
-    //         case 200:
-    //             console.log(response);
-    //             Store.dispatch(UPDATE_DATA(response));
-    //             // window.location.href = '/web';
-    //             set_page(<Home/>);
-    //             break;
-    //         case 100 : 
-    //             console.log(response.STATUS,'Inavlid Password');
-    //             password.value = '';
-    //             break;
-    //         case 400:
-    //             console.log(response.STATUS,'Invalid');
-    //             username.value = '';
-    //             password.value = '';
-    //             break;
-    //     }
-    // };
-    // ws.onerror = () =>{
-    //     console.log("Opps!, Seems like you're offline");
-    // }
+    
     const encrypt = {
         KEY:null,
-        UID:null,
+        NAME:null,
         hex(user_name,pass){
             if(!this.KEY && !this.UID){
                 this.KEY = CryptoJS.SHA256(pass).toString(CryptoJS.enc.Hex);
-                this.UID = CryptoJS.SHA256(user_name).toString(CryptoJS.enc.Hex);
+                this.NAME = CryptoJS.SHA256(user_name).toString(CryptoJS.enc.Hex);
             }
         }
     }
     encrypt.hex(username.value,password.value);
-    // ws.send(JSON.stringify({UID:encrypt.UID,KEY:encrypt.KEY}));
 
-    // const GET_SESSION = {
-    //     SESSION_ID : {},
-    //     req(user,key){
-    //         if(!this.SESSION_ID[user]){
-    //             this.SESSION_ID[user] = fetch(`http://localhost:5000/authenticate`,{
-    //                 method:'POST',
-    //                 headers:{'Content-Type':'application/json'},
-    //                 body:JSON.stringify({UID:user,PASS:key}),
-    //             }).then( res =>{
-    //                 if(res.ok){
-    //                     return res.json();
-    //                 }else if(res.status === 100){
-    //                     console.log('Wrong Pass');
-    //                     password.value = '';
-    //                     return {STATUS:res.status,SESSION:null};
-    //                 }
-    //                 // throw new Error(res.status); 
-    //             }).catch(err => {
-    //                     console.log(err,' Invalid');
-    //                     username.value = '';
-    //                     password.value = '';
-    //                     return {STATUS:400,SESSION:null};
-    //             });
-    //         }
-    //         if(this.SESSION_ID[user] instanceof Promise){
-    //             throw this.SESSION_ID[user];
-    //         }
-    //         return this.SESSION_ID[user];
-    //     }
-    // }
-   
-    // if(GET_SESSION.req(encrypt.UID,encrypt.KEY)){
-    //     console.table(GET_SESSION.req(encrypt.UID,encrypt.KEY));
-    // }
+    const submit = await fetch(`http://localhost:5000/${encrypt.NAME}/${encrypt.KEY}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
 
-    const submit = await fetch(`http://localhost:5000/${encrypt.UID}/${encrypt.KEY}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
-    // console.log(encrypt.UID,encrypt.KEY);
     if(submit){
         switch(submit.STATUS){
             case 'Successful':
                 window.location.href = `/${submit.USERNAME}/${submit.TEMPORARY_ID}`;
                 break;
             case 'Invalid':
+                console.log(encrypt.NAME);
                 username.value = '';
                 password.value = '';
                 break;
             case 'Wrong Password':
+                console.log(submit.STATUS,password.value);
                 password.value = '';
                 break;
             default:

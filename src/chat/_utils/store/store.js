@@ -4,8 +4,10 @@ const Slice = createSlice({
     name:'Slice',
     initialState:{
         ONLINE:0,
-        LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS:{},
-        LIST_OF_ACTIVE_USERNAMES:[],
+        NAME:'',
+        UID:null,
+        FRIENDS:null,
+        TEMPORARY_ID:null,
         SENDER:'',
         MESSAGE:'',
     },reducers:{

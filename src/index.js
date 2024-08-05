@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     path:'/chat',
     element: <Suspense fallback={<LoadingIdle/>}><ChatApp UserId={UserId}/></Suspense> 
   },{
-    path:'/:IGN/:SESSION_KEY',
+    path:'/:NAME/:TEMPORARY_ID',
     element:<WebSocket/>
   }]
 );

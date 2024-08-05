@@ -1,5 +1,5 @@
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 import socket from '../_utils/ws/socket';
@@ -76,46 +76,65 @@ const Notification = ({message = '',name=''}) => {
 let count = 0;
 const IndexPage = () => {
 
-    const {IGN,SESSION_KEY} = useParams();
+    const {NAME,TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
+    const hasInitialized = useRef(false);
     // console.log(USERNAME,SESSION);
     Store.subscribe(() => update_data(Store.getState()));
-    const ws = useMemo(() => socket.connect(SESSION_KEY),[SESSION_KEY]);
+
+    const ws = useMemo(() => socket.connect(TEMPORARY_ID),[TEMPORARY_ID]);
     
+    // useEffect(() => {
+    //     fetch(`http://localhost:5000/USER-DATA/${SESSION_KEY}`).then(res => Store.dispatch(UPDATE_DATA(res.json()))).catch(err => console.error(err));
+    // },[SESSION_KEY]);
+   
+   
     ws.onmessage = e => {
-        
         const parse = JSON.parse(e.data);
-        count+=1;
-        console.log('Update',count,parse)
+        console.table(parse.CLIENT);
+        let MERGE_DATA = {...data,...parse};
+        Store.dispatch(UPDATE_DATA(MERGE_DATA));
+    }
+    // ws.onmessage = e => {
+        
+    //     const parse = JSON.parse(e.data);
+    //     count+=1;
+    //     console.log('Update',count,parse)
 
-        let MERGE_DATA = {};
+    //     let MERGE_DATA = {};
 
-        switch(parse.PURPOSE){
-            case 'RECIEVE_MESSAGE':
-                MERGE_DATA = {...data,...parse};
-                Store.dispatch(UPDATE_DATA(MERGE_DATA));
-                break;
-            default:
-                if(parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY]){
-                    delete parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY];
-                }
-                //REMOVE MY ISN FROM THE LIST
-                parse.LIST_OF_ACTIVE_USERNAMES = parse.LIST_OF_ACTIVE_USERNAMES.filter(USERNAME => USERNAME !== IGN);
+    //     switch(parse.PURPOSE){
+    //         case 'RECIEVE_MESSAGE':
+    //             MERGE_DATA = {...data,...parse};
+    //             Store.dispatch(UPDATE_DATA(MERGE_DATA));
+    //             break;
+    //         default:
+    //             if(!hasInitialized.current){
+    //                 ws.send(JSON.stringify({PURPOSE:'REQUEST_DATA',TEMPORARY_ID:SESSION_KEY}));
+    //                 hasInitialized.current = true;
+    //             }
+
+
+    //             // if(parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY]){
+    //             //     delete parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY];
+    //             // }
+    //             // //REMOVE MY ISN FROM THE LIST
+    //             // parse.LIST_OF_ACTIVE_USERNAMES = parse.LIST_OF_ACTIVE_USERNAMES.filter(USERNAME => USERNAME !== IGN);
         
-                //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
-                MERGE_DATA = {...data,...parse};
+    //             // //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
+    //             // MERGE_DATA = {...data,...parse};
         
-                //SAVE IT INTO THE STORE , SO THE COMPONENTS WILL UPDATE
-                Store.dispatch(UPDATE_DATA(MERGE_DATA));
-                break;
-        }
+    //             // //SAVE IT INTO THE STORE , SO THE COMPONENTS WILL UPDATE
+    //             // Store.dispatch(UPDATE_DATA(MERGE_DATA));
+    //             break;
+    //     }
         
-    };
+    // };
 
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
-                <span>Your unique Id is: {IGN}</span>
+                <span>Your unique Id is: {NAME}</span>
                 <span>Active: {data.ONLINE}</span>
             </p>
             <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
@@ -124,8 +143,9 @@ const IndexPage = () => {
                     <li className="flex flex-col h-max gap-2">
                         {
                             data ?
-                            data.LIST_OF_ACTIVE_USERNAMES.map((name,index) => {
-                                return(<p className={`text-neutral-400 text-sm`} key={index}>- {name}</p>);
+                            data.FRIENDS_ONLINE.map((FRIEND,index) => {
+
+                                return(<p className={`text-neutral-400 text-sm`} key={index}>- {FRIEND.NAME}</p>);
                             })
                             : null
 
@@ -134,10 +154,11 @@ const IndexPage = () => {
                 </div>
             </article>
             <Notification message={data.MESSAGE} name={data.SENDER}/>
-            <MessageBox list={data.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS} my_id={SESSION_KEY}/>
+            <MessageBox list={data.FRIENDS_ONLINE} my_id={TEMPORARY_ID}/>
         </section>
 
     );
+    // return(<p>pause</p>);
 }
 
 export default IndexPage;
