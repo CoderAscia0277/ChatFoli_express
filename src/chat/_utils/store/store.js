@@ -7,9 +7,11 @@ const Slice = createSlice({
         NAME:'',
         UID:null,
         FRIENDS:null,
+        FRIENDS_ONLINE:[],
         TEMPORARY_ID:null,
         SENDER:'',
         MESSAGE:'',
+            
     },reducers:{
         UPDATE_DATA : (state,new_data) => {
             const updated = new_data.payload;
