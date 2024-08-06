@@ -88,19 +88,24 @@ const IndexPage = () => {
    
     ws.onmessage = e => {
         const parse = JSON.parse(e.data);
-        console.table(parse);
+        console.log(parse)
         let MERGE_DATA = null;
-        
-        switch(parse.PURPOSE){
-            case 'RECIEVE_MESSAGE':
-                MERGE_DATA = {...data,...parse};
-                Store.dispatch(UPDATE_DATA(MERGE_DATA));
-                break;
-            default: 
-                MERGE_DATA = {...data,...parse.CLIENT};
-                Store.dispatch(UPDATE_DATA(MERGE_DATA));
-                break;
+
+        if(parse.STATUS === 200){
+            switch(parse.PURPOSE){
+                case 'RECIEVE_MESSAGE':
+                    MERGE_DATA = {...data,...parse};
+                    Store.dispatch(UPDATE_DATA(MERGE_DATA));
+                    break;
+                default: 
+                    MERGE_DATA = {...data,...parse.CLIENT};
+                    Store.dispatch(UPDATE_DATA(MERGE_DATA));
+                    break;
+            }
+        }else{
+            window.location.href = '/';
         }
+        
     }
     // ws.onmessage = e => {
         
