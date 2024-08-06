@@ -12,8 +12,13 @@ const SEND = ({MESSAGE_BOX,RECIEVER,SENDER_TEMPORARY_ID = null,CONTACT_LIST = []
     const FRIENDS_UID_LIST = {};
     CONTACT_LIST.forEach(FRIEND => FRIENDS_UID_LIST[FRIEND.NAME] = FRIEND.UID);
     
-    ws.send(JSON.stringify({PURPOSE:'SEND_MESSAGE',MESSAGE:MESSAGE_BOX.value,RECIEVER_UID:FRIENDS_UID_LIST[RECIEVER.value],SENDER_UID:Store.getState().UID}));
-    MESSAGE_BOX.value = '';
+    if(FRIENDS_UID_LIST[RECIEVER]){
+        ws.send(JSON.stringify({PURPOSE:'SEND_MESSAGE',MESSAGE:MESSAGE_BOX.value,RECIEVER_UID:FRIENDS_UID_LIST[RECIEVER],SENDER_UID:Store.getState().UID}));
+        MESSAGE_BOX.value = '';
+    }else{
+        console.error("Can't find target reciever");
+    }
+    
 }
 
 const MessageBox = ({TOKEN_ID}) => {
@@ -43,8 +48,8 @@ const MessageBox = ({TOKEN_ID}) => {
             <article className="w-full  block flex-grow"></article>
             <article className="w-full h-16 flex  py-2 px-4">
                 <input type="text" ref={text_box} onKeyDown={
-                    e => e.key === 'Enter' && e.target.value && target_chosen.current ? 
-                        SEND({MESSAGE_BOX:text_box.current,RECIEVER:target_chosen.current,CONTACT_LIST:data.FRIENDS_ONLINE,SENDER_TEMPORARY_ID:TOKEN_ID}) 
+                    e => e.key === 'Enter' && e.target.value && target_chosen.current.value ? 
+                        SEND({MESSAGE_BOX:text_box.current,RECIEVER:target_chosen.current.value,CONTACT_LIST:data.FRIENDS_ONLINE,SENDER_TEMPORARY_ID:TOKEN_ID}) 
                         : null
                     }
                 className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
