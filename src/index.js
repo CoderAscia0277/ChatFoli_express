@@ -29,13 +29,13 @@ const router = createBrowserRouter([
     path:'/chat',
     element: <Suspense fallback={<LoadingIdle/>}><ChatApp UserId={UserId}/></Suspense> 
   },{
-    path:'/:NAME/:TEMPORARY_ID',
+    path:'/:TEMPORARY_ID',
     element:<WebSocket/>
   }]
 );
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router}/>
+  <React.StrictMode >
+    <RouterProvider  router={router}/>
   </React.StrictMode>
 );
 

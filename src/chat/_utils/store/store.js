@@ -18,7 +18,7 @@ const Slice = createSlice({
             Object.keys(updated).forEach(item => {
                 state[item] = updated[item]
             });
-        }
+        },
     }
 })
 

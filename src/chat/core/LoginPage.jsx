@@ -23,7 +23,7 @@ const Validate = async({username,password}) => {
     if(submit){
         switch(submit.STATUS){
             case 'Successful':
-                window.location.href = `/${submit.USERNAME}/${submit.TEMPORARY_ID}`;
+                window.location.href = `/${submit.TEMPORARY_ID}`;
                 break;
             case 'Invalid':
                 console.log(encrypt.NAME);

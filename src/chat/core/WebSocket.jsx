@@ -1,30 +1,22 @@
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_DATA} from "../_utils/store/store";
 
-const SEND = ({MESSAGE_BOX,RECIEVER,SENDER_TEMPORARY_ID = null ,SENDER_NAME = '',CONTACT_LIST = []}) => {
+const SEND = ({MESSAGE_BOX,RECIEVER,SENDER_TEMPORARY_ID = null,CONTACT_LIST = []}) => {
    
-    const reciever_id = {
-        ID:null,
-        get(LIST){
-            LIST.forEach(FRIEND => {
-                if(FRIEND.NAME === RECIEVER.value){
-                    this.ID = FRIEND.TEMPORARY_ID;
-                }
-            });
-            return this.ID;
-        }
-    };
+    
     const ws = socket.connect(SENDER_TEMPORARY_ID);
-
-    ws.send(JSON.stringify({PURPOSE:'SEND_MESSAGE',MESSAGE:MESSAGE_BOX.value,RECIEVER_TEMP_ID:reciever_id.get(CONTACT_LIST),SENDER_NAME:SENDER_NAME}));
+    const FRIENDS_UID_LIST = {};
+    CONTACT_LIST.forEach(FRIEND => FRIENDS_UID_LIST[FRIEND.NAME] = FRIEND.UID);
+    
+    ws.send(JSON.stringify({PURPOSE:'SEND_MESSAGE',MESSAGE:MESSAGE_BOX.value,RECIEVER_UID:FRIENDS_UID_LIST[RECIEVER.value],SENDER_UID:Store.getState().UID}));
     MESSAGE_BOX.value = '';
 }
 
-const MessageBox = () => {
+const MessageBox = ({TOKEN_ID}) => {
 
     const target_chosen = useRef(null);
     const text_box = useRef(null);
@@ -40,8 +32,8 @@ const MessageBox = () => {
                 <datalist id="user_list">
                     {
                         data.FRIENDS_ONLINE ?
-                            data.FRIENDS_ONLINE.map((CLIENT,index)=>{
-                                return <option value={CLIENT.NAME} key={index}/>
+                            data.FRIENDS_ONLINE.map((FRIEND,index)=>{
+                                return <option value={FRIEND.NAME} key={index}/>
                             })
                         : null  
                     }
@@ -52,7 +44,7 @@ const MessageBox = () => {
             <article className="w-full h-16 flex  py-2 px-4">
                 <input type="text" ref={text_box} onKeyDown={
                     e => e.key === 'Enter' && e.target.value && target_chosen.current ? 
-                        SEND({MESSAGE_BOX:text_box.current,RECIEVER:target_chosen.current,CONTACT_LIST:data.FRIENDS_ONLINE,SENDER_TEMPORARY_ID:data.TEMPORARY_ID,SENDER_NAME:data.NAME}) 
+                        SEND({MESSAGE_BOX:text_box.current,RECIEVER:target_chosen.current,CONTACT_LIST:data.FRIENDS_ONLINE,SENDER_TEMPORARY_ID:TOKEN_ID}) 
                         : null
                     }
                 className=" h-10 w-full border bg-neutral-800 border-neutral-700 outline-0 rounded-md text-neutral-300 px-2"/>
@@ -70,18 +62,18 @@ const Notification = () => {
         <section className="w-1/4 h-1/4 border rounded-md border-neutral-500 absolute bg-neutral-800 flex flex-col text-neutral-300" style={{left:'10%',top:'20%'}}>
             <span className="text-neutral-300 p-1 text-sm relative border border-neutral-500 rounded-md w-max bg-neutral-800" style={{top:'-1rem',right:'-1rem'}}>Recieved:</span>
             <p className="px-4 text-sm w-full flex-grow">{data.MESSAGE}</p>
-            <span className="w-max absolute" style={{right:'1rem',bottom:'0.5rem'}}>- {data.SENDER}</span>
+            <span className="w-max absolute" style={{right:'1rem',bottom:'0.5rem'}}>- {data.SENDER_NAME}</span>
         </section>
     );
 }
 
 const IndexPage = () => {
 
-    const {NAME,TEMPORARY_ID} = useParams();
+    const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
     
     Store.subscribe(() => update_data(Store.getState()));
-
+    
     const ws = useMemo(() => socket.connect(TEMPORARY_ID),[TEMPORARY_ID]);
     
    
@@ -92,61 +84,18 @@ const IndexPage = () => {
         let MERGE_DATA = null;
 
         if(parse.STATUS === 200){
-            switch(parse.PURPOSE){
-                case 'RECIEVE_MESSAGE':
-                    MERGE_DATA = {...data,...parse};
-                    Store.dispatch(UPDATE_DATA(MERGE_DATA));
-                    break;
-                default: 
-                    MERGE_DATA = {...data,...parse.CLIENT};
-                    Store.dispatch(UPDATE_DATA(MERGE_DATA));
-                    break;
-            }
+            MERGE_DATA = {...data,...parse.CLIENT};
+            Store.dispatch(UPDATE_DATA(MERGE_DATA));
         }else{
             window.location.href = '/';
         }
         
     }
-    // ws.onmessage = e => {
-        
-    //     const parse = JSON.parse(e.data);
-    //     count+=1;
-    //     console.log('Update',count,parse)
-
-    //     let MERGE_DATA = {};
-
-    //     switch(parse.PURPOSE){
-    //         case 'RECIEVE_MESSAGE':
-    //             MERGE_DATA = {...data,...parse};
-    //             Store.dispatch(UPDATE_DATA(MERGE_DATA));
-    //             break;
-    //         default:
-    //             if(!hasInitialized.current){
-    //                 ws.send(JSON.stringify({PURPOSE:'REQUEST_DATA',TEMPORARY_ID:SESSION_KEY}));
-    //                 hasInitialized.current = true;
-    //             }
-
-
-    //             // if(parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY]){
-    //             //     delete parse.LIST_OF_TEMPORARY_ID_WITH_CORRESPONDING_ACTIVE_USERS[SESSION_KEY];
-    //             // }
-    //             // //REMOVE MY ISN FROM THE LIST
-    //             // parse.LIST_OF_ACTIVE_USERNAMES = parse.LIST_OF_ACTIVE_USERNAMES.filter(USERNAME => USERNAME !== IGN);
-        
-    //             // //MERGE THE INCOMING DATA AND THE MODIFIED IGN_LIST
-    //             // MERGE_DATA = {...data,...parse};
-        
-    //             // //SAVE IT INTO THE STORE , SO THE COMPONENTS WILL UPDATE
-    //             // Store.dispatch(UPDATE_DATA(MERGE_DATA));
-    //             break;
-    //     }
-        
-    // };
 
     return(
         <section>
             <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
-                <span>Your unique Id is: {NAME}</span>
+                <span>Your unique Id is: {data.NAME}</span>
                 <span>Active: {data.ONLINE}</span>
             </p>
             <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
@@ -166,7 +115,7 @@ const IndexPage = () => {
                 </div>
             </article>
             <Notification/>
-            <MessageBox/>
+            <MessageBox TOKEN_ID={TEMPORARY_ID}/>
         </section>
 
     );
