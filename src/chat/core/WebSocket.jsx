@@ -142,18 +142,37 @@ const IndexPage = () => {
     const [ACTIVE_LIST,UPDATE_ACTIVE_LIST] = useState(null);
 
 
-    useEffect((ACTIVES,LIST_PROFILE_ICON) => { //CREATES BUNCH OF PROFILE ICONS
-        ACTIVES = data.FRIENDS_ONLINE;
-        if(ACTIVES){
-            LIST_PROFILE_ICON = ACTIVES.map((FRIEND,index) => {
-                return(
-                    <ProfileIcon isActive={true} ICON={FRIEND.ICON} key={index}/>
+    // useEffect((LIST_PROFILE_ICON) => { //CREATES BUNCH OF PROFILE ICONS
+
+    //     const {FRIENDS_ONLINE,FRIENDS} = data;
+
+    //     if(FRIENDS_ONLINE && FRIENDS){
+    //         const FRIEND_LIST = {
+    //             list:[],
+    //             sort(){
+    //                 FRIENDS_ONLINE.forEach(item => {
+    //                     item.STATE = true;
+    //                     this.list.push(item);
+    //                 });
+    //                 FRIENDS.forEach(item => {
+    //                     if(!this.list.includes(item)){
+    //                         item.STATE = false;
+    //                         this.list.push(item);
+    //                     }
+    //                 });
+    //             }
+    //         }
+    //         FRIEND_LIST.sort();
+    
+    //         LIST_PROFILE_ICON = FRIEND_LIST.list.map((FRIEND,index) => {
+    //             return(
+    //                 <ProfileIcon isActive={FRIEND.state} ICON={FRIEND.ICON} key={index}/>
                     
-                );
-            });
-            UPDATE_ACTIVE_LIST(LIST_PROFILE_ICON);
-        } 
-    },[data.FRIENDS_ONLINE]);
+    //             );
+    //         });
+    //         UPDATE_ACTIVE_LIST(LIST_PROFILE_ICON);
+    //     } 
+    // },[data]);
 
     return(
         <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-900">
