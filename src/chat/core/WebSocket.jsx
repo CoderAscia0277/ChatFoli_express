@@ -1,9 +1,11 @@
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo,lazy, useRef, useState ,Suspense ,useEffect} from "react";
 import { useParams } from "react-router-dom";
 //LET'S IMPLEMENT A LOGIN AND SIGN UP LOGIC
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_DATA} from "../_utils/store/store";
+
+import imgCache from "../utils/ImageCache";
 
 const SEND = ({MESSAGE_BOX,RECIEVER,SENDER_TEMPORARY_ID = null,CONTACT_LIST = []}) => {
    
@@ -72,6 +74,42 @@ const Notification = () => {
     );
 }
 
+//DISPLAYS THE PROFILE ICON
+const ProfileIcon = ({ICON = null,size={w:null,h:null},isActive = true, isHover = true}) => {
+    
+    
+
+    //HANDLES THE PROFILE LOADING DISPLAY
+    const ProfileIconLoader = () => {
+        return(
+            <span className="w-16 h-16 bg-neutral-800 loading rounded-full flex items-end justify-end">
+                <span className="w-4 h-4 bg-neutral-700 block relative rounded-full" ></span>
+            </span>
+        );
+    }
+
+    const Icon = ({src}) => {
+        const LOAD_IMAGE = imgCache;
+        LOAD_IMAGE.read(src);
+        return(
+            <span className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-16 h-16'}  rounded-full flex items-end justify-end ${isHover ? 'hover:cursor-pointer hover:scale-110' : ''}`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+                <span className={`w-4 h-4 ${isActive ? 'bg-lime-600' : 'bg-neutral-600'} border-neutral-900 border-2 block relative rounded-full`} ></span>
+            </span>
+        );
+    }
+    try{
+        new URL(ICON);
+        return(
+            <Suspense fallback={<ProfileIconLoader/>}>
+                <Icon src={ICON}/>
+            </Suspense>
+        );
+    }catch{
+        return(<ProfileIconLoader/>);
+    }
+}
+
+
 const IndexPage = () => {
 
     const {TEMPORARY_ID} = useParams();
@@ -97,33 +135,71 @@ const IndexPage = () => {
         
     }
 
+    // HOLDS MOST THE COMPONENTS LIKE A BACKBONE
+
+    // const [{THEME,RECENT_ACTIVE},UPDATE_DATA] = useState(useContext(UserContext));
+
+    const [ACTIVE_LIST,UPDATE_ACTIVE_LIST] = useState(null);
+
+
+    useEffect((ACTIVES,LIST_PROFILE_ICON) => { //CREATES BUNCH OF PROFILE ICONS
+        ACTIVES = data.FRIENDS_ONLINE;
+        if(ACTIVES){
+            LIST_PROFILE_ICON = ACTIVES.map((FRIEND,index) => {
+                return(
+                    <ProfileIcon isActive={true} ICON={FRIEND.ICON} key={index}/>
+                    
+                );
+            });
+            UPDATE_ACTIVE_LIST(LIST_PROFILE_ICON);
+        } 
+    },[data.FRIENDS_ONLINE]);
+
     return(
-        <section>
-            <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
-                <span>Your unique Id is: {data.NAME}</span>
-                <span>Active: {data.ONLINE}</span>
-            </p>
-            <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
-                <p className="text-neutral-300">List of Online:</p>
-                <div className="overflow-y-scroll w-full h-full py-2">
-                    <li className="flex flex-col h-max gap-2">
-                        {
-                            data.FRIENDS_ONLINE ?
-                            data.FRIENDS_ONLINE.map((FRIEND,index) => {
-
-                                return(<p className={`text-neutral-400 text-sm`} key={index}>- {FRIEND.NAME}</p>);
-                            })
-                            : null
-
-                        }
-                    </li>
-                </div>
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-900">
+            <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 text-neutral-100" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                </svg>
+                <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
+            </nav>
+            <article className="w-full min-h-20 items-center overflow-x-scroll px-2 py-2">
+                <li className="w-max h-max flex flex-row gap-2">
+                   {useMemo(() => ACTIVE_LIST,[ACTIVE_LIST])}
+                </li>
             </article>
-            <Notification/>
-            <MessageBox TOKEN_ID={TEMPORARY_ID}/>
+            {/* <ContactListDisplay/> */}
+            
         </section>
-
     );
+
+    // return(
+    //     <section>
+    //         <p className="text-neutral-300 absolute flex flex-col gap-2" style={{top:'15px',left:'15px'}}>
+    //             <span>Your unique Id is: {data.NAME}</span>
+    //             <span>Active: {data.ONLINE}</span>
+    //         </p>
+    //         <article className="w-max h-1/4  absolute" style={{top:'15px',right:'25px'}}>
+    //             <p className="text-neutral-300">List of Online:</p>
+    //             <div className="overflow-y-scroll w-full h-full py-2">
+    //                 <li className="flex flex-col h-max gap-2">
+    //                     {
+    //                         data.FRIENDS_ONLINE ?
+    //                         data.FRIENDS_ONLINE.map((FRIEND,index) => {
+
+    //                             return(<p className={`text-neutral-400 text-sm`} key={index}>- {FRIEND.NAME}</p>);
+    //                         })
+    //                         : null
+
+    //                     }
+    //                 </li>
+    //             </div>
+    //         </article>
+    //         <Notification/>
+    //         <MessageBox TOKEN_ID={TEMPORARY_ID}/>
+    //     </section>
+
+    // );
    
 }
 
