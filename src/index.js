@@ -13,6 +13,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 const UserId= 123789; 
 const WebSocket = lazy(() => import('./chat/core/WebSocket'));
 const LoginPage = lazy( () => import('./chat/core/LoginPage'));
+const Messenger = lazy(() => import('./chat/core/Messenger'));
 
 const router = createBrowserRouter([
   {
@@ -23,8 +24,8 @@ const router = createBrowserRouter([
     element:<LoginPage/>
   },
   {
-    path:'/helloworld',
-    element:<div>Hello World !</div>
+    path:'/Chat/:RECIEVER_NAME/:UID',
+    element:<Messenger/>
   },{
     path:'/chat',
     element: <Suspense fallback={<LoadingIdle/>}><ChatApp UserId={UserId}/></Suspense> 

@@ -14,7 +14,7 @@ const socket = {
             this.ws[TEMPORARY_ID] = server;
             return this.ws[TEMPORARY_ID];
         }else if(this.ws[TEMPORARY_ID]){
-            console.log('already connected')
+            return this.ws[TEMPORARY_ID];
         }
         return this.ws[TEMPORARY_ID];
     }

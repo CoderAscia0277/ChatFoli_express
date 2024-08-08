@@ -5,7 +5,7 @@ import { TestFetcher , SessionFetcher ,CONNECT_WEBSOCKET, CLIENT_DATA} from "../
 import imgCache from "../utils/ImageCache";
 const Character = lazy(() => import("../components/CharacterBubble"));
 const User = lazy(() => import('../components/UserBubble'));
-const ChatHeader = lazy(() => import("../components/ChatHeader"));
+const ChatHeader = lazy(() => import("../components/ChatApp/ChatHeader"));
 const UserContext = createContext();
 
 //MAIN COMPONENT WHICH COMMUNICATES WITH THE INDEX JS

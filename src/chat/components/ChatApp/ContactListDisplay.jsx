@@ -1,0 +1,71 @@
+
+import { useEffect,lazy,Suspense,useMemo,useState } from "react";
+import imgCache from "../../utils/ImageCache";
+
+const ProfileIcon = lazy(() => import('./ProfileIcon'));
+
+//HANDLES THE CONTACT LIST DISPLAY , CONTAINS GROUP OF CONTACT PROFILE COMPONENTS
+const ContactListDisplay = ({DATA}) => {
+
+    const [CONTACT_LIST,UPDATE_LIST] = useState(null);
+ 
+    useEffect((PROFILE_COMPONENTS) => {
+        if( DATA.FRIENDS){
+        
+            PROFILE_COMPONENTS = DATA.FRIENDS.map((item,index) => {
+                return(
+                    <ContactProfile VALUE={item} key={index} isSeen={Math.random() > 0.5}/>
+                );
+            });
+
+            UPDATE_LIST(PROFILE_COMPONENTS);
+        }
+    },[DATA]);
+
+
+    return(
+        <article className="w-full h-3/4 flex flex-col ">
+            {useMemo(() => CONTACT_LIST,[CONTACT_LIST])}
+        </article>
+    );
+}
+
+const ContactProfile = ({VALUE = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:null}, isSeen = false}) => {
+
+    const {NAME,RECENT_MESSAGE,ICON,STATE} = VALUE;
+
+    // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
+    const ContactProfileLoader = () => {
+        return(
+            <div className="w-full min-h-16 flex flex-row gap-4 p-4">
+                <span className="bg-neutral-800 w-14 h-14 rounded-full block loading"></span>
+                <ul className="flex-grow h-full flex flex-col gap-2">
+                    <span className="block bg-neutral-800 loading w-2/6 min-h-4 rounded-sm "></span>
+                    <span className="block bg-neutral-800 loading w-3/4 min-h-6 rounded-sm "></span>
+                </ul>
+            </div>
+         );
+    }
+
+    const Profile = () => {
+        const img_loader = imgCache;
+        img_loader.read(ICON);
+        return(
+                <div className="w-full min-h-16 flex flex-row gap-4 p-4  hover:cursor-pointer hover:bg-neutral-800">
+                    <ProfileIcon ICON={ICON} size={{w:'w-14',h:'h-14'}} isActive={STATE} isHover={false}/>
+                    <ul className="flex-grow h-full flex flex-col gap-1">
+                        <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300 font-semibold">{NAME}</span>
+                        <span className={`flex w-max max-w-3/4 min-h-6 h-max ${ !isSeen ? 'text-neutral-300':'text-neutral-500'} text-break `}>{RECENT_MESSAGE}</span>
+                    </ul>
+                </div>
+        );  
+    }
+
+    return(
+        <Suspense fallback={<ContactProfileLoader/>}>
+            <Profile/>
+        </Suspense>
+
+    );
+}
+export default ContactListDisplay;
