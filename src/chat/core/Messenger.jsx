@@ -118,14 +118,15 @@ const ChatHeader = lazy(() => import('../components/ChatApp/ChatHeader'));
 //     )
 // }
 // DISPLAYS THE UI CONVO LOG OF A SPECIFIC PROFILE
-const ChatConvoDisplay = () => {
+const ChatConvoDisplay = ({VALUES = {},REDIRECT = (state) => null}) => {
 
     // const [{THEME},UPDATE_DATA] = useState(useContext(UserContext));
-    const {RECIEVER_NAME,UID} = useParams();
+    // const {RECIEVER_NAME,UID} = useParams();
+    const {RECIEVER_STATUS,ICON,RECIEVER_NAME,RECIEVER_UID} = VALUES;
 
     return(
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-800" >
-            <ChatHeader TAG="It's time to study again..." NAME={RECIEVER_NAME} ICON="http://localhost:5000/images/image_02.jpg"/>
+        <section className="lg:w-2/6 md:w-4/3 lg:border-2 lg:border-neutral-700 sm:w-4/3 w-full h-full  absolute xs:left-0  lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-900" >
+            <ChatHeader REDIRECT={(state) => REDIRECT(state)} TAG="It's time to study again..." NAME={RECIEVER_NAME} ICON={ICON} STATUS={RECIEVER_STATUS}/>
             {/* <Suspense fallback={<ChatContainerHolder/>}>
                 <ChatContainer SessionId={UID}/>
             </Suspense> */}

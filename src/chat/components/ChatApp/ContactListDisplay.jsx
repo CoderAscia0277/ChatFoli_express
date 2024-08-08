@@ -5,7 +5,7 @@ import imgCache from "../../utils/ImageCache";
 const ProfileIcon = lazy(() => import('./ProfileIcon'));
 
 //HANDLES THE CONTACT LIST DISPLAY , CONTAINS GROUP OF CONTACT PROFILE COMPONENTS
-const ContactListDisplay = ({DATA}) => {
+const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
 
     const [CONTACT_LIST,UPDATE_LIST] = useState(null);
  
@@ -14,7 +14,7 @@ const ContactListDisplay = ({DATA}) => {
         
             PROFILE_COMPONENTS = DATA.FRIENDS.map((item,index) => {
                 return(
-                    <ContactProfile VALUE={item} key={index} isSeen={Math.random() > 0.5}/>
+                    <ContactProfile REDIRECT={(VALUES) => REDIRECT(VALUES)} VALUES={item} key={index} isSeen={Math.random() > 0.5}/>
                 );
             });
 
@@ -24,15 +24,15 @@ const ContactListDisplay = ({DATA}) => {
 
 
     return(
-        <article className="w-full h-3/4 flex flex-col ">
+        <article className="w-full h-3/4 flex flex-col gap-2">
             {useMemo(() => CONTACT_LIST,[CONTACT_LIST])}
         </article>
     );
 }
 
-const ContactProfile = ({VALUE = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:null}, isSeen = false}) => {
+const ContactProfile = ({VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:null}, isSeen = false , REDIRECT = (VALUES) => null}) => {
 
-    const {NAME,RECENT_MESSAGE,ICON,STATE} = VALUE;
+    const {NAME,RECENT_MESSAGE,ICON,STATE,UID} = VALUES
 
     // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
     const ContactProfileLoader = () => {
@@ -51,10 +51,10 @@ const ContactProfile = ({VALUE = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:
         const img_loader = imgCache;
         img_loader.read(ICON);
         return(
-                <div className="w-full min-h-16 flex flex-row gap-4 p-4  hover:cursor-pointer hover:bg-neutral-800">
-                    <ProfileIcon ICON={ICON} size={{w:'w-14',h:'h-14'}} isActive={STATE} isHover={false}/>
-                    <ul className="flex-grow h-full flex flex-col gap-1">
-                        <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300 font-semibold">{NAME}</span>
+                <div className="w-full min-h-16 flex flex-row gap-4 px-4 py-2 items-center  hover:cursor-pointer hover:bg-neutral-800" onClick={() => REDIRECT({STATE:true,RECIEVER_STATUS:STATE,RECIEVER_UID:UID,ICON:ICON,RECIEVER_NAME:NAME})}>
+                    <ProfileIcon ICON={ICON} size={{w:'w-12',h:'h-12'}} isActive={STATE} isHover={false}/>
+                    <ul className="flex-grow h-full flex flex-col items-start gap-1">
+                        <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300  font-semibold">{NAME}</span>
                         <span className={`flex w-max max-w-3/4 min-h-6 h-max ${ !isSeen ? 'text-neutral-300':'text-neutral-500'} text-break `}>{RECENT_MESSAGE}</span>
                     </ul>
                 </div>

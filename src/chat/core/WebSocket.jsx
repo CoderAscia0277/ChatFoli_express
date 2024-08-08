@@ -1,12 +1,12 @@
 
-import { useMemo,lazy, useRef, useState ,useEffect} from "react";
+import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_DATA} from "../_utils/store/store";
 
 const ProfileIcon = lazy(() => import('../components/ChatApp/ProfileIcon'));
 const ContactListDisplay = lazy(() => import('../components/ChatApp/ContactListDisplay'));
-
+const MessengerApp = lazy(() => import("../core/Messenger"));
 // const SEND = ({MESSAGE_BOX,RECIEVER,SENDER_TEMPORARY_ID = null,CONTACT_LIST = []}) => {
    
     
@@ -80,7 +80,7 @@ const IndexPage = () => {
     const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
     const isMounted = useRef(false);
-
+    const [ChatApp,set_ChatApp] = useState({STATE:false,RECIEVER_STATUS:null,RECIEVER_ID:null,ICON:null,RECIEVER_NAME:null});
     useEffect(() => {
         if(!isMounted.current){
             isMounted.current = true;
@@ -119,7 +119,7 @@ const IndexPage = () => {
     
             LIST_PROFILE_ICON = FRIENDS.map((FRIEND,index) => {
                 return(
-                    <ProfileIcon isActive={FRIEND.STATE} ICON={FRIEND.ICON} key={index}/>
+                    <ProfileIcon ICON={FRIEND.ICON} REDIRECT={() => set_ChatApp({STATE:true,ICON:FRIEND.ICON,RECIEVER_NAME:FRIEND.NAME,RECIEVER_STATUS:FRIEND.STATE,RECIEVER_ID:FRIEND.UID})} isActive={FRIEND.STATE}  key={index}/>
                     
                 );
             });
@@ -128,20 +128,35 @@ const IndexPage = () => {
     },[data]);
 
     return(
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full  absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-900">
+        <>
+        { !ChatApp.STATE ?
+        <Suspense fallback={<p>Please Wait</p>}>
+        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full lg:border-2 lg:border-neutral-700 absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-900">
             <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 text-neutral-100" viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                 </svg>
                 <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
             </nav>
-            <article className="w-full min-h-20 items-center overflow-x-scroll px-2 py-2">
-                <li className="w-max h-max flex flex-row gap-2">
-                   {useMemo(() => ACTIVE_LIST,[ACTIVE_LIST])}
-                </li>
-            </article>
-            <ContactListDisplay DATA={data}/>
+            <article className="overflow-y-scroll">
+                <div className="w-full min-h-20 items-center overflow-x-scroll px-4 py-2 ">
+                    <li className="w-max h-max flex flex-row gap-4 ">
+                        {ACTIVE_LIST}
+                    </li>
+                </div>
+                <ContactListDisplay REDIRECT={(VALUES) => set_ChatApp(VALUES)} DATA={data}/>
+            </article>      
         </section>
+        
+        </Suspense>
+        
+        : 
+        <Suspense fallback={<p>loaidng</p>}>
+            <MessengerApp VALUES={ChatApp} REDIRECT={(state) => set_ChatApp(state)}/>
+        </Suspense>
+            
+    }
+        </>
     );
 
     // return(
