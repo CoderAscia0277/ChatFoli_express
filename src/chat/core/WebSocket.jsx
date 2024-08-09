@@ -152,7 +152,7 @@ const IndexPage = () => {
         
         : 
         <Suspense fallback={<p>loaidng</p>}>
-            <MessengerApp VALUES={ChatApp} REDIRECT={(state) => set_ChatApp(state)}/>
+            <MessengerApp  VALUES={ChatApp} REDIRECT={(state) => set_ChatApp(state)} socket={ws}/>
         </Suspense>
             
     }
