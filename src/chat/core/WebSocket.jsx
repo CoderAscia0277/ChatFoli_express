@@ -131,15 +131,18 @@ const IndexPage = () => {
         <>
         { !ChatApp.STATE ?
         <Suspense fallback={<p>Please Wait</p>}>
-        <section className="lg:w-2/6 md:w-4/3 sm:w-4/3 w-full h-full lg:border-2 lg:border-neutral-700 absolute xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  lg:rounded-xl md:rounded-xl  mt-0 flex flex-col bg-neutral-900">
+        <section className="lg:w-1/4 md:w-4/3 sm:w-4/3 w-full h-full  xs:left-0 py-2 lg:top-0 md:top-0 bottom-0    mt-0 flex flex-col bg-neutral-900">
             <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 rounded-full bg-neutral-800 text-neutral-100" viewBox="0 0 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 text-neutral-100" viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                 </svg>
                 <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
             </nav>
+            <article className="w-full h-max flex flex-row justify-center px-4 py-4">
+                <input type="text" placeholder="Search" className="bg-neutral-800 rounded-lg text-neutral-300 outline-0 w-full py-2 px-4 "/>
+            </article>
             <article className="overflow-y-scroll">
-                <div className="w-full min-h-20 items-center overflow-x-scroll px-4 py-2 ">
+                <div className="lg:hidden lg:w-0 w-full min-h-20 items-center overflow-x-scroll px-4 py-2 ">
                     <li className="w-max h-max flex flex-row gap-4 ">
                         {ACTIVE_LIST}
                     </li>
@@ -147,7 +150,9 @@ const IndexPage = () => {
                 <ContactListDisplay REDIRECT={(VALUES) => set_ChatApp(VALUES)} DATA={data}/>
             </article>      
         </section>
-        
+        <aside className=" lg:w-3/4  h-screen">
+            <MessengerApp  VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}} REDIRECT={(state) => set_ChatApp(state)} socket={ws}/>
+        </aside>
         </Suspense>
         
         : 
