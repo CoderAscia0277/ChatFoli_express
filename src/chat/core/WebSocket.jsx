@@ -109,7 +109,8 @@ const IndexPage = () => {
     // const [{THEME,RECENT_ACTIVE},UPDATE_DATA] = useState(useContext(UserContext));
 
     const [ACTIVE_LIST,UPDATE_ACTIVE_LIST] = useState(null);
-
+    const [isSearchFill,set_isSearchFill] = useState(false);
+    const SearchBar = useRef(null);
 
     useEffect((LIST_PROFILE_ICON) => { //CREATES BUNCH OF PROFILE ICONS
 
@@ -131,17 +132,40 @@ const IndexPage = () => {
         <>
         { !ChatApp.STATE ?
         <Suspense fallback={<p>Please Wait</p>}>
-        <section className="lg:w-1/4 md:w-4/3 sm:w-4/3 w-full h-full  xs:left-0 py-2 lg:top-0 md:top-0 bottom-0    mt-0 flex flex-col bg-neutral-900">
-            <nav className=" w-full min-h-14  flex flex-row items-center justify-start gap-2 px-4 ">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 text-neutral-100" viewBox="0 0 16 16">
+        <aside className="w-max h-full bg-neutral-900 flex flex-col p-4 ">
+            <article className="w-full h-max">
+                <ProfileIcon showIndicator={true} size={{w:'w-12',h:'h-12'}} ICON={'http://localhost:5000/images/image_01.png'}/>
+            </article>
+            <article className="w-full flex-grow  flex flex-col justify-center items-center gap-4 py-4">
+                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-house w-6 h-6 text-neutral-500 cursor-pointer" viewBox="0 0 16 16">
+                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-chat-left-dots w-6 h-6 scale-110 text-lightblue cursor-pointer" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-gear-fill w-6 h-6 text-neutral-500 " viewBox="0 0 16 16">
+                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                </svg>
+            </article>
+            
+        </aside>
+        <section className="lg:w-1/4 md:w-4/3 sm:w-4/3 w-full h-full  xs:left-0 py-2 lg:top-0 md:top-0 bottom-0  px-4   mt-0 flex flex-col bg-neutral-900">
+            <nav className=" w-full h-1/8  flex flex-row items-center justify-start gap-2 p-4 ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  className="bi bi-list lg:hidden  w-10 h-10 p-2 hover:cursor-pointer hover:scale-110 text-neutral-100" viewBox="0 0 16 16">
                     <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                 </svg>
-                <span className="text-neutral-100 text-xl font-sans mx-2">ChatBotify</span>
+                <span className="text-neutral-100 text-xl font-sans flex-grow">Chats</span>
+                <input ref={SearchBar} onChange={e => e.target.value ? set_isSearchFill(true) : set_isSearchFill(false)} type="text" placeholder="" className="bg-transparent text-end rounded-lg text-neutral-300  w-full py-1 px-4 lg:w-1/3"/>
+                <svg xmlns="http://www.w3.org/2000/svg" onClick={() => !SearchBar.current.value ? SearchBar.current.focus() : null} fill="currentColor" className={`bi bi-search w-6 h-6 cursor-pointer hover:scale-110 ${isSearchFill ? 'text-lightblue scale-110' : "text-neutral-100"}`} viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                </svg>
+
             </nav>
-            <article className="w-full h-max flex flex-row justify-center px-4 py-4">
+            {/* <article className="w-full h-max flex flex-row justify-center px-4 py-4">
                 <input type="text" placeholder="Search" className="bg-neutral-800 rounded-lg text-neutral-300 outline-0 w-full py-2 px-4 "/>
-            </article>
-            <article className="overflow-y-scroll">
+            </article> */}
+            <article className="overflow-y-scroll mt-4">
                 <div className="lg:hidden lg:w-0 w-full min-h-20 items-center overflow-x-scroll px-4 py-2 ">
                     <li className="w-max h-max flex flex-row gap-4 ">
                         {ACTIVE_LIST}
@@ -150,7 +174,7 @@ const IndexPage = () => {
                 <ContactListDisplay REDIRECT={(VALUES) => set_ChatApp(VALUES)} DATA={data}/>
             </article>      
         </section>
-        <aside className=" lg:w-3/4  h-screen">
+        <aside className=" lg:flex-grow  h-screen">
             <MessengerApp  VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}} REDIRECT={(state) => set_ChatApp(state)} socket={ws}/>
         </aside>
         </Suspense>

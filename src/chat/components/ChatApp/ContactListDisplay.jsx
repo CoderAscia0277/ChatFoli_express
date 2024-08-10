@@ -24,7 +24,7 @@ const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
 
 
     return(
-        <article className="w-full h-3/4 flex flex-col gap-2">
+        <article className="w-full h-3/4 flex flex-col gap-4">
             {useMemo(() => CONTACT_LIST,[CONTACT_LIST])}
         </article>
     );
@@ -51,11 +51,11 @@ const ContactProfile = ({VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE
         const img_loader = imgCache;
         img_loader.read(ICON);
         return(
-                <div className="w-full min-h-16 flex flex-row gap-4 px-4 py-2 items-center  hover:cursor-pointer hover:bg-neutral-800" onClick={() => REDIRECT({STATE:true,RECIEVER_STATUS:STATE,RECIEVER_UID:UID,ICON:ICON,RECIEVER_NAME:NAME})}>
+                <div className="w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center  hover:cursor-pointer bg-lightblue"  onClick={() => REDIRECT({STATE:true,RECIEVER_STATUS:STATE,RECIEVER_UID:UID,ICON:ICON,RECIEVER_NAME:NAME})}>
                     <ProfileIcon ICON={ICON} size={{w:'w-12',h:'h-12'}} isActive={STATE} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
                         <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300  font-semibold">{NAME}</span>
-                        <span className={`flex w-max max-w-3/4 min-h-6 h-max ${ !isSeen ? 'text-neutral-300':'text-neutral-500'} text-break `}>{RECENT_MESSAGE}</span>
+                        <span className={`flex w-max max-w-3/4 min-h-6 h-max ${ !isSeen ? 'text-neutral-300':'text-neutral-400'} text-break `}>{RECENT_MESSAGE}</span>
                     </ul>
                 </div>
         );  
