@@ -3,6 +3,7 @@ import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_DATA} from "../_utils/store/store";
+import { UPDATE_INFO,MessengerStore } from "../_utils/store/messenger_store";
 
 const ProfileIcon = lazy(() => import('../components/ChatApp/ProfileIcon'));
 const ContactListDisplay = lazy(() => import('../components/ChatApp/ContactListDisplay'));
@@ -184,6 +185,15 @@ const IndexPage = () => {
             </div>
         );
     }
+    // VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}}
+    const SET_ACTIVECHAT = ({PERSON=null}) => {
+        if(PERSON){
+            MessengerStore.dispatch(UPDATE_INFO(PERSON));
+            return(
+                <MessengerApp REDIRECT={(state) => null} socket={ws}/>
+            ) 
+        }
+    }
     return(
         <Suspense fallback={<p>Please Wait</p>}>
             <SideBar/>
@@ -195,7 +205,7 @@ const IndexPage = () => {
                 </article>      
             </section>
             <aside className=" lg:flex-grow  h-screen">
-                <MessengerApp  VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}} REDIRECT={(state) => null} socket={ws}/>
+               {data.FRIENDS ? SET_ACTIVECHAT({PERSON:data.FRIENDS[0]}) : null}
             </aside>
         </Suspense>
         

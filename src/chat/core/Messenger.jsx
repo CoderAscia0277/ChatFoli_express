@@ -179,7 +179,7 @@ const ChatBubbles = ({RECIEVER_UID,ICON}) => {
             const temp = LOGS;
             let components = temp.map((item,index) => {
                 return item.UID === '09925388028' ? 
-                <CHAT_BUBBLE ICON={'http://localhost:5000/images/image_02.jpg'} MESSAGE={item.LOG} key={index}/>:
+                <CHAT_BUBBLE ICON={ICON} MESSAGE={item.LOG} key={index}/>:
                 <MY_CHAT_BUBBLE MESSAGE={item.LOG} key={index}/>
             });
             UPDATE_CHAT_BLOCKS(components);
@@ -245,14 +245,15 @@ const ChatContainerHolder = () => {
 }
 
 // DISPLAYS THE UI CONVO LOG OF A SPECIFIC PROFILE
-const ChatConvoDisplay = ({VALUES = {},REDIRECT = (state) => null,socket = null}) => {
+const ChatConvoDisplay = ({REDIRECT = (state) => null,socket = null}) => {
 
     
-    const {RECIEVER_STATUS,ICON,RECIEVER_NAME,RECIEVER_UID} = VALUES;
+    // const {RECIEVER_STATUS,ICON,RECIEVER_NAME,RECIEVER_UID} = VALUES;
+    const {STATE,ICON,NAME,RECIEVER_UID} = MessengerStore.getState().INFO;
     
     return(
         <section className="w-full  h-full flex flex-col  bg-transparent" >
-            <ChatHeader REDIRECT={(state) => REDIRECT(state)} TAG="It's time to study again..." RECIEVER_UID={RECIEVER_UID} NAME={RECIEVER_NAME} ICON={ICON} STATUS={RECIEVER_STATUS}/>
+            <ChatHeader REDIRECT={(state) => REDIRECT(state)} TAG="It's time to study again..." RECIEVER_UID={RECIEVER_UID} NAME={NAME} ICON={ICON} STATUS={STATE}/>
             <Suspense fallback={<ChatContainerHolder/>}>
                 <ChatBubbles ICON={ICON} RECIEVER_UID={RECIEVER_UID} socket={socket}/>
             </Suspense>
