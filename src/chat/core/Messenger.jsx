@@ -157,7 +157,7 @@ const CHAT_BUBBLE = ({ICON,MESSAGE}) => {
 // }
 
 
-const ChatBubbles = ({RECIEVER_UID,ICON}) => {
+const ChatBubbles = ({UID,ICON}) => {
     const [LOGS,UPDATE_LOGS] = useState(MessengerStore.getState().HISTORY);
     const [CHAT_BLOCKS,UPDATE_CHAT_BLOCKS] = useState(null);
     const ScrollView = useRef(null);
@@ -249,13 +249,13 @@ const ChatConvoDisplay = ({REDIRECT = (state) => null,socket = null}) => {
 
     
     // const {RECIEVER_STATUS,ICON,RECIEVER_NAME,RECIEVER_UID} = VALUES;
-    const {STATE,ICON,NAME,RECIEVER_UID} = MessengerStore.getState().INFO;
+    const {STATE,ICON,NAME,UID} = MessengerStore.getState().INFO;
     
     return(
         <section className="w-full  h-full flex flex-col  bg-transparent" >
-            <ChatHeader REDIRECT={(state) => REDIRECT(state)} TAG="It's time to study again..." RECIEVER_UID={RECIEVER_UID} NAME={NAME} ICON={ICON} STATUS={STATE}/>
+            <ChatHeader REDIRECT={(state) => REDIRECT(state)} TAG="It's time to study again..." RECIEVER_UID={UID} NAME={NAME} ICON={ICON} STATUS={STATE}/>
             <Suspense fallback={<ChatContainerHolder/>}>
-                <ChatBubbles ICON={ICON} RECIEVER_UID={RECIEVER_UID} socket={socket}/>
+                <ChatBubbles ICON={ICON} UID={UID} socket={socket}/>
             </Suspense>
         </section>
     );
