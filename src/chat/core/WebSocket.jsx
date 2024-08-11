@@ -1,5 +1,5 @@
 
-import { useMemo,lazy, useRef, useState ,useEffect, Suspense, useCallback} from "react";
+import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_DATA} from "../_utils/store/store";
@@ -85,7 +85,7 @@ const IndexPage = () => {
     const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
     const isMounted = useRef(false);
-    const [ChatApp,set_ChatApp] = useState({STATE:false,RECIEVER_STATUS:null,RECIEVER_ID:null,ICON:null,RECIEVER_NAME:null});
+    // const [ChatApp,set_ChatApp] = useState({STATE:false,RECIEVER_STATUS:null,RECIEVER_ID:null,ICON:null,RECIEVER_NAME:null});
     useEffect(() => {
         if(!isMounted.current){
             isMounted.current = true;
@@ -121,10 +121,10 @@ const IndexPage = () => {
         const {FRIENDS} = data;
 
         if(FRIENDS){
-    
+            // set_ChatApp({STATE:true,ICON:FRIEND.ICON,RECIEVER_NAME:FRIEND.NAME,RECIEVER_STATUS:FRIEND.STATE,RECIEVER_ID:FRIEND.UID}
             LIST_PROFILE_ICON = FRIENDS.map((FRIEND,index) => {
                 return(
-                    <ProfileIcon ICON={FRIEND.ICON} REDIRECT={() => set_ChatApp({STATE:true,ICON:FRIEND.ICON,RECIEVER_NAME:FRIEND.NAME,RECIEVER_STATUS:FRIEND.STATE,RECIEVER_ID:FRIEND.UID})} isActive={FRIEND.STATE}  key={index}/>
+                    <ProfileIcon ICON={FRIEND.ICON} REDIRECT={() => null} isActive={FRIEND.STATE}  key={index}/>
                     
                 );
             });
@@ -133,7 +133,7 @@ const IndexPage = () => {
     },[data]);
 
 
-    const SideBar = ({}) => {
+    const SideBar = () => {
         return(
             <aside className="w-max h-full bg-neutral-900 flex flex-col p-4 ">
             <article className="w-full flex-grow  flex flex-col justify-center items-center gap-4 py-4">
@@ -155,7 +155,7 @@ const IndexPage = () => {
         );
     }
 
-    const InitialHeader = ({}) => {
+    const InitialHeader = () => {
         const [isSearchFill,set_isSearchFill] = useState(false);
         const SearchBar = useRef(null);
         return(
@@ -191,11 +191,11 @@ const IndexPage = () => {
                  <InitialHeader/>
                 <article className="overflow-y-scroll mt-4">
                     <ActiveDisplayer ActiveList={ACTIVE_LIST}/>
-                    <ContactListDisplay REDIRECT={(VALUES) => set_ChatApp(VALUES)} DATA={data}/>
+                    <ContactListDisplay REDIRECT={(VALUES) => null} DATA={data}/>
                 </article>      
             </section>
             <aside className=" lg:flex-grow  h-screen">
-                <MessengerApp  VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}} REDIRECT={(state) => set_ChatApp(state)} socket={ws}/>
+                <MessengerApp  VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}} REDIRECT={(state) => null} socket={ws}/>
             </aside>
         </Suspense>
         

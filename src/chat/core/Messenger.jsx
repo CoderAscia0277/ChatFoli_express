@@ -38,23 +38,20 @@ const Theme = {
 
 const MY_CHAT_BUBBLE = ({MESSAGE}) => {
     return(
-        <section className="content w-full   h-max  flex flex-col">
-            {/* <article className="w-full  flex flex-row justify-end "> */}
-                
-                <div className=" cursor-default text-neutral-300 w-full flex flex-row justify-end ">
-                    <span className="my-chat-bubble leading-loose  p-2" style={{background:Theme.blue_gradient}}>{MESSAGE}</span>
-                </div>
-            {/* </article> */}
+        <section className="content w-full   h-max  flex flex-col ">
+            <article className=" cursor-default text-neutral-300 w-full flex flex-row justify-end ">
+                <span className="my-chat-bubble leading-loose min-w-12 p-2 text-center" style={{background:Theme.blue_gradient,borderRadius:`${MESSAGE.length < 3 ? '100%' : ''}`}}>{MESSAGE}</span>
+            </article>
         </section>
     );
 };
 const CHAT_BUBBLE = ({ICON,MESSAGE}) => {
     return(
         <section className="content w-full   h-max  flex flex-col">
-            <article className="w-full  flex flex-row gap-4">
+            <article className="w-full  flex flex-row gap-4 ">
                 <ProfileIcon showIndicator={false} size={{w:'w-12',h:'h-12'}} isHover={false} ICON={ICON}/>
                 <div className="cursor-default text-neutral-300 w-3/4  flex flex-row">
-                    <span className="chat-bubble leading-loose bg-neutral-700 p-2 ">{MESSAGE}</span>
+                    <span className="chat-bubble leading-loose bg-neutral-700 min-w-12 p-2  text-center" style={{borderRadius:`${MESSAGE.length < 3 ? '100%' : ''}`}}>{MESSAGE}</span>
                 </div>
             </article>
         </section>
@@ -161,30 +158,39 @@ const CHAT_BUBBLE = ({ICON,MESSAGE}) => {
 
 
 const ChatBubbles = ({RECIEVER_UID,ICON}) => {
-    const [LOGS,UPDATE_LOGS] = useState([
-        {UID:'09925388028',NAME:'B3SA_027',LOG:"Bro let's go on a raid tonight!"},
-        {UID:'096523545092',NAME:'Akira_010',LOG:"Cool! How about 10 tonight?"},
-    ]);
+    const [LOGS,UPDATE_LOGS] = useState(MessengerStore.getState().HISTORY);
     const [CHAT_BLOCKS,UPDATE_CHAT_BLOCKS] = useState(null);
     const ScrollView = useRef(null);
     const UserInput = useRef(null);
     const [isFilled,set_isFilled] = useState(false);
 
-    useEffect((temp,components) => {
+
+    const SEND = useCallback(() => {
+        MessengerStore.dispatch(UPDATE_HISTORY({LOG:UserInput.current.value}));
+        UserInput.current.value = '';
+    },[]); //UPDATES THE LOG WHEN CALLED
+
+    MessengerStore.subscribe(() => {
+        UPDATE_LOGS(MessengerStore.getState().HISTORY);
+    }); //UPDATES THE LOGS WHEN A NEW DATA ARRIVE
+
+    useEffect(() => { //CREATES NEW CHAT BLOCK BASED ON UPDATE LOGS
         if(LOGS){
-            temp = LOGS;
-            components = temp.map((item,index) => {
-                return item.UID === RECIEVER_UID ? 
-                <CHAT_BUBBLE ICON={ICON} MESSAGE={item.LOG} key={index}/>:
+            const temp = LOGS;
+            let components = temp.map((item,index) => {
+                return item.UID === '09925388028' ? 
+                <CHAT_BUBBLE ICON={'http://localhost:5000/images/image_02.jpg'} MESSAGE={item.LOG} key={index}/>:
                 <MY_CHAT_BUBBLE MESSAGE={item.LOG} key={index}/>
             });
             UPDATE_CHAT_BLOCKS(components);
         }
     },[LOGS]);
 
-    const SEND = useCallback(() => {
-        return;
-    },[]);
+    useEffect(() => {
+        ScrollView.current.scrollTop =ScrollView.current.scrollHeight;
+    },[CHAT_BLOCKS]); //AUTOMATICALLY SCROLLS UP THE CONTENT
+
+
     return(
     <>
         <article ref={ScrollView} id="ScrollView" className="super_parent w-full  flex-grow container overflow-y-scroll px-4" style={{scrollBehavior:'smooth'}}>

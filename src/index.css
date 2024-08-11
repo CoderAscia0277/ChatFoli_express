@@ -46,10 +46,10 @@ body{
 
 
 .bubble-container:first-child{
-  margin-top: 10%;
+  margin-top: 25%;
 }
 .bubble-container:last-child{
-  margin-bottom: 15%;
+  margin-bottom: 10%;
 }
 .pulse{
   animation: pulse 1s ease-in-out infinite;
@@ -88,6 +88,7 @@ body{
 .bg-lightblue:hover{
   background:linear-gradient(225deg,#635ee2,#1fa0ff) !important;
 }
+
 .bg-neutral-750{
   background: rgb(32, 32, 32);
 }

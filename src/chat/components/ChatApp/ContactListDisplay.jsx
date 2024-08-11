@@ -26,7 +26,7 @@ const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
 
             UPDATE_LIST(PROFILE_COMPONENTS);
         }
-    },[DATA]);
+    },[DATA,REDIRECT]);
 
 
     return(

@@ -4,11 +4,16 @@ import { createSlice, configureStore } from "@reduxjs/toolkit";
 const Slice = createSlice({
     name:'Slice',
     initialState:{
-        HISTORY:null
+        HISTORY:[
+            {UID:'09925388028',NAME:'B3SA_027',LOG:"Bro let's go on a raid tonight!"},
+            {UID:'096523545092',NAME:'Akira_010',LOG:"Cool! How about 10 tonight?"},
+        ]
     },
     reducers:{
         UPDATE_HISTORY:(state,data) => {
-            state.HISTORY = data.payload;
+            const arr = state.HISTORY;
+            arr.push(data.payload);
+            state.HISTORY = arr;
         }
     }
 });
