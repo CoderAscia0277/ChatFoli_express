@@ -13,6 +13,12 @@ const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
         if( DATA.FRIENDS){
         
             PROFILE_COMPONENTS = DATA.FRIENDS.map((item,index) => {
+               
+                if(item.RECENT_MESSAGE.length > 22){ //THIS LOGIC SHOTERNES THE NUMBER OF CHARACTERS IF THE RECENT MESSAGE IS TOO LONG
+                    let shorten = item.RECENT_MESSAGE.slice(0,18);
+                    shorten = `${shorten}...`;
+                    item = {...item, RECENT_MESSAGE:shorten};
+                }
                 return(
                     <ContactProfile REDIRECT={(VALUES) => REDIRECT(VALUES)} VALUES={item} key={index} isSeen={Math.random() > 0.5}/>
                 );
@@ -51,7 +57,7 @@ const ContactProfile = ({VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE
         const img_loader = imgCache;
         img_loader.read(ICON);
         return(
-                <div className="w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center  hover:cursor-pointer bg-lightblue"  onClick={() => REDIRECT({STATE:true,RECIEVER_STATUS:STATE,RECIEVER_UID:UID,ICON:ICON,RECIEVER_NAME:NAME})}>
+                <div className="w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center  hover:cursor-pointer bg-lightblue bg-neutral-750"  onClick={() => REDIRECT({STATE:true,RECIEVER_STATUS:STATE,RECIEVER_UID:UID,ICON:ICON,RECIEVER_NAME:NAME})}>
                     <ProfileIcon ICON={ICON} size={{w:'w-12',h:'h-12'}} isActive={STATE} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
                         <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300  font-semibold">{NAME}</span>

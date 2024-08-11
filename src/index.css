@@ -86,7 +86,10 @@ body{
   
 }
 .bg-lightblue:hover{
-  background-image:linear-gradient(225deg,#635ee2,#1fa0ff);
+  background:linear-gradient(225deg,#635ee2,#1fa0ff) !important;
+}
+.bg-neutral-750{
+  background: rgb(32, 32, 32);
 }
 .text-lightblue{
   color: #1fa0ff;

@@ -2,7 +2,7 @@ import imgCache from "../../utils/ImageCache";
 import { Suspense } from "react";
 
 //DISPLAYS THE PROFILE ICON
-const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isActive = true, isHover = true,showIndicator = true}) => {
+const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isPointer = false,isActive = true, isHover = true,showIndicator = true}) => {
     
     
 
@@ -19,7 +19,7 @@ const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isA
         const LOAD_IMAGE = imgCache;
         LOAD_IMAGE.read(src);
         return(
-            <span onClick={() => REDIRECT()} className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-14 h-14'}  rounded-full flex items-end justify-end ${isHover ? 'hover:cursor-pointer hover:scale-105' : ''}`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+            <span onClick={() => REDIRECT()} className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-14 h-14'} ${isPointer ? 'cursor-pointer' : ''}  rounded-full flex items-end justify-end ${isHover ? 'hover:cursor-pointer hover:scale-105' : ''}`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
                 <span className={`${showIndicator ? '' : 'hidden'}  w-4 h-4 ${isActive ? 'bg-lime-600' : 'bg-neutral-600'} border-neutral-900 border-4 block relative rounded-full`} ></span>
             </span>
         );

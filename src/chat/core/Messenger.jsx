@@ -31,6 +31,10 @@ const ProfileIcon = lazy(() => import('../components/ChatApp/ProfileIcon'));
 //         </section>
 //     );
 // }
+const Theme = {
+    bg_mid: 'rgb(32,32,32)',
+    blue_gradient:'linear-gradient(225deg,#635ee2,#1fa0ff)',
+}
 
 const MY_CHAT_BUBBLE = ({MESSAGE}) => {
     return(
@@ -38,7 +42,7 @@ const MY_CHAT_BUBBLE = ({MESSAGE}) => {
             {/* <article className="w-full  flex flex-row justify-end "> */}
                 
                 <div className=" cursor-default text-neutral-300 w-full flex flex-row justify-end ">
-                    <span className="my-chat-bubble leading-loose  p-2" style={{background:'linear-gradient(225deg,#635ee2,#1fa0ff)'}}>{MESSAGE}</span>
+                    <span className="my-chat-bubble leading-loose  p-2" style={{background:Theme.blue_gradient}}>{MESSAGE}</span>
                 </div>
             {/* </article> */}
         </section>
