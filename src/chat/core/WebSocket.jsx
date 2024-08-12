@@ -75,6 +75,8 @@ const MessengerApp = lazy(() => import("../core/Messenger"));
 //     );
 // }
 
+;
+// },[]);
 
 const IndexPage = () => {
 
@@ -83,6 +85,8 @@ const IndexPage = () => {
         blue_gradient:'linear-gradient(225deg,#635ee2,#1fa0ff)',
     }
 
+
+    
     const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
     const isMounted = useRef(false);
@@ -194,6 +198,7 @@ const IndexPage = () => {
             ) 
         }
     }
+
     return(
         <Suspense fallback={<p>Please Wait</p>}>
             <SideBar/>

@@ -1,5 +1,5 @@
 
-import { useEffect,lazy,Suspense,useMemo,useState } from "react";
+import { useEffect,lazy,Suspense,useMemo,useState,useRef } from "react";
 import imgCache from "../../utils/ImageCache";
 
 const ProfileIcon = lazy(() => import('./ProfileIcon'));
@@ -20,7 +20,7 @@ const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
                     item = {...item, RECENT_MESSAGE:shorten};
                 }
                 return(
-                    <ContactProfile REDIRECT={(VALUES) => REDIRECT(VALUES)} VALUES={item} key={index} isSeen={Math.random() > 0.5}/>
+                    <ContactProfile MY_UID={DATA.UID} REDIRECT={(VALUES) => REDIRECT(VALUES)} VALUES={item} key={index} isSeen={Math.random() > 0.5}/>
                 );
             });
 
@@ -36,7 +36,7 @@ const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
     );
 }
 
-const ContactProfile = ({VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:null}, isSeen = false , REDIRECT = (VALUES) => null}) => {
+const ContactProfile = ({MY_UID = null,VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:null}, isSeen = false , REDIRECT = (VALUES) => null}) => {
 
     const {NAME,RECENT_MESSAGE,ICON,STATE,UID} = VALUES
 
@@ -52,6 +52,22 @@ const ContactProfile = ({VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE
             </div>
          );
     }
+
+    
+    const isMessagesLoaded = useRef(false);
+    const [MESSAGE_DB,SET_MESSAGE_DB] = useState(null);
+
+    useEffect(() => {
+        if(!isMessagesLoaded.current){
+            isMessagesLoaded.current = true;
+            fetch(`http://localhost:8000/GET_USER_MESSAGE/${MY_UID}/${UID}`).then(res => res.json()).then(data => SET_MESSAGE_DB(data.CLIENT));
+        }
+    },[]);
+
+    useEffect(() => {
+        console.table(MESSAGE_DB);
+    },[MESSAGE_DB]);
+    
 
     const Profile = () => {
         const img_loader = imgCache;

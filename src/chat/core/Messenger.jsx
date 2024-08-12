@@ -1,5 +1,6 @@
 import { useMemo , lazy, useEffect,useCallback, useState,useRef, Suspense} from "react";
 import { MessengerStore,UPDATE_HISTORY } from "../_utils/store/messenger_store";
+// import { Store } from "../_utils/store/store";
 const ChatHeader = lazy(() => import('../components/ChatApp/ChatHeader'));
 const ProfileIcon = lazy(() => import('../components/ChatApp/ProfileIcon'));
 
@@ -157,7 +158,7 @@ const CHAT_BUBBLE = ({ICON,MESSAGE}) => {
 // }
 
 
-const ChatBubbles = ({UID,ICON}) => {
+const ChatBubbles = ({UID,ICON,socket}) => {
     const [LOGS,UPDATE_LOGS] = useState(MessengerStore.getState().HISTORY);
     const [CHAT_BLOCKS,UPDATE_CHAT_BLOCKS] = useState(null);
     const ScrollView = useRef(null);
@@ -167,7 +168,20 @@ const ChatBubbles = ({UID,ICON}) => {
 
     const SEND = useCallback(() => {
         MessengerStore.dispatch(UPDATE_HISTORY({LOG:UserInput.current.value}));
+        const msg = UserInput.current.value; 
         UserInput.current.value = '';
+
+        if(socket){
+            try{
+                socket.onmessage = e => {
+                    const parse = JSON.parse(e.data);
+                    console.table(parse);
+                }
+                socket.send(JSON.stringify({PURPOSE:'SEND_MESSAGE', RECIEVER_UID:UID,MESSAGE:msg}));
+            }catch(err){
+                console.error('Error while sending message');
+            }
+        }
     },[]); //UPDATES THE LOG WHEN CALLED
 
     MessengerStore.subscribe(() => {
@@ -255,6 +269,7 @@ const ChatConvoDisplay = ({REDIRECT = (state) => null,socket = null}) => {
         <section className="w-full  h-full flex flex-col  bg-transparent" >
             <ChatHeader REDIRECT={(state) => REDIRECT(state)} TAG="It's time to study again..." RECIEVER_UID={UID} NAME={NAME} ICON={ICON} STATUS={STATE}/>
             <Suspense fallback={<ChatContainerHolder/>}>
+              
                 <ChatBubbles ICON={ICON} UID={UID} socket={socket}/>
             </Suspense>
         </section>

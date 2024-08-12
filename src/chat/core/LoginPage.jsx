@@ -1,7 +1,9 @@
 // import ws from "../_utils/ws/socket";
 // import { Store ,UPDATE_DATA } from "../_utils/store/store";
+// import { Link, useNavigate } from "react-router-dom";
 import { useRef , lazy, useState, useCallback } from "react";
 import CryptoJS from "crypto-js";
+
 
 
 const Validate = async({username,password}) => {
@@ -19,10 +21,11 @@ const Validate = async({username,password}) => {
     encrypt.hex(username.value,password.value);
 
     const submit = await fetch(`http://localhost:5000/LOGIN/${encrypt.NAME}/${encrypt.KEY}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
-
+   
     if(submit){
         switch(submit.STATUS){
             case 'Successful':
+                // Move_To({Link: `/${submit.USERNAME}/${submit.TEMPORARY_ID}`});
                 window.location.href = `/${submit.USERNAME}/${submit.TEMPORARY_ID}`;
                 break;
             case 'Invalid':
