@@ -3,8 +3,7 @@ import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_DATA} from "../_utils/store/store";
-import { UPDATE_INFO,MessengerStore } from "../_utils/store/messenger_store";
-
+import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES} from "../_utils/store/messenger_store";
 const ProfileIcon = lazy(() => import('../components/ChatApp/ProfileIcon'));
 const ContactListDisplay = lazy(() => import('../components/ChatApp/ContactListDisplay'));
 const MessengerApp = lazy(() => import("../core/Messenger"));
@@ -90,16 +89,21 @@ const IndexPage = () => {
     const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
     const isMounted = useRef(false);
+    // const [MESSAGES,SET_MESSAGES] = useState(MessengerStore.getState().ALL_MESSAGES);
     // const [ChatApp,set_ChatApp] = useState({STATE:false,RECIEVER_STATUS:null,RECIEVER_ID:null,ICON:null,RECIEVER_NAME:null});
     useEffect(() => {
         if(!isMounted.current){
             isMounted.current = true;
             Store.subscribe(() => update_data(Store.getState()));
+           
+            // MessengerStore.subscribe(() => {
+            //     SET_MESSAGES(MessengerStore.getState().ALL_MESSAGES[UID]);
+            // });
         }
     });
     
     const ws = useMemo(() => socket.connect(TEMPORARY_ID),[TEMPORARY_ID]);
-    
+    const isLoaded = useRef(false);
     ws.onmessage = e => {
         const parse = JSON.parse(e.data);
         console.log(parse)
@@ -108,6 +112,14 @@ const IndexPage = () => {
         if(parse.STATUS === 200){
             MERGE_DATA = {...data,...parse.CLIENT};
             Store.dispatch(UPDATE_DATA(MERGE_DATA));
+            if(!isLoaded.current){
+                isLoaded.current = true;
+                console.log('update msg')
+                MessengerStore.dispatch(UPDATE_INFO(parse.CLIENT));
+                MessengerStore.dispatch(UPDATE_MESSAGES(parse.ALL_MESSAGES));
+            }
+            
+            
         }else{
             window.location.href = '/';
         }
@@ -189,15 +201,13 @@ const IndexPage = () => {
             </div>
         );
     }
-    // VALUES={{ICON:'http://localhost:5000/images/image_02.jpg',RECIEVER_STATUS:true,RECIEVER_NAME:'Ascia_027',RECIEVER_UID:'096523545092'}}
-    const SET_ACTIVECHAT = ({PERSON=null}) => {
-        if(PERSON){
-            MessengerStore.dispatch(UPDATE_INFO(PERSON));
-            return(
-                <MessengerApp REDIRECT={(state) => null} socket={ws}/>
-            ) 
+   
+    useEffect(() => { //THIS LINE ASSIGN WHAT MESSAGE BOX SHOULD BE DISPLAYED, IN THIS CASE FRIEND 01
+        if(data.FRIENDS){
+            MessengerStore.dispatch(UPDATE_INFO(data.FRIENDS[0]));
         }
-    }
+    },[data.FRIENDS]);
+    
 
     return(
         <Suspense fallback={<p>Please Wait</p>}>
@@ -210,17 +220,9 @@ const IndexPage = () => {
                 </article>      
             </section>
             <aside className=" lg:flex-grow  h-screen">
-               {data.FRIENDS ? SET_ACTIVECHAT({PERSON:data.FRIENDS[0]}) : null}
+                <MessengerApp REDIRECT={(state) => null} socket={ws}/>
             </aside>
         </Suspense>
-        
-        // : 
-    //     <Suspense fallback={<p>loaidng</p>}>
-    //         <MessengerApp  VALUES={ChatApp} REDIRECT={(state) => set_ChatApp(state)} socket={ws}/>
-    //     </Suspense>
-            
-    // }
-    //     </>
     );
 
     // return(

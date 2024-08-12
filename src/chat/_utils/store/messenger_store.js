@@ -5,23 +5,36 @@ import { UPDATE_DATA } from "./store";
 const Slice = createSlice({
     name:'Slice',
     initialState:{
-        HISTORY:[
-            {UID:'09925388028',NAME:'B3SA_027',LOG:"Bro let's go on a raid tonight!"},
-            {UID:'096523545092',NAME:'Akira_010',LOG:"Cool! How about 10 tonight?"},
-        ],
-        INFO:{}
+        ALL_MESSAGES:null,
+        INFO:null,
+        HISTORY:[]
     },
     reducers:{
+        UPDATE_MESSAGES:(state,data) => {
+           state.ALL_MESSAGES = data.payload; 
+        },
+        SEND_MESSAGE:(state,data) => {
+            const {UID,MESSAGE,NAME} = data.payload;
+            const new_messages = state.ALL_MESSAGES[UID];
+            try{
+                new_messages.push({NAME:NAME,LOG:MESSAGE,TIME:null});
+                state.ALL_MESSAGES[UID] = new_messages;
+                console.log(UID,MESSAGE);
+            }catch(err){
+                console.error(UID,MESSAGE,NAME,new_messages,err);
+            }
+            
+        },
+        UPDATE_INFO:(state,data) => {
+            state.INFO = data.payload;
+        },
         UPDATE_HISTORY:(state,data) => {
             const arr = state.HISTORY;
             arr.push(data.payload);
             state.HISTORY = arr;
-        },
-        UPDATE_INFO:(state,data) => {
-            state.INFO = data.payload;
         }
     }
 });
 
 export const MessengerStore = configureStore({reducer:Slice.reducer});
-export const {UPDATE_HISTORY,UPDATE_INFO} = Slice.actions;
+export const {UPDATE_MESSAGES,UPDATE_INFO,UPDATE_HISTORY,SEND_MESSAGE} = Slice.actions;

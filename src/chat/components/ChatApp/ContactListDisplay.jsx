@@ -1,14 +1,14 @@
 
 import { useEffect,lazy,Suspense,useMemo,useState,useRef } from "react";
 import imgCache from "../../utils/ImageCache";
-
+import { MessengerStore } from "../../_utils/store/messenger_store";
 const ProfileIcon = lazy(() => import('./ProfileIcon'));
 
 //HANDLES THE CONTACT LIST DISPLAY , CONTAINS GROUP OF CONTACT PROFILE COMPONENTS
 const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
 
     const [CONTACT_LIST,UPDATE_LIST] = useState(null);
- 
+    
     useEffect((PROFILE_COMPONENTS) => {
         if( DATA.FRIENDS){
         
@@ -38,7 +38,7 @@ const ContactListDisplay = ({DATA , REDIRECT = (VALUES) => null}) => {
 
 const ContactProfile = ({MY_UID = null,VALUES = {NAME:null,RECENT_MESSAGE:null,ICON:null,STATE:null}, isSeen = false , REDIRECT = (VALUES) => null}) => {
 
-    const {NAME,RECENT_MESSAGE,ICON,STATE,UID} = VALUES
+    const {NAME,ICON,STATE,UID} = VALUES
 
     // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
     const ContactProfileLoader = () => {
@@ -53,23 +53,36 @@ const ContactProfile = ({MY_UID = null,VALUES = {NAME:null,RECENT_MESSAGE:null,I
          );
     }
 
-    
-    const isMessagesLoaded = useRef(false);
-    const [MESSAGE_DB,SET_MESSAGE_DB] = useState(null);
-
+    const [MESSAGES,SET_MESSAGES] = useState(MessengerStore.getState().ALL_MESSAGES[UID]);
+    const isMounted = useRef(false);
     useEffect(() => {
-        if(!isMessagesLoaded.current){
-            isMessagesLoaded.current = true;
-            fetch(`http://localhost:8000/GET_USER_MESSAGE/${MY_UID}/${UID}`).then(res => res.json()).then(data => SET_MESSAGE_DB(data.CLIENT));
+        if(!isMounted.current){
+            isMounted.current = true;
+            MessengerStore.subscribe(() => {
+                SET_MESSAGES(MessengerStore.getState().ALL_MESSAGES[UID]);
+            });
         }
-    },[]);
+    },[])
+   
+    
+    let RECENT_MESSAGE = MESSAGES[MESSAGES.length - 1];
+    RECENT_MESSAGE = RECENT_MESSAGE.NAME === 'You' ? `You: ${RECENT_MESSAGE.LOG}` : RECENT_MESSAGE.LOG;
+    // const isMessagesLoaded = useRef(false);
+    // const [MESSAGE_DB,SET_MESSAGE_DB] = useState(null);
 
-    useEffect(() => {
-        console.table(MESSAGE_DB);
-    },[MESSAGE_DB]);
+    // useEffect(() => {
+    //     if(!isMessagesLoaded.current){
+    //         isMessagesLoaded.current = true;
+    //         fetch(`http://localhost:8000/GET_USER_MESSAGE/${MY_UID}/${UID}`).then(res => res.json()).then(data => SET_MESSAGE_DB(data.CLIENT));
+    //     }
+    // },[]);
+
+    // useEffect(() => {
+    //     console.table(MESSAGE_DB);
+    // },[MESSAGE_DB]);
     
 
-    const Profile = () => {
+    const Profile = ({RECENT_MESSAGE}) => {
         const img_loader = imgCache;
         img_loader.read(ICON);
         return(
@@ -85,7 +98,7 @@ const ContactProfile = ({MY_UID = null,VALUES = {NAME:null,RECENT_MESSAGE:null,I
 
     return(
         <Suspense fallback={<ContactProfileLoader/>}>
-            <Profile/>
+            <Profile RECENT_MESSAGE={RECENT_MESSAGE}/>
         </Suspense>
 
     );

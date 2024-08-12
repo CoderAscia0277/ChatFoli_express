@@ -1,5 +1,5 @@
 import { useMemo , lazy, useEffect,useCallback, useState,useRef, Suspense} from "react";
-import { MessengerStore,UPDATE_HISTORY } from "../_utils/store/messenger_store";
+import { MessengerStore,SEND_MESSAGE } from "../_utils/store/messenger_store";
 // import { Store } from "../_utils/store/store";
 const ChatHeader = lazy(() => import('../components/ChatApp/ChatHeader'));
 const ProfileIcon = lazy(() => import('../components/ChatApp/ProfileIcon'));
@@ -159,7 +159,7 @@ const CHAT_BUBBLE = ({ICON,MESSAGE}) => {
 
 
 const ChatBubbles = ({UID,ICON,socket}) => {
-    const [LOGS,UPDATE_LOGS] = useState(MessengerStore.getState().HISTORY);
+    const [LOGS,UPDATE_LOGS] = useState(MessengerStore.getState().ALL_MESSAGES[UID]);
     const [CHAT_BLOCKS,UPDATE_CHAT_BLOCKS] = useState(null);
     const ScrollView = useRef(null);
     const UserInput = useRef(null);
@@ -167,32 +167,42 @@ const ChatBubbles = ({UID,ICON,socket}) => {
 
 
     const SEND = useCallback(() => {
-        MessengerStore.dispatch(UPDATE_HISTORY({LOG:UserInput.current.value}));
+        console.log('send');
+        MessengerStore.dispatch(SEND_MESSAGE({UID:UID,NAME:"You",MESSAGE:UserInput.current.value}));
         const msg = UserInput.current.value; 
         UserInput.current.value = '';
 
-        if(socket){
-            try{
-                socket.onmessage = e => {
-                    const parse = JSON.parse(e.data);
-                    console.table(parse);
-                }
-                socket.send(JSON.stringify({PURPOSE:'SEND_MESSAGE', RECIEVER_UID:UID,MESSAGE:msg}));
-            }catch(err){
-                console.error('Error while sending message');
-            }
-        }
+        // if(socket){
+        //     try{
+        //         socket.onmessage = e => {
+        //             const parse = JSON.parse(e.data);
+        //             console.table(parse);
+        //         }
+        //         socket.send(JSON.stringify({PURPOSE:'SEND_MESSAGE', RECIEVER_UID:UID,MESSAGE:msg}));
+        //     }catch(err){
+        //         console.error('Error while sending message');
+        //     }
+        // }
     },[]); //UPDATES THE LOG WHEN CALLED
 
-    MessengerStore.subscribe(() => {
-        UPDATE_LOGS(MessengerStore.getState().HISTORY);
-    }); //UPDATES THE LOGS WHEN A NEW DATA ARRIVE
+    const isMounted = useRef(false);
+    useEffect(() => {
+        if(!isMounted.current){
+            isMounted.current = true;
+            MessengerStore.subscribe(() => {
+                console.log('refresh');
+                UPDATE_LOGS(MessengerStore.getState().ALL_MESSAGES[UID]);
+            }); //UPDATES THE LOGS WHEN A NEW DATA ARRIVE
+        }
+        // console.table(LOGS);
+    },[]);
 
     useEffect(() => { //CREATES NEW CHAT BLOCK BASED ON UPDATE LOGS
+    
         if(LOGS){
             const temp = LOGS;
             let components = temp.map((item,index) => {
-                return item.UID === '09925388028' ? 
+                return item.NAME !== 'You' ? 
                 <CHAT_BUBBLE ICON={ICON} MESSAGE={item.LOG} key={index}/>:
                 <MY_CHAT_BUBBLE MESSAGE={item.LOG} key={index}/>
             });
@@ -208,7 +218,7 @@ const ChatBubbles = ({UID,ICON,socket}) => {
     return(
     <>
         <article ref={ScrollView} id="ScrollView" className="super_parent w-full  flex-grow container overflow-y-scroll px-4" style={{scrollBehavior:'smooth'}}>
-            <div className="bubble-container w-full h-max flex flex-col gap-2 px-6">
+            <div className="bubble-container w-full h-max flex flex-col gap-4 px-6">
                 {useMemo(() => CHAT_BLOCKS,[CHAT_BLOCKS])}
             </div>
         </article>
