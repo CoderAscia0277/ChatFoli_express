@@ -14,14 +14,14 @@ const Slice = createSlice({
            state.ALL_MESSAGES = data.payload; 
         },
         SEND_MESSAGE:(state,data) => {
-            const {UID,MESSAGE,NAME} = data.payload;
-            const new_messages = state.ALL_MESSAGES[UID];
+            const {RECIEPIENT_UID,MESSAGE,NAME} = data.payload;
+            const new_messages = state.ALL_MESSAGES[RECIEPIENT_UID];
             try{
                 new_messages.push({NAME:NAME,LOG:MESSAGE,TIME:null});
-                state.ALL_MESSAGES[UID] = new_messages;
-                console.log(UID,MESSAGE);
+                state.ALL_MESSAGES[RECIEPIENT_UID] = new_messages;
+                // console.log(UID,MESSAGE);
             }catch(err){
-                console.error(UID,MESSAGE,NAME,new_messages,err);
+                console.error(RECIEPIENT_UID,MESSAGE,NAME,new_messages,err);
             }
             
         },

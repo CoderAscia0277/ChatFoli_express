@@ -89,6 +89,7 @@ const IndexPage = () => {
     const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState());
     const isMounted = useRef(false);
+    const [ChatDisplayed , set_ChatDisplayed] = useState(null);
     // const [MESSAGES,SET_MESSAGES] = useState(MessengerStore.getState().ALL_MESSAGES);
     // const [ChatApp,set_ChatApp] = useState({STATE:false,RECIEVER_STATUS:null,RECIEVER_ID:null,ICON:null,RECIEVER_NAME:null});
     useEffect(() => {
@@ -204,10 +205,15 @@ const IndexPage = () => {
    
     useEffect(() => { //THIS LINE ASSIGN WHAT MESSAGE BOX SHOULD BE DISPLAYED, IN THIS CASE FRIEND 01
         if(data.FRIENDS){
-            MessengerStore.dispatch(UPDATE_INFO(data.FRIENDS[0]));
+            set_ChatDisplayed(data.FRIENDS[0]);
+            // MessengerStore.dispatch(UPDATE_INFO(data.FRIENDS[0]));
         }
     },[data.FRIENDS]);
-    
+    useEffect(() => {
+        if(ChatDisplayed){
+            MessengerStore.dispatch(UPDATE_INFO(ChatDisplayed));
+        }
+    },[ChatDisplayed]);
 
     return(
         <Suspense fallback={<p>Please Wait</p>}>
