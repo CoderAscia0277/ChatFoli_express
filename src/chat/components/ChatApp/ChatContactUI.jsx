@@ -19,7 +19,7 @@ const ChatContactUI = () => {
     });
 
     return(
-        <section className="lg:w-1/4 md:w-1/3  w-full h-full  xs:left-0  lg:top-0 md:top-0 bottom-0  px-4   mt-0 flex flex-col bg-neutral-900">
+        <section className="lg:w-1/3 md:w-1/3  w-full h-full  xs:left-0  lg:top-0 md:top-0 bottom-0  px-4   mt-0 flex flex-col bg-neutral-900">
                  <InitialHeader/>
                 <article className="overflow-y-scroll">
                     <ActiveDisplayer FRIEND_LIST={USER_PARAMS.FRIENDS}/>

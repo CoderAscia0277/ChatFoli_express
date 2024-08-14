@@ -27,6 +27,7 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
     const isMounted = useRef(false);
 
     const isContactProfileChosen = (UID === CHOSEN_PERSON_INFO.UID);
+    
 
     useEffect(() => {
         if(!isMounted.current){
@@ -37,25 +38,31 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
                 
             });
         }
+       
     },[]);
 
     ///TRIMS THE RECENT MESSAGE IF ITS TOO LONG TO AVOID CONGESTION AT THE CONTACT PROFILE SLOT///
     let RECENT_MESSAGE = MESSAGES[MESSAGES.length - 1];
     RECENT_MESSAGE = RECENT_MESSAGE.NAME === 'You' ? `You: ${RECENT_MESSAGE.LOG}` : RECENT_MESSAGE.LOG;
-    RECENT_MESSAGE = (RECENT_MESSAGE).length > 22 ? `${RECENT_MESSAGE.slice(0,18)}...` : RECENT_MESSAGE;
- 
+    RECENT_MESSAGE = (RECENT_MESSAGE).length > 10 ? `${RECENT_MESSAGE.slice(0,10)}...` : RECENT_MESSAGE;
     
+    // const my_comp = useRef(null);
+    //     if(my_comp.current){
+    //         console.log(my_comp.current.scrollWidth);
+    //     }
+  
 
     const Profile = ({RECENT_MESSAGE}) => {
         const img_loader = imgCache;
         img_loader.read(ICON);
+       
 
         return(
                 <div className={`w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center cursor-default ${isContactProfileChosen ? '' : 'hover:cursor-pointer secondaryColor'}  `} onClick = {() => MessengerStore.dispatch(UPDATE_INFO(FRIEND_INFO))} style={{background:`${isContactProfileChosen ? Theme.BlueGradient : Theme.DarkPrimary}`}}>
                     <ProfileIcon ICON={ICON} size={{w:'w-12',h:'h-12'}} isActive={STATE} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
-                        <span className="flex w-max max-w-1/2 min-h-4 text-neutral-300  font-semibold">{NAME}</span>
-                        <span className={`flex w-max max-w-3/4 min-h-6 h-max text-neutral-300 text-break `}>{RECENT_MESSAGE}</span>
+                        <span className="flex w-full  min-h-4 text-neutral-300  font-semibold">{NAME}</span>
+                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{RECENT_MESSAGE}</span>
                     </ul>
                 </div>
         );  

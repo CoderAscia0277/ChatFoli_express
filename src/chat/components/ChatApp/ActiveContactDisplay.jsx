@@ -14,7 +14,7 @@ const ActiveDisplayer = ({FRIEND_LIST}) => {
         if(FRIEND_LIST){
               LIST_PROFILE_ICON = FRIEND_LIST.map((FRIEND,index) => {
                 return(
-                    <article className="w-max h-max p-1 rounded-full hover:scale-105 cursor-pointer"  style={{background:Theme.BluePrimary}}>
+                    <article className="w-max h-max p-1 rounded-full hover:scale-105 cursor-pointer" key={index} style={{background:Theme.BluePrimary}}>
                         <ProfileIcon  ICON={FRIEND.ICON} REDIRECT={() => null} isActive={FRIEND.STATE} />
                     </article>
                 );
