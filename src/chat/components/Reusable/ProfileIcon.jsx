@@ -19,7 +19,7 @@ const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isP
         const LOAD_IMAGE = imgCache;
         LOAD_IMAGE.read(src);
         return(
-            <span onClick={() => REDIRECT()} className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-14 h-14'} ${isPointer ? 'cursor-pointer' : ''}  rounded-full flex items-end justify-end ${isHover ? 'hover:cursor-pointer hover:scale-105' : ''}`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover'}}>
+            <span onClick={() => REDIRECT()} className={`${size.w && size.h ? `${size.w} ${size.h}`: 'w-14 h-14'} ${isPointer ? 'cursor-pointer' : ''}  rounded-full flex items-end justify-end ${isHover ? 'hover:cursor-pointer hover:scale-105' : ''}`} style={{backgroundImage:`url(${ICON})`,backgroundRepeat:'no-repeat',backgroundSize:'cover',aspectRatio:1/1}}>
                 <span className={`${showIndicator ? '' : 'hidden'}  w-4 h-4 ${isActive ? 'bg-lime-600' : 'bg-neutral-600'} border-neutral-900 border-4 block relative rounded-full`} ></span>
             </span>
         );

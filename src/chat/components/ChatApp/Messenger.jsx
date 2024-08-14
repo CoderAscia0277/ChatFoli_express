@@ -34,7 +34,7 @@ const ChatContainerHolder = () => {
 const ChatConvoDisplay = ({socket = null}) => {
     
     return(
-    <aside className=" lg:flex-grow  h-screen">
+    <aside className="lg:flex md:flex hidden h-screen" style={{width:'-webkit-fill-available'}}>
         <section className="w-full  h-full flex flex-col  bg-transparent" >
             <ChatHeader TAG="It's time to study again..." />
             <Suspense fallback={<ChatContainerHolder/>}>

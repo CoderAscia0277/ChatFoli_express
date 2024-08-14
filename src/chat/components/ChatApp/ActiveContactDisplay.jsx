@@ -1,5 +1,8 @@
 import { lazy, useState, useEffect } from "react";
+import { Theme } from "../../_utils/Constants";
+
 const ProfileIcon = lazy(() => import('../Reusable/ProfileIcon'));
+
 
 const ActiveDisplayer = ({FRIEND_LIST}) => {
 
@@ -11,8 +14,9 @@ const ActiveDisplayer = ({FRIEND_LIST}) => {
         if(FRIEND_LIST){
               LIST_PROFILE_ICON = FRIEND_LIST.map((FRIEND,index) => {
                 return(
-                    <ProfileIcon ICON={FRIEND.ICON} REDIRECT={() => null} isActive={FRIEND.STATE}  key={index}/>
-                    
+                    <article className="w-max h-max p-1 rounded-full hover:scale-105 cursor-pointer"  style={{background:Theme.BluePrimary}}>
+                        <ProfileIcon  ICON={FRIEND.ICON} REDIRECT={() => null} isActive={FRIEND.STATE} />
+                    </article>
                 );
             });
             UPDATE_ACTIVE_LIST(LIST_PROFILE_ICON);
@@ -20,7 +24,7 @@ const ActiveDisplayer = ({FRIEND_LIST}) => {
     },[FRIEND_LIST]);
 
     return(
-        <div className="lg:hidden lg:w-0 w-full min-h-20 items-center overflow-x-scroll px-4 py-2 ">
+        <div className="lg:hidden  w-full min-h-20 items-center overflow-x-scroll py-4 px-2 ">
                 <li className="w-max h-max flex flex-row gap-4 ">
                     {ACTIVE_LIST}
                 </li>

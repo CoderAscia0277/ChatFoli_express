@@ -1,9 +1,7 @@
-// import ws from "../_utils/ws/socket";
-// import { Store ,UPDATE_DATA } from "../_utils/store/store";
-// import { Link, useNavigate } from "react-router-dom";
-import { useRef , lazy, useState, useCallback } from "react";
-import CryptoJS from "crypto-js";
 
+import { useRef} from "react";
+import CryptoJS from "crypto-js";
+import {Theme} from '../_utils/Constants';
 
 
 const Validate = async({username,password}) => {
@@ -57,7 +55,7 @@ const LoginPage = () => {
             <form onKeyDown={e => e.key === 'Enter' && text_box.current.value && pass_box.current.value ? Validate({username:text_box.current,password:pass_box.current}) : null} className=" flex flex-col justify-evenly items-center h-1/2 text-neutral-300 px-4">
                 <input ref={text_box} type="text" placeholder='Username' className="w-full bg-transparent rounded-md py-2 px-2 outline-0" style={{borderBottom:'solid 2px #262626'}}/>
                 <input ref={pass_box} type="password" placeholder='Password' className="w-full bg-transparent rounded-md py-2 px-2 outline-0 " style={{borderBottom:'solid 2px #262626'}} />
-                <input type="button" onClick={() => Validate({username:text_box.current,password:pass_box.current})} value="Submit" className="w-1/4 p-2 bg-neutral-800 rounded-md cursor-pointer hover:scale-105"/>
+                <input type="button" onClick={() => Validate({username:text_box.current,password:pass_box.current})} value="Submit" className="w-1/4 p-2  rounded-md cursor-pointer hover:scale-105" style={{background:Theme.BlueGradient}}/>
             </form>
             <article className="h-1/3 w-full text-neutral-500 justify-between items-center  px-4 flex flex-row">
                 <a href="/register" className="text-sm cursor-pointer  hover:text-neutral-300">Sign Up</a>

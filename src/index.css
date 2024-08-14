@@ -53,7 +53,7 @@ body{
 
 
 .bubble-container:first-child{
-  margin-top: 25%;
+  margin-top: 75vh;
 }
 .bubble-container:last-child{
   margin-bottom: 10%;
