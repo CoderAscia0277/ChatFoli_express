@@ -1,9 +1,9 @@
 import { useState,useEffect,Suspense,lazy,useRef } from "react";
-import { Theme } from "../../_utils/Constants";
-import imgCache from "../../_utils/ImageCache/ImageCache";
-import { MessengerStore,UPDATE_INFO } from "../../_utils/store/messenger_store";
+import { Theme } from "../../../_utils/Constants";
+import imgCache from "../../../_utils/ImageCache/ImageCache";
+import { MessengerStore,UPDATE_INFO } from "../../../_utils/store/messenger_store";
 
-const ProfileIcon = lazy(() => import('../Reusable/ProfileIcon'));
+const ProfileIcon = lazy(() => import('../../Reusable/ProfileIcon'));
 
 const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = (VALUES) => null}) => {
 
