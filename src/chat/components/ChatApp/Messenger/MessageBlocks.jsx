@@ -1,5 +1,5 @@
 import { useState,useEffect,useRef,useMemo,useCallback,lazy } from "react";
-import { MessengerStore,SEND_MESSAGE } from "../../_utils/store/messenger_store";
+import { MessengerStore,SEND_MESSAGE } from "../../../_utils/store/messenger_store";
 
 const ChatBubble = lazy(() => import("./ChatBubble"));
 

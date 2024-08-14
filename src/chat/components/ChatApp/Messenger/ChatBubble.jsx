@@ -1,6 +1,6 @@
 import { lazy } from "react";
-import { Theme } from "../../_utils/Constants";
-const ProfileIcon = lazy(() => import("../Reusable/ProfileIcon"));
+import { Theme } from "../../../_utils/Constants";
+const ProfileIcon = lazy(() => import("../../Reusable/ProfileIcon"));
 
 const CHAT_BUBBLE = ({ICON,MESSAGE,isUser = false}) => {
     return(
