@@ -1,35 +1,19 @@
-import React, {lazy, Suspense} from 'react';
+import React, {lazy} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-// import AuthenticationPanel from './chat/components/AuthenticationPanel';
 import { createBrowserRouter,RouterProvider } from 'react-router-dom';
-// import ChatIndex from './chat/core/chatIndex';
 
-const AuthenticationPanel = lazy(()=>import('./chat/components/AuthenticationPanel'));
-const ChatApp = lazy(()=>import('./chat/core/ChatIndexer'));
-const LoadingIdle = lazy(() => import('./chat/components/Loading_Idle'));
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const UserId= 123789; 
 const WebSocket = lazy(() => import('./chat/core/WebSocket'));
 const LoginPage = lazy( () => import('./chat/core/LoginPage'));
-const Messenger = lazy(() => import('./chat/core/Messenger'));
 
 const router = createBrowserRouter([
   {
-    path:'/au',
-    element:  <AuthenticationPanel/>
-  },{
     path:'/',
     element:<LoginPage/>
   },
-  {
-    path:'/Chat/:RECIEVER_NAME/:UID',
-    element:<Messenger/>
-  },{
-    path:'/chat',
-    element: <Suspense fallback={<LoadingIdle/>}><ChatApp UserId={UserId}/></Suspense> 
-  },{
+ {
     path:'/:NAME/:TEMPORARY_ID',
     element:<WebSocket/>
   }]
