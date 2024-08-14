@@ -3,13 +3,12 @@ import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
-import { Theme } from "../_utils/Constants";
 import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES} from "../_utils/store/messenger_store";
-// const ProfileIcon = lazy(() => import('../components/Common/ProfileIcon'));
 
-const MessengerApp = lazy(() => import("../core/Messenger"));
-const SideBar = lazy(() => import('../components/ChatAppRoot/SideBar'));
-const ChatContactUI = lazy(() => import('../components/ChatAppRoot/ChatContactUI'));
+
+const MessengerApp = lazy(() => import("./Messenger"));
+const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
+const ChatContactUI = lazy(() => import('../components/ChatApp/ChatContactUI'));
 
 
 const IndexPage = () => {
@@ -67,9 +66,7 @@ const IndexPage = () => {
         <Suspense fallback={<p>Please Wait</p>}>
             <SideBar/>
             <ChatContactUI/>
-            <aside className=" lg:flex-grow  h-screen">
-                <MessengerApp socket={ws}/>
-            </aside>
+            <MessengerApp socket={ws}/>
         </Suspense>
     );
 

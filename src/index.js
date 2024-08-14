@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const WebSocket = lazy(() => import('./chat/core/WebSocket'));
+const ChatApp = lazy(() => import('./chat/core/ChatApp'));
 const LoginPage = lazy( () => import('./chat/core/LoginPage'));
 
 const router = createBrowserRouter([
@@ -15,7 +15,7 @@ const router = createBrowserRouter([
   },
  {
     path:'/:NAME/:TEMPORARY_ID',
-    element:<WebSocket/>
+    element:<ChatApp/>
   }]
 );
 root.render(

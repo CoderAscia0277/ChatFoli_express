@@ -1,6 +1,6 @@
 import {  lazy, Suspense} from "react";
 
-const ChatHeader = lazy(() => import('../components/ChatAppRoot/ChatHeader'));
+const ChatHeader = lazy(() => import('../components/ChatApp/ChatHeader'));
 const MessageBlocks = lazy(() => import("../components/Messenger/MessageBlocks"));
 
 // CONTAINS A LIST OF LOADER COMPONENTS , DISPLAYS WHEN THE UI CONVO LOG IS ACTIVATES
@@ -34,12 +34,14 @@ const ChatContainerHolder = () => {
 const ChatConvoDisplay = ({socket = null}) => {
     
     return(
+    <aside className=" lg:flex-grow  h-screen">
         <section className="w-full  h-full flex flex-col  bg-transparent" >
             <ChatHeader TAG="It's time to study again..." />
             <Suspense fallback={<ChatContainerHolder/>}>
                 <MessageBlocks socket={socket}/>
             </Suspense>
         </section>
+    </aside>
     );
 }
 
