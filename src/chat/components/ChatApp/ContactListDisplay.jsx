@@ -1,7 +1,7 @@
 
 import { useEffect,lazy,useMemo,useState } from "react";
 
-const ContactProfile = lazy(() => import("./ContactProfile/ContactProfile"));
+const ContactProfile = lazy(() => import("./ContactListDisplay/ContactProfile"));
 
 //HANDLES THE CONTACT LIST DISPLAY , CONTAINS GROUP OF CONTACT PROFILE COMPONENTS
 const ContactListDisplay = ({DATA}) => {
