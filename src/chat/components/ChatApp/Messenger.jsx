@@ -1,7 +1,7 @@
 import {  lazy, Suspense} from "react";
 
-const ChatHeader = lazy(() => import('../components/ChatApp/ChatHeader'));
-const MessageBlocks = lazy(() => import("../components/Messenger/MessageBlocks"));
+const ChatHeader = lazy(() => import('../Messenger/MessagerHeader'));
+const MessageBlocks = lazy(() => import("../Messenger/MessageBlocks"));
 
 // CONTAINS A LIST OF LOADER COMPONENTS , DISPLAYS WHEN THE UI CONVO LOG IS ACTIVATES
 const ChatContainerHolder = () => {

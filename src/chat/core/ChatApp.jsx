@@ -6,7 +6,7 @@ import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
 import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES} from "../_utils/store/messenger_store";
 
 
-const MessengerApp = lazy(() => import("./Messenger"));
+const MessengerApp = lazy(() => import("../components/ChatApp/Messenger"));
 const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
 const ChatContactUI = lazy(() => import('../components/ChatApp/ChatContactUI'));
 
