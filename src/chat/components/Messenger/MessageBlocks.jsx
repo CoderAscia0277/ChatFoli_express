@@ -13,12 +13,11 @@ const MessageBlocks = ({socket}) => {
     
 
     const SEND = useCallback(() => {
-        console.log('send');
         MessengerStore.dispatch(SEND_MESSAGE({RECIEPIENT_UID:UID,NAME:"You",MESSAGE:UserInput.current.value}));
         const msg = UserInput.current.value; 
         UserInput.current.value = '';
 
-    },[]); //UPDATES THE LOG WHEN CALLED
+    },[UID]); //CHANGES VALUES WHEN UID changed , Triggers when a message is SENT
 
     const isMounted = useRef(false);
   
@@ -29,6 +28,7 @@ const MessageBlocks = ({socket}) => {
                 const INFO = MessengerStore.getState().INFO;
                 SET_INFO(INFO);
                 UPDATE_LOGS(MessengerStore.getState().ALL_MESSAGES[INFO.UID]);
+                console.table(MessengerStore.getState().INFO);
             });
         }
     });
@@ -38,7 +38,7 @@ const MessageBlocks = ({socket}) => {
         if(LOGS){
             const temp = LOGS;
             let components = temp.map((item,index) => {
-                return <ChatBubble ICON={ICON} MESSAGE={item.LOG} key={index} isUser={ item.NAME !== 'You'}/>
+                return <ChatBubble ICON={ICON} MESSAGE={item.LOG} key={index} isUser={ item.NAME === 'You'}/>
             });
             UPDATE_CHAT_BLOCKS(components);
         }

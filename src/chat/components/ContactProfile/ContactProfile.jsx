@@ -34,6 +34,7 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
             MessengerStore.subscribe(() => {
                 SET_MESSAGES(MessengerStore.getState().ALL_MESSAGES[UID]);
                 SET_INFO(MessengerStore.getState().INFO);
+                
             });
         }
     },[]);
