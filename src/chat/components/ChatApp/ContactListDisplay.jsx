@@ -23,7 +23,7 @@ const ContactListDisplay = ({DATA}) => {
 
 
     return(
-        <article className="w-full  h-3/4 flex flex-col gap-4">
+        <article className="w-full  h-3/4 flex flex-col gap-4 ">
             {useMemo(() => CONTACT_LIST,[CONTACT_LIST])}
         </article>
     );
