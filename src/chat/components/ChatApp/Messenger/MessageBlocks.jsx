@@ -1,6 +1,6 @@
 import { useState,useEffect,useRef,useMemo,useCallback,lazy } from "react";
 import { MessengerStore,SEND_MESSAGE } from "../../../_utils/store/messenger_store";
-
+import { Store } from "../../../_utils/store/store";
 const ChatBubble = lazy(() => import("./ChatBubble"));
 
 const MessageBlocks = ({socket}) => {
@@ -13,8 +13,17 @@ const MessageBlocks = ({socket}) => {
     
 
     const SEND = useCallback(() => {
-        MessengerStore.dispatch(SEND_MESSAGE({RECIEPIENT_UID:UID,NAME:"You",MESSAGE:UserInput.current.value}));
-        const msg = UserInput.current.value; 
+
+        const MessageFormat = {RECIEPIENT_UID:UID,NAME:"You",MESSAGE:UserInput.current.value};
+        MessengerStore.dispatch(SEND_MESSAGE(MessageFormat));
+        socket.send(JSON.stringify(
+            {
+                PURPOSE:'SEND_MESSAGE',
+                RECIEVER_UID:UID,
+                SENDER_UID:Store.getState().USER_PARAMS.UID,
+                MESSAGE:{NAME:Store.getState().USER_PARAMS.NAME,LOG:UserInput.current.value,TIME:null}
+            }));
+        console.table({NAME:Store.getState().USER_PARAMS.NAME,LOG:UserInput.current.value,TIME:null});
         UserInput.current.value = '';
 
     },[UID]); //CHANGES VALUES WHEN UID changed , Triggers when a message is SENT
@@ -28,20 +37,29 @@ const MessageBlocks = ({socket}) => {
                 const INFO = MessengerStore.getState().INFO;
                 SET_INFO(INFO);
                 UPDATE_LOGS(MessengerStore.getState().ALL_MESSAGES[INFO.UID]);
-                console.table(MessengerStore.getState().INFO);
+                // console.table(MessengerStore.getState().INFO);
             });
         }
     });
 
     useEffect(() => { //CREATES NEW CHAT BLOCK BASED ON UPDATE LOGS
     
-        if(LOGS){
-            const temp = LOGS;
-            let components = temp.map((item,index) => {
-                return <ChatBubble ICON={ICON} MESSAGE={item.LOG} key={index} isUser={ item.NAME === 'You'}/>
-            });
-            UPDATE_CHAT_BLOCKS(components);
-        }
+        
+        // try{
+            if(LOGS){
+                const temp = LOGS;
+                let components = temp.map((item,index) => {
+                    return <ChatBubble ICON={ICON} MESSAGE={item.LOG} key={index} isUser={ item.NAME === 'You'}/>
+                });
+                UPDATE_CHAT_BLOCKS(components);
+            }
+        // }catch(err){
+        //     // LOGS.forEach(element => {
+        //     //     console.log(element.LOG)
+        //     // });
+        //     console.table(LOGS);
+        //     // console.error(err);
+        // }
     },[LOGS]);
 
     useEffect(() => {

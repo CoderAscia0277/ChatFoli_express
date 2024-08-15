@@ -5,7 +5,7 @@ import { UPDATE_DATA } from "./store";
 const Slice = createSlice({
     name:'Slice',
     initialState:{
-        ALL_MESSAGES:null,
+        ALL_MESSAGES:{},
         INFO:null,
         HISTORY:[]
     },
@@ -32,9 +32,16 @@ const Slice = createSlice({
             const arr = state.HISTORY;
             arr.push(data.payload);
             state.HISTORY = arr;
+        },
+        INCOMING_MESSAGE:(state,message) => {
+            const {UID,MESSAGES} = message.payload;
+            state.ALL_MESSAGES[UID] = MESSAGES;
+            // messages.push(MESSAGE);
+            // state.ALL_MESSAGES[SENDER_UID] = messages;
+            console.log(MESSAGES,UID);
         }
     }
 });
 
 export const MessengerStore = configureStore({reducer:Slice.reducer});
-export const {UPDATE_MESSAGES,UPDATE_INFO,UPDATE_HISTORY,SEND_MESSAGE} = Slice.actions;
+export const {UPDATE_MESSAGES,UPDATE_INFO,UPDATE_HISTORY,SEND_MESSAGE,INCOMING_MESSAGE} = Slice.actions;

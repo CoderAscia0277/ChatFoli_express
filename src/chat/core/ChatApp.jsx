@@ -3,7 +3,7 @@ import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
-import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES} from "../_utils/store/messenger_store";
+import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES,INCOMING_MESSAGE} from "../_utils/store/messenger_store";
 
 
 const MessengerApp = lazy(() => import("../components/ChatApp/Messenger"));
@@ -33,17 +33,33 @@ const IndexPage = () => {
         console.log(parse)
         let MERGE_DATA = null;
 
-        if(parse.STATUS === 200){
 
-            MERGE_DATA = {...data,...parse.CLIENT};
-            Store.dispatch(UPDATE_USER_PARAMS(MERGE_DATA));
+
+        if(parse.STATUS === 200){
             
-            if(!isLoaded.current){
-                isLoaded.current = true;
-                console.log('update msg')
-                MessengerStore.dispatch(UPDATE_INFO(parse.CLIENT));
-                MessengerStore.dispatch(UPDATE_MESSAGES(parse.ALL_MESSAGES));
+            switch(parse.PURPOSE){
+                default:
+                    MERGE_DATA = {...data,...parse.CLIENT};
+                    Store.dispatch(UPDATE_USER_PARAMS(MERGE_DATA));
+                    
+                    if(!isLoaded.current){
+                        isLoaded.current = true;
+                        console.log('update msg')
+                        MessengerStore.dispatch(UPDATE_INFO(parse.CLIENT));
+                        MessengerStore.dispatch(UPDATE_MESSAGES(parse.ALL_MESSAGES));
+                    }
+                    break;
+                case 'INCOMING_MESSAGE':
+                    const {SENDER_UID, MESSAGE} = parse.CLIENT;
+                    const AllMessagesBetweenSenderAndReciever = MessengerStore.getState().ALL_MESSAGES[SENDER_UID];
+                    // AllMessagesBetweenSenderAndReciever.push(MESSAGE);
+                    console.table([...AllMessagesBetweenSenderAndReciever,MESSAGE]);
+                    MessengerStore.dispatch(INCOMING_MESSAGE({UID:SENDER_UID,MESSAGES:[...AllMessagesBetweenSenderAndReciever,MESSAGE]}));
+                    break;
             }
+            
+            
+
         }else{
             window.location.href = '/';
         }

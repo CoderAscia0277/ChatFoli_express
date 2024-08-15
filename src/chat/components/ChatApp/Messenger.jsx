@@ -1,4 +1,5 @@
 import {  lazy, Suspense} from "react";
+import { Theme } from "../../_utils/Constants";
 
 const ChatHeader = lazy(() => import('./Messenger/MessagerHeader'));
 const MessageBlocks = lazy(() => import("./Messenger/MessageBlocks"));
@@ -27,7 +28,7 @@ const ChatConvoDisplay = ({socket = null}) => {
     
     return(
     <aside className="lg:flex md:flex hidden h-screen" style={{width:'-webkit-fill-available'}}>
-        <section className="w-full  h-full flex flex-col  bg-transparent" >
+        <section className="w-full  h-full flex flex-col" style={{background:Theme.DarkPrimary}}>
             <ChatHeader TAG="It's time to study again..." />
             <MessageBlocks socket={socket}/>
             {/* <Suspense fallback={<ChatContainerHolder/>}>

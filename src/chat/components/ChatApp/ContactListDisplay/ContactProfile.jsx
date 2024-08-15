@@ -39,7 +39,7 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
             });
         }
        
-    },[]);
+    },[UID]);
 
     ///TRIMS THE RECENT MESSAGE IF ITS TOO LONG TO AVOID CONGESTION AT THE CONTACT PROFILE SLOT///
     let RECENT_MESSAGE = MESSAGES[MESSAGES.length - 1];
