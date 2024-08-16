@@ -61,9 +61,16 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
                 <div className={`w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center cursor-default ${isContactProfileChosen ? '' : 'hover:cursor-pointer secondaryColor'}  `} onClick = {() => MessengerStore.dispatch(UPDATE_INFO(FRIEND_INFO))} style={{background:`${isContactProfileChosen ? Theme.BluePrimary : Theme.DarkPrimary}`}}>
                     <ProfileIcon ICON={ICON} size={{w:'w-12',h:'h-12'}} isActive={STATE} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
-                        <span className="flex w-full  min-h-4 text-neutral-300  font-semibold">{NAME}</span>
+                        <span className="flex w-full  min-h-4 text-neutral-200  font-semibold">{NAME}</span>
                         <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{RECENT_MESSAGE}</span>
                     </ul>
+                    {isContactProfileChosen ? 
+                        '' :
+                        (
+                            <span className="rounded-full  bg-red-500 w-5 h-5  text-xs text-neutral-200  flex items-center justify-center">5</span>
+                        )
+                    }
+                 
                 </div>
         );  
     }

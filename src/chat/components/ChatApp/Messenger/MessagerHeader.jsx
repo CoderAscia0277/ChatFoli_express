@@ -25,10 +25,10 @@ const ChatHeader = ({TAG=''}) => {
         </svg> 
         <ProfileIcon size={{w:'lg:w-14 w-12',h:'lg:h-14 h-12'}} isHover={false} ICON={ICON} isActive={STATE}/>
         <div className="flex-grow h-full flex flex-col items-start justify-center  px-4 ">
-            <span className="font-sans text-xl font-medium flex flex-row items-center text-neutral-100 " >
+            <span className="font-sans text-xl font-medium flex flex-row items-center text-neutral-200 " >
                {NAME}
             </span>
-            <span className="text-neutral-200 text-sm">{TAG}</span>
+            <span className="text-neutral-400 text-sm">{TAG}</span>
         </div>
     </article>
     );
