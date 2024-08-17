@@ -53,8 +53,8 @@ const IndexPage = () => {
                     const {SENDER_UID, MESSAGE} = parse.CLIENT;
                     const AllMessagesBetweenSenderAndReciever = MessengerStore.getState().ALL_MESSAGES[SENDER_UID];
                     // AllMessagesBetweenSenderAndReciever.push(MESSAGE);
-                    console.table([...AllMessagesBetweenSenderAndReciever,MESSAGE]);
-                    MessengerStore.dispatch(INCOMING_MESSAGE({UID:SENDER_UID,MESSAGES:[...AllMessagesBetweenSenderAndReciever,MESSAGE]}));
+                    console.table([MESSAGE,...AllMessagesBetweenSenderAndReciever]);
+                    MessengerStore.dispatch(INCOMING_MESSAGE({UID:SENDER_UID,MESSAGES:[MESSAGE,...AllMessagesBetweenSenderAndReciever]}));
                     break;
             }
             

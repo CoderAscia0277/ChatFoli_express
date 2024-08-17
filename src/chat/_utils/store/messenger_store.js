@@ -17,7 +17,7 @@ const Slice = createSlice({
             const {RECIEPIENT_UID,MESSAGE,NAME} = data.payload;
             const new_messages = state.ALL_MESSAGES[RECIEPIENT_UID];
             try{
-                new_messages.push({NAME:NAME,LOG:MESSAGE,TIME:null});
+                new_messages.unshift({NAME:NAME,LOG:MESSAGE,TIME:null});
                 state.ALL_MESSAGES[RECIEPIENT_UID] = new_messages;
                 // console.log(UID,MESSAGE);
             }catch(err){
