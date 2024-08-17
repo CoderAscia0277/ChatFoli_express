@@ -4,7 +4,7 @@ const ProfileIcon = lazy(() => import("../../Reusable/ProfileIcon"));
 
 const CHAT_BUBBLE = ({ICON,MESSAGE,isUser = false}) => {
     return(
-        <section className="content w-full   h-max  flex flex-col">
+        <section className="content w-full   h-max  flex flex-col" style={{flexShrink:0}}>
             {isUser ? 
                 <article className=" cursor-default text-neutral-300 w-full flex flex-row justify-end  gap-2 ">
                     <span className="text-neutral-500 text-xs mt-auto ">16:32</span>
@@ -12,7 +12,7 @@ const CHAT_BUBBLE = ({ICON,MESSAGE,isUser = false}) => {
                     
                 </article>
                 :
-                <article className="w-full  flex flex-row gap-4 ">
+                <article className="w-full flex flex-row gap-4 ">
                     <ProfileIcon showIndicator={false} size={{w:'w-12',h:'h-12'}} isHover={false} ICON={ICON}/>
                     <div className="cursor-default text-neutral-300 w-full  flex flex-row items-end gap-2">
                         <span className="chat-bubble leading-100  h-max  min-w-12 text-break py-2 px-4  text-start" style={{maxWidth:'45%',background:bg.neutral[800],borderRadius:`${MESSAGE.length < 3 ? '100%' : ''}`}}>{MESSAGE}</span>
