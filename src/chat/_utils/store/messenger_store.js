@@ -36,9 +36,6 @@ const Slice = createSlice({
         INCOMING_MESSAGE:(state,message) => {
             const {UID,MESSAGES} = message.payload;
             state.ALL_MESSAGES[UID] = MESSAGES;
-            // messages.push(MESSAGE);
-            // state.ALL_MESSAGES[SENDER_UID] = messages;
-            console.log(MESSAGES,UID);
         }
     }
 });

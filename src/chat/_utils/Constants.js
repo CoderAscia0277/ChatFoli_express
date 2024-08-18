@@ -3,7 +3,7 @@ export const Theme = {
     DarkSecondary: 'rgb(38,38,38)',
     BluePrimary:'#635ee2',
     BlueSecondary:'#1fa0ff',
-    BlueGradient:'linear-gradient(0deg,#635ee2,#1fa0ff)',
+    BlueGradient:'linear-gradient(0deg,#8b5cf6,#635ee2,#1fa0ff)',
 };
 
 export const bg = {

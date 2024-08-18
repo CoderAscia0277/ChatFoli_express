@@ -1,7 +1,7 @@
-import { useRef,useEffect,useMemo,useState,lazy } from "react";
+import { useRef,useEffect,useMemo,useState,lazy, useCallback } from "react";
 import { MessengerStore } from "../../../_utils/store/messenger_store";
 
-const ChatBubble = lazy(() => import('../Messenger/ChatBubble'));
+const ChatBubble = lazy(() => import('./ChatBubble'));
 const ChatGenerator = ({messages}) => {
     
     const [CHAT_BLOCKS,UPDATE_CHAT_BLOCKS] = useState(null);
@@ -10,6 +10,7 @@ const ChatGenerator = ({messages}) => {
     const isMounted = useRef(false);
     const ScrollView = useRef(null);
     const isSwitching = useRef(false);
+    const bubbleContainer = useRef(null)
 
     // let scrollToggle = true;
     const currentUID = useRef(null);
@@ -32,6 +33,22 @@ const ChatGenerator = ({messages}) => {
         
     },[INFO]);
 
+    const UpdateChatColors = useCallback(() => { //THIS LOGIC BLOCK ADDS CASCADING COLOR GRADIENT AT THE CHAT BUBBLES
+        const scrollNode = ScrollView.current;
+        const scrollHeight = scrollNode.clientHeight;
+        const parentNode = bubbleContainer.current;
+        const nodes = parentNode.querySelectorAll('.my-chat-bubble');
+
+        nodes.forEach(node => {
+            const nodeRect = node.getBoundingClientRect();
+            const nodePosY = nodeRect.top;
+            const colorPercentage = (nodePosY / scrollHeight) * 100;
+            node.style.backgroundPosition = `center ${colorPercentage}%`;
+        });
+       
+
+    },[bubbleContainer,ScrollView]);
+
     useEffect(() => {
         if(!isMounted.current){
             isMounted.current = true;
@@ -40,6 +57,8 @@ const ChatGenerator = ({messages}) => {
                 const INFO = MessengerStore.getState().INFO;
                 SET_INFO(INFO);
             });
+
+            ScrollView.current.addEventListener('scroll',() => UpdateChatColors());
         }
     });
 
@@ -72,9 +91,12 @@ const ChatGenerator = ({messages}) => {
         ScrollView.current.scrollTop =ScrollView.current.scrollHeight;
     },[CHAT_BLOCKS]); //AUTOMATICALLY SCROLLS UP THE CONTENT
 
+
+
+
     return(
         <article ref={ScrollView} className=" w-full h-full overflow-auto">
-                <ul className="bubble-container flex flex-col-reverse w-full h-max px-6 gap-8">
+                <ul ref={bubbleContainer} className="bubble-container flex flex-col-reverse w-full h-max min-h-full px-6 gap-8">
                     {useMemo(() => CHAT_BLOCKS,[CHAT_BLOCKS])}
                 </ul>
             </article>
