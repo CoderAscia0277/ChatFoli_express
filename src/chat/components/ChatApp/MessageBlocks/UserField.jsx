@@ -3,19 +3,26 @@ import { MessengerStore ,SEND_MESSAGE} from "../../../_utils/store/messenger_sto
 import { Store } from "../../../_utils/store/store";
 import { Theme, bg } from "../../../_utils/Constants";
 
+const getTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2,'0');
+    return `${hours}:${minutes}`;
+}
+
 const UserField = ({RECIEVER_UID,ws}) => {
     const UserInput = useRef(null);
     const [isFilled,set_isFilled] = useState(false);
     const SEND = useCallback(() => {
 
-        const MessageFormat = {RECIEPIENT_UID:RECIEVER_UID,NAME:Store.getState().USER_PARAMS.NAME,MESSAGE:UserInput.current.value};
+        const MessageFormat = {RECIEPIENT_UID:RECIEVER_UID,NAME:Store.getState().USER_PARAMS.NAME,MESSAGE:UserInput.current.value,TIME:getTime()};
         MessengerStore.dispatch(SEND_MESSAGE(MessageFormat));
         ws.send(JSON.stringify(
             {
                 PURPOSE:'SEND_MESSAGE',
                 RECIEVER_UID:RECIEVER_UID,
                 SENDER_UID:Store.getState().USER_PARAMS.UID,
-                MESSAGE:{NAME:Store.getState().USER_PARAMS.NAME,LOG:UserInput.current.value,TIME:null}
+                MESSAGE:{NAME:Store.getState().USER_PARAMS.NAME,LOG:UserInput.current.value,TIME:getTime()}
             }));
         UserInput.current.value = ''; 
         UserInput.current.focus();

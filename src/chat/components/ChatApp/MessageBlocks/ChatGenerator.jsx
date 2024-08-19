@@ -46,6 +46,9 @@ const ChatGenerator = ({messages}) => {
             node.style.backgroundPosition = `center ${colorPercentage}%`;
         });
        
+        if(scrollNode.scrollTop === 0){
+            console.log('End of History');
+        }
 
     },[bubbleContainer,ScrollView]);
 
@@ -68,8 +71,8 @@ const ChatGenerator = ({messages}) => {
         existingLogs:null,
         start(){
             this.existingLogs.forEach((log,index) => {
-                const {LOG,NAME} = log;
-                let ChatFormat =  <ChatBubble ICON={INFO.ICON} MESSAGE={LOG} key={index} isUser={!(NAME === INFO.NAME)}/>;
+                const {LOG,NAME,TIME} = log;
+                let ChatFormat =  <ChatBubble ICON={INFO.ICON} MESSAGE={LOG} key={index} TIME={TIME} isUser={!(NAME === INFO.NAME)}/>;
                 this.chatBubble = [...this.chatBubble,ChatFormat];   
             });
             UPDATE_CHAT_BLOCKS(this.chatBubble);

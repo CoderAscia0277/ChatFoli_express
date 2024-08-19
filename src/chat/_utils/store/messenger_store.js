@@ -6,7 +6,7 @@ const Slice = createSlice({
     name:'Slice',
     initialState:{
         ALL_MESSAGES:{},
-        INFO:null,
+        INFO:{STATE:null,NAME:null,ICON:null},
         HISTORY:[]
     },
     reducers:{
@@ -14,10 +14,10 @@ const Slice = createSlice({
            state.ALL_MESSAGES = data.payload; 
         },
         SEND_MESSAGE:(state,data) => {
-            const {RECIEPIENT_UID,MESSAGE,NAME} = data.payload;
+            const {RECIEPIENT_UID,MESSAGE,NAME,TIME} = data.payload;
             const new_messages = state.ALL_MESSAGES[RECIEPIENT_UID];
             try{
-                new_messages.unshift({NAME:NAME,LOG:MESSAGE,TIME:null});
+                new_messages.unshift({NAME:NAME,LOG:MESSAGE,TIME:TIME});
                 state.ALL_MESSAGES[RECIEPIENT_UID] = new_messages;
                 // console.log(UID,MESSAGE);
             }catch(err){
