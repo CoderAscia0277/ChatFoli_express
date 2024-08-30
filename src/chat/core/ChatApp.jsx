@@ -5,7 +5,7 @@ import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
 import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES,INCOMING_MESSAGE} from "../_utils/store/messenger_store";
 import { ClientStore,UPDATE_ALL } from "../_utils/store/ClientStore";
-
+import { ContactStore,UPDATE_CONTACT } from "../_utils/store/ContactStore";
 const MessengerApp = lazy(() => import("../components/ChatApp/Messenger"));
 const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
 const ChatContactUI = lazy(() => import('../components/ChatApp/ChatContactUI'));
@@ -79,22 +79,25 @@ const IndexPage = () => {
 
 
     useEffect(() => { //THIS LINE ASSIGN WHAT MESSAGE BOX SHOULD BE DISPLAYED, IN THIS CASE FRIEND 01
-        if(data.FRIENDS){
-            set_ChatDisplayed(data.FRIENDS[0]);
+        if(ClientContacts){
+            set_ChatDisplayed(ClientContacts[0]);
         }
-    },[data.FRIENDS]);
+    },[ClientContacts]);
     useEffect(() => {
         if(ChatDisplayed){
-            MessengerStore.dispatch(UPDATE_INFO(ChatDisplayed));
+            // MessengerStore.dispatch(UPDATE_INFO(ChatDisplayed));
+            ContactStore.dispatch(UPDATE_CONTACT(ChatDisplayed));   
         }
     },[ChatDisplayed]);
 
     return(
         <Suspense fallback={<p>Please Wait</p>}>
+      
             <SideBar ICON={ClientInfo ? ClientInfo.ClientIcon : null}/>
             <ChatContactUI ClientContacts={ClientContacts}/>
-            <MessengerApp socket={ws}/>
+            <MessengerApp info={ChatDisplayed} socket={ws}/>
         </Suspense>
+
     );
 
     

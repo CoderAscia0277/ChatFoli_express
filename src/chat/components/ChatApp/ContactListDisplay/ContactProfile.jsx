@@ -56,7 +56,9 @@ const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES
     useEffect(() => {
         const keys = Object.keys(all_messages);
         const RECENT_MESSAGES = all_messages[keys[keys.length - 1]];
-        UPT_RCNT_MSG(RECENT_MESSAGES[0]);
+        let text = RECENT_MESSAGES[0].LOG;
+        text = text.length > 10 ? `${text.slice(0,10)}...` : text;
+        UPT_RCNT_MSG(text);
     },[all_messages]);
     
 
@@ -70,7 +72,7 @@ const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES
                     <ProfileIcon ICON={contactIcon} size={{w:'w-12',h:'h-12'}} isActive={isOnline} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
                         <span className="flex w-full  min-h-4 text-neutral-200  font-semibold">{contactName}</span>
-                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{text.LOG}</span>
+                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{text}</span>
                     </ul>
                     {isContactProfileChosen ? 
                         '' :

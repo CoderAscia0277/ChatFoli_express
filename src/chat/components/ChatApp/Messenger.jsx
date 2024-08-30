@@ -1,4 +1,4 @@
-import {  lazy, Suspense} from "react";
+import {  lazy, Suspense, useEffect} from "react";
 import { Theme ,bg} from "../../_utils/Constants";
 
 const ChatHeader = lazy(() => import('./Messenger/MessagerHeader'));
@@ -23,13 +23,44 @@ const MessageBlocks = lazy(() => import("./Messenger/MessageBlocks"));
 //     );
 // }
 
+// const fetchData = {
+//     ContactMessages:{},
+//     async get_messages({ContactID,ClientId}){
+//         if(!this.ContactMessages[ContactID]){
+//             this.ContactMessages[ContactID] = await fetch(
+//                 'http://localhost:5000/request_messages',{
+//                     method:'POST',
+//                     headers:{'Content-Type':'application/json'},
+//                     body:JSON.stringify({"ContactId":ContactID,"ClientId":ClientId})
+//                 }
+//             ).then(res => res.json()).catch(err => console.error(err));
+//         }if(this.ContactMessages[ContactID] instanceof Promise){
+//             return this.ContactMessages[ContactID];
+//         }
+//         return this.ContactMessages[ContactID];
+//     }
+// }
+
 // DISPLAYS THE UI CONVO LOG OF A SPECIFIC PROFILE
-const ChatConvoDisplay = ({socket = null}) => {
+const ChatConvoDisplay = ({socket = null,info,ClientId}) => {
     
+    // const {contactID} = info;
+
+    // if(!info && !ClientId){
+    //     return;
+    // }
+    // useEffect(() => {
+    //     if(info){
+    //         const messages = fetchData.get_messages({"ContactID":info.contactID,"ClientId":ClientId});
+    //         console.log(messages);
+    //     }
+    // },[]);
+    
+
     return(
     <aside className="lg:flex md:flex hidden h-screen lg:p-4" style={{width:'-webkit-fill-available'}}>
         <section className="w-full  h-full flex flex-col rounded-xl" style={{background:Theme.DarkPrimary}}>
-            <ChatHeader TAG="It's time to study again..." />
+            <ChatHeader info = {info} TAG="It's time to study again..." />
             <MessageBlocks socket={socket}/>
             {/* <Suspense fallback={<ChatContainerHolder/>}>
                 <MessageBlocks socket={socket}/>

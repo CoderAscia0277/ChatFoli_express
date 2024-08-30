@@ -4,6 +4,7 @@ export const Theme = {
     BluePrimary:'#635ee2',
     BlueSecondary:'#1fa0ff',
     BlueGradient:'linear-gradient(0deg,#8b5cf6,#635ee2,#1fa0ff)',
+    BlueGradient90:'linear-gradient(90deg,#8b5cf6,#635ee2)',
 };
 
 export const bg = {

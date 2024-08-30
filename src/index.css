@@ -5,6 +5,7 @@
 :root{
   --theme-dark : rgb(50,52,54);
   --theme-darker: rgb(36,37,38);
+  --BlueGradient: linear-gradient(90deg,#8b5cf6,#635ee2);
 }
 
 body{
@@ -26,6 +27,14 @@ body{
   word-wrap:break-word !important;
   word-break:break-word !important;
 }
+.gradient-text {
+  background: var(--BlueGradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
 /* .container .content:last-child{
   margin-bottom: 10rem;
 } */

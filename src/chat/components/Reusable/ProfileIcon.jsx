@@ -8,9 +8,7 @@ const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isP
     //HANDLES THE PROFILE LOADING DISPLAY
     const ProfileIconLoader = () => {
         return(
-            <span className={` ${ size.h ? ` ${size.h}`: 'h-14'} bg-neutral-800 loading rounded-full flex items-end justify-end"=`} style={{aspectRatio:1/1}}>
-                <span className={` ${showIndicator ? '' : 'hidden'} w-4 h-4 bg-neutral-700 block relative rounded-full`} ></span>
-            </span>
+            <span className={` ${ size.h ? ` ${size.h}`: 'h-14'} bg-neutral-800 loading rounded-full flex items-end justify-end"=`} style={{aspectRatio:1/1}}></span>
         );
     }
 
