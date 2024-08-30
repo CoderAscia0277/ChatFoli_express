@@ -95,7 +95,11 @@ const IndexPage = () => {
       
             <SideBar ICON={ClientInfo ? ClientInfo.ClientIcon : null}/>
             <ChatContactUI ClientContacts={ClientContacts}/>
-            <MessengerApp info={ChatDisplayed} socket={ws}/>
+            {ClientInfo ?
+                <MessengerApp info={ChatDisplayed} ClientId={ClientInfo? ClientInfo.ClientId : null} socket={ws}/>
+                : null
+            }
+            
         </Suspense>
 
     );
