@@ -1,4 +1,5 @@
-
+const host = window.location.href;
+console.log(host)
 const socket = {
     ws:{},
     connect(TEMPORARY_ID){

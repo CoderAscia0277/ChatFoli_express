@@ -18,7 +18,7 @@ const Validate = async({username,password}) => {
     }
     encrypt.hex(username.value,password.value);
 
-    const submit = await fetch(`http://localhost:5000/LOGIN/${encrypt.NAME}/${encrypt.KEY}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
+    const submit = await fetch(`http://localhost:5000/LOGIN/${username}/${password}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
    
     if(submit){
         switch(submit.STATUS){
