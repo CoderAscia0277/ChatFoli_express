@@ -5,7 +5,6 @@ import { Suspense } from "react";
 const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isPointer = false,isActive = true, isHover = true,showIndicator = true}) => {
     
     
-
     //HANDLES THE PROFILE LOADING DISPLAY
     const ProfileIconLoader = () => {
         return(
@@ -15,6 +14,10 @@ const ProfileIcon = ({ICON = null,size={w:null,h:null},REDIRECT = () => null,isP
         );
     }
 
+    if(!ICON){
+        return <ProfileIconLoader/>
+    }
+    
     const Icon = ({src}) => {
         const LOAD_IMAGE = imgCache;
         LOAD_IMAGE.read(src);

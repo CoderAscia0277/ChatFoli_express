@@ -5,9 +5,12 @@ import { MessengerStore,UPDATE_INFO } from "../../../_utils/store/messenger_stor
 
 const ProfileIcon = lazy(() => import('../../Reusable/ProfileIcon'));
 
-const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = (VALUES) => null}) => {
+const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES) => null}) => {
 
-    const {NAME,ICON,STATE,UID} = FRIEND_INFO;
+    // const {NAME,ICON,STATE,UID} = FRIEND_INFO;
+    const [RCNT_MSG, UPT_RCNT_MSG] = useState('');
+    const {all_messages,contactID,contactIcon,contactName,isOnline} = info;
+
 
     // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
     const ContactProfileLoader = () => {
@@ -22,47 +25,52 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
          );
     }
 
-    const [MESSAGES,SET_MESSAGES] = useState(MessengerStore.getState().ALL_MESSAGES[UID]);
+    // const [MESSAGES,SET_MESSAGES] = useState(MessengerStore.getState().ALL_MESSAGES[UID]);
     const [CHOSEN_PERSON_INFO,SET_INFO] = useState(MessengerStore.getState().INFO);
-    const isMounted = useRef(false);
+    // const isMounted = useRef(false);
 
-    const isContactProfileChosen = (UID === CHOSEN_PERSON_INFO.UID);
+    const isContactProfileChosen = (contactID === CHOSEN_PERSON_INFO.UID);
     
 
-    useEffect(() => {
-        if(!isMounted.current){
-            isMounted.current = true;
-            MessengerStore.subscribe(() => {
-                SET_MESSAGES(MessengerStore.getState().ALL_MESSAGES[UID]);
-                SET_INFO(MessengerStore.getState().INFO);
+    // useEffect(() => {
+    //     if(!isMounted.current){
+    //         isMounted.current = true;
+    //         MessengerStore.subscribe(() => {
+    //             SET_MESSAGES(MessengerStore.getState().ALL_MESSAGES[UID]);
+    //             SET_INFO(MessengerStore.getState().INFO);
                 
-            });
-        }
+    //         });
+    //     }
        
-    },[UID]);
+    // },[UID]);
 
     ///TRIMS THE RECENT MESSAGE IF ITS TOO LONG TO AVOID CONGESTION AT THE CONTACT PROFILE SLOT///
-    let RECENT_MESSAGE = MESSAGES[0];
-    RECENT_MESSAGE = RECENT_MESSAGE.NAME === 'You' ? `You: ${RECENT_MESSAGE.LOG}` : RECENT_MESSAGE.LOG;
-    RECENT_MESSAGE = (RECENT_MESSAGE).length > 10 ? `${RECENT_MESSAGE.slice(0,10)}...` : RECENT_MESSAGE;
+    // let RECENT_MESSAGE = MESSAGES[0];
+    // RECENT_MESSAGE = RECENT_MESSAGE.NAME === 'You' ? `You: ${RECENT_MESSAGE.LOG}` : RECENT_MESSAGE.LOG;
+    // RECENT_MESSAGE = (RECENT_MESSAGE).length > 10 ? `${RECENT_MESSAGE.slice(0,10)}...` : RECENT_MESSAGE;
     
     // const my_comp = useRef(null);
     //     if(my_comp.current){
     //         console.log(my_comp.current.scrollWidth);
     //     }
-  
+    useEffect(() => {
+        const keys = Object.keys(all_messages);
+        const RECENT_MESSAGES = all_messages[keys[keys.length - 1]];
+        UPT_RCNT_MSG(RECENT_MESSAGES[0]);
+    },[all_messages]);
+    
 
-    const Profile = ({RECENT_MESSAGE}) => {
+    const Profile = ({text}) => {
         const img_loader = imgCache;
-        img_loader.read(ICON);
+        img_loader.read(contactIcon);
        
 
         return(
-                <div className={`w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center cursor-default ${isContactProfileChosen ? '' : 'hover:cursor-pointer secondaryColor'}  `} onClick = {() => MessengerStore.dispatch(UPDATE_INFO(FRIEND_INFO))} style={{background:`${isContactProfileChosen ? Theme.BluePrimary : Theme.DarkPrimary}`}}>
-                    <ProfileIcon ICON={ICON} size={{w:'w-12',h:'h-12'}} isActive={STATE} isHover={false}/>
+                <div className={`w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center cursor-default ${isContactProfileChosen ? '' : 'hover:cursor-pointer secondaryColor'}  `} onClick = {() => /*MessengerStore.dispatch(UPDATE_INFO(FRIEND_INFO))*/null} style={{background:`${isContactProfileChosen ? Theme.BluePrimary : Theme.DarkPrimary}`}}>
+                    <ProfileIcon ICON={contactIcon} size={{w:'w-12',h:'h-12'}} isActive={isOnline} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
-                        <span className="flex w-full  min-h-4 text-neutral-200  font-semibold">{NAME}</span>
-                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{RECENT_MESSAGE}</span>
+                        <span className="flex w-full  min-h-4 text-neutral-200  font-semibold">{contactName}</span>
+                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{text.LOG}</span>
                     </ul>
                     {isContactProfileChosen ? 
                         '' :
@@ -77,7 +85,7 @@ const ContactProfile = ({MY_UID = null,FRIEND_INFO, isSeen = false , REDIRECT = 
 
     return(
         <Suspense fallback={<ContactProfileLoader/>}>
-            <Profile RECENT_MESSAGE={RECENT_MESSAGE}/>
+            <Profile text={RCNT_MSG}/>
         </Suspense>
 
     );

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
 import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES,INCOMING_MESSAGE} from "../_utils/store/messenger_store";
-
+import { ClientStore,UPDATE_ALL } from "../_utils/store/ClientStore";
 
 const MessengerApp = lazy(() => import("../components/ChatApp/Messenger"));
 const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
@@ -15,6 +15,10 @@ const IndexPage = () => {
 
     const {TEMPORARY_ID} = useParams();
     const [data,update_data] = useState(Store.getState().USER_PARAMS);
+
+    const [ClientInfo,Update_ClientInfo] = useState(null);
+    const [ClientContacts,Update_ClientContacts] = useState(null);
+
     const isMounted = useRef(false);
     const [ChatDisplayed , set_ChatDisplayed] = useState(null);
 
@@ -22,11 +26,18 @@ const IndexPage = () => {
         if(!isMounted.current){
             isMounted.current = true;
             Store.subscribe(() => update_data(Store.getState().USER_PARAMS));
+            ClientStore.subscribe(() => Update_ClientInfo(ClientStore.getState().INFO));
+            ClientStore.subscribe(() => Update_ClientContacts(ClientStore.getState().CONTACTS));
         }
     });
     
     const ws = useMemo(() => socket.connect(TEMPORARY_ID),[TEMPORARY_ID]);
     const isLoaded = useRef(false);
+
+    useEffect(() => {
+        console.table(ClientInfo);
+        console.table(ClientContacts);
+    },[ClientContacts,ClientInfo])
 
     ws.onmessage = e => {
         const parse = JSON.parse(e.data);
@@ -39,14 +50,14 @@ const IndexPage = () => {
             
             switch(parse.PURPOSE){
                 default:
-                    MERGE_DATA = {...data,...parse.CLIENT};
-                    Store.dispatch(UPDATE_USER_PARAMS(MERGE_DATA));
-                    
+                    // MERGE_DATA = {...data,...parse.CLIENT};
+                    // Store.dispatch(UPDATE_USER_PARAMS(MERGE_DATA));
+                    ClientStore.dispatch(UPDATE_ALL(parse.CLIENT));
                     if(!isLoaded.current){
                         isLoaded.current = true;
-                        console.log('update msg')
-                        MessengerStore.dispatch(UPDATE_INFO(parse.CLIENT));
-                        MessengerStore.dispatch(UPDATE_MESSAGES(parse.ALL_MESSAGES));
+                        // console.log('update msg')
+                        // MessengerStore.dispatch(UPDATE_INFO(parse.CLIENT));
+                        // MessengerStore.dispatch(UPDATE_MESSAGES(parse.ALL_MESSAGES));
                     }
                     break;
                 case 'INCOMING_MESSAGE':
@@ -80,8 +91,8 @@ const IndexPage = () => {
 
     return(
         <Suspense fallback={<p>Please Wait</p>}>
-            <SideBar/>
-            <ChatContactUI/>
+            <SideBar ICON={ClientInfo ? ClientInfo.ClientIcon : null}/>
+            <ChatContactUI ClientContacts={ClientContacts}/>
             <MessengerApp socket={ws}/>
         </Suspense>
     );

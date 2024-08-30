@@ -1,18 +1,19 @@
 import { lazy , useEffect, useState,useRef} from "react";
 import { Theme } from "../../_utils/Constants";
-import { Store } from "../../_utils/store/store";
+// import { Store } from "../../_utils/store/store";
+// import { ClientStore } from "../../_utils/store/ClientStore";
 const ProfileIcon = lazy(() => import('../Reusable/ProfileIcon'));
 
-const SideBar = () => {
+const SideBar = ({ICON}) => {
 
-    const [{ICON},UPDATE_ICON] = useState(Store.getState().USER_PARAMS);
-    const isMounted = useRef(false);
-    useEffect(() => {
-        if(!isMounted.current){
-            isMounted.current = true;
-            Store.subscribe(() => UPDATE_ICON(Store.getState().USER_PARAMS));
-        }
-    });
+    // const [ClientInfo,UpdateInfo] = useState({ICON:null});
+    // const isMounted = useRef(false);
+    // useEffect(() => {
+    //     if(!isMounted.current){
+    //         isMounted.current = true;
+    //         ClientStore.subscribe(() => UpdateInfo(ClientStore.getState().INFO));
+    //     }
+    // });
 
     return(
         <aside className="w-max h-full bg-neutral-900 lg:flex flex-col p-4 hidden ">
