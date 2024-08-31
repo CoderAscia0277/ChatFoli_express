@@ -6,7 +6,7 @@ const socket = {
         if(!this.ws[TEMPORARY_ID]){
             const server = new WebSocket('ws://localhost:8080');
             server.onopen = () => {
-                server.send(JSON.stringify({TEMPORARY_ID:TEMPORARY_ID}));
+                // server.send(JSON.stringify({TEMPORARY_ID:TEMPORARY_ID}));
                 console.log('Connected at: ',TEMPORARY_ID);
             };
             server.onerror = () =>{

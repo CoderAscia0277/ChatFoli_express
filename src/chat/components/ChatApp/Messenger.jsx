@@ -56,7 +56,7 @@ const ChatConvoDisplay = ({socket = null,info,ClientId}) => {
         }
     },[]);
     
-
+    
     return(
     <aside className="lg:flex md:flex hidden h-screen lg:p-4" style={{width:'-webkit-fill-available'}}>
         <section className="w-full  h-full flex flex-col rounded-xl" style={{background:Theme.DarkPrimary}}>
