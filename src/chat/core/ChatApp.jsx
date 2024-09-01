@@ -1,46 +1,18 @@
 
 import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
 import { useParams } from "react-router-dom";
-// import socket from '../_utils/ws/socket';
+import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
 import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES,INCOMING_MESSAGE} from "../_utils/store/messenger_store";
 import { ClientStore,UPDATE_ALL } from "../_utils/store/ClientStore";
 import { ContactStore,UPDATE_CONTACT } from "../_utils/store/ContactStore";
+import { DataFetcher } from "../_utils/DataFetcher";
 const MessengerApp = lazy(() => import("../components/ChatApp/Messenger"));
 const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
 const ChatContactUI = lazy(() => import('../components/ChatApp/ChatContactUI'));
 
 
-const cacheInfo = {};
-const getInfo = async ({SessionId}) => {
-    if(!cacheInfo[SessionId] && SessionId){
-        cacheInfo[SessionId] = await fetch('http://localhost:5000/getInfo',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({"SessionId":SessionId})
-        });
-        if(cacheInfo[SessionId] instanceof Promise){
-            throw cacheInfo[SessionId];
-        }
-        cacheInfo[SessionId] = cacheInfo[SessionId].json();
-    }
-    return cacheInfo[SessionId];
-}
-const cacheContact = {};
-const getContact = async ({ClientId,ClientContact}) => {
-    if(!cacheContact[ClientId] && ClientId){
-        cacheContact[ClientId] = await fetch('http://localhost:5000/getContact',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({"ClientId":ClientId,"ClientContact":ClientContact})
-        });
-        if(cacheContact[ClientId] instanceof Promise){
-            throw cacheContact[ClientId];
-        }
-        cacheContact[ClientId] = cacheContact[ClientId].json();
-    }
-    return cacheContact[ClientId];
-}
+
 
 const IndexPage = () => {
 
@@ -49,12 +21,16 @@ const IndexPage = () => {
     const [ClientContact,Update_ClientContact] = useState(null);
     const [isLoading,set_loading] = useState(true);
 
-    getInfo({SessionId:TEMPORARY_ID}).then(client => {
+
+    let ws = null;
+
+    DataFetcher.getInfo({SessionId:TEMPORARY_ID}).then(client => {
         Update_ClientInfo(client);
         const {Info} = client;
         return Info[0];
     }).then( client => {
-        getContact({'ClientId':client.ClientId,'ClientContact':client.ClientContacts}).then( contacts => {
+        ws = socket.connect({"TEMPORARY_ID":TEMPORARY_ID,"ClientId":client.ClientId});
+        DataFetcher.getContact({'ClientId':client.ClientId,'ClientContact':client.ClientContacts}).then( contacts => {
             Update_ClientContact(contacts);
             set_loading(false);
         });
