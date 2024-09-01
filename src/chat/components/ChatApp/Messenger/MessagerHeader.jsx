@@ -1,6 +1,6 @@
 import {lazy ,useRef ,useEffect,useState } from "react";
 import { MessengerStore } from "../../../_utils/store/messenger_store";
-import { ContactStore } from "../../../_utils/store/ContactStore";
+import { ContactStore } from "../../../_utils/store/messageStore";
 const ProfileIcon = lazy(() => import("../../Reusable/ProfileIcon"));
 const ChatHeader = ({info,TAG=''}) => {
    

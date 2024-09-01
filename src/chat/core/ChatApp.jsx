@@ -1,12 +1,12 @@
 
-import { useMemo,lazy, useRef, useState ,useEffect, Suspense} from "react";
+import { useMemo,lazy, useRef, useState ,useEffect} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
 import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES,INCOMING_MESSAGE} from "../_utils/store/messenger_store";
 import { ClientStore,UPDATE_ALL } from "../_utils/store/ClientStore";
-import { ContactStore,UPDATE_CONTACT } from "../_utils/store/ContactStore";
 import { DataFetcher } from "../_utils/DataFetcher";
+import { Theme } from "../_utils/Constants";
 const MessengerApp = lazy(() => import("../components/ChatApp/Messenger"));
 const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
 const ChatContactUI = lazy(() => import('../components/ChatApp/ChatContactUI'));
@@ -20,20 +20,30 @@ const IndexPage = () => {
     const [ClientInfo,Update_ClientInfo] = useState(null);
     const [ClientContact,Update_ClientContact] = useState(null);
     const [isLoading,set_loading] = useState(true);
+    const [isContactToMessage, set_isContactToMessage] = useState(true);
+    const isMounted = useRef(false);
 
+    const ws = useRef(null);
 
-    let ws = null;
+    useEffect(() => {
+        if(!isMounted.current){
+            isMounted.current = true;
+            DataFetcher.getInfo({SessionId:TEMPORARY_ID}).then(client => {
+                const {Info} = client;
+                Update_ClientInfo(Info[0]);
+                return Info[0];
+            }).then( client => {
+                ws.current = socket.connect({"TEMPORARY_ID":TEMPORARY_ID,"ClientId":client.ClientId});
+                DataFetcher.getContact({'ClientId':client.ClientId,'ClientContact':client.ClientContacts}).then( res => {
+                    const {Contacts} = res;
+                    ClientStore.dispatch(UPDATE_ALL({'INFO':client,'CONTACTS':Contacts}));
+                    Update_ClientContact(Contacts);
 
-    DataFetcher.getInfo({SessionId:TEMPORARY_ID}).then(client => {
-        Update_ClientInfo(client);
-        const {Info} = client;
-        return Info[0];
-    }).then( client => {
-        ws = socket.connect({"TEMPORARY_ID":TEMPORARY_ID,"ClientId":client.ClientId});
-        DataFetcher.getContact({'ClientId':client.ClientId,'ClientContact':client.ClientContacts}).then( contacts => {
-            Update_ClientContact(contacts);
-            set_loading(false);
-        });
+                    set_loading(false);
+                    // return Contacts;
+                })
+            });
+        }
     });
    
     useEffect(() => {
@@ -55,7 +65,7 @@ const IndexPage = () => {
 
  
     // const isMounted = useRef(false);
-    // const [ChatDisplayed , set_ChatDisplayed] = useState(null);
+    const [ChatDisplayed , set_ChatDisplayed] = useState(null);
 
     // useEffect(() => {
     //     if(!isMounted.current){
@@ -114,14 +124,14 @@ const IndexPage = () => {
 
 
     // useEffect(() => { //THIS LINE ASSIGN WHAT MESSAGE BOX SHOULD BE DISPLAYED, IN THIS CASE FRIEND 01
-    //     if(ClientContacts){
-    //         set_ChatDisplayed(ClientContacts[0]);
+    //     if(ClientContact){
+    //         set_ChatDisplayed(ClientContact[0]);
     //     }
-    // },[ClientContacts]);
+    // },[ClientContact]);
     // useEffect(() => {
     //     if(ChatDisplayed){
     //         // MessengerStore.dispatch(UPDATE_INFO(ChatDisplayed));
-    //         ContactStore.dispatch(UPDATE_CONTACT(ChatDisplayed));   
+    //         // ContactStore.dispatch(UPDATE_CONTACT(ChatDisplayed));   
     //     }
     // },[ChatDisplayed]);
 
@@ -138,15 +148,30 @@ const IndexPage = () => {
     //     </Suspense>
 
     // );
-
+    
    if(isLoading){
     return(<p>NOt DONE</p>)
+   }
+   if(isContactToMessage){
+    return(
+        <>
+             <SideBar ICON={ClientInfo.ClientIcon}/>
+             <ChatContactUI ClientContacts={ClientContact}/>
+             <MessengerApp ContactInfo={ClientContact[0]} ClientInfo={ClientInfo} socket={ws.current}/>
+        </>
+     );
    }else{
     return(
-        <p>Done</p>
-    );
+        <>
+             <SideBar ICON={ClientInfo.ClientIcon}/>
+             <ChatContactUI ClientContacts={ClientContact}/>
+             <aside className="lg:flex md:flex hidden h-screen lg:p-4" style={{width:'-webkit-fill-available'}}>
+                    <section className="w-full  h-full flex flex-col rounded-xl" style={{background:Theme.DarkPrimary}}>
+                    </section>
+            </aside>
+        </>
+     );
    }
-    
 }
 
 export default IndexPage;

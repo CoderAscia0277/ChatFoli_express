@@ -22,11 +22,29 @@ export const DataFetcher = {
                 headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({"ClientId":ClientId,"ClientContact":ClientContact})
             }).catch(err => console.error('Unable to fetch client contacts', err));
-        if(this.cacheContact[ClientId] instanceof Promise){
-            throw this.cacheContact[ClientId];
+            if(this.cacheContact[ClientId] instanceof Promise){
+                throw this.cacheContact[ClientId];
+            }
+            this.cacheContact[ClientId] = this.cacheContact[ClientId].json();
         }
-        this.cacheContact[ClientId] = this.cacheContact[ClientId].json();
+        return this.cacheContact[ClientId];
+    },
+  
+    ContactMessages:{},
+    async get_messages({ContactID,messageCatalog}){
+        if(!this.ContactMessages[ContactID]){
+            this.ContactMessages[ContactID] = await fetch(
+                'http://localhost:5000/request_messages',{
+                        method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify({"ContactId":ContactID,"messageCatalog":messageCatalog})
+            }).catch(err => console.error(err));
+            if(this.ContactMessages[ContactID] instanceof Promise){
+                throw this.ContactMessages[ContactID];
+            }
+            this.ContactMessages[ContactID] = this.ContactMessages[ContactID].json();
+        }
+        return this.ContactMessages[ContactID];
     }
-    return this.cacheContact[ClientId];
-    }
+
 }

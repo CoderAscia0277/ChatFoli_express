@@ -5,11 +5,11 @@ import { MessengerStore,UPDATE_INFO } from "../../../_utils/store/messenger_stor
 
 const ProfileIcon = lazy(() => import('../../Reusable/ProfileIcon'));
 
-const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES) => null}) => {
+const ContactProfile = ({info}) => {
 
     // const {NAME,ICON,STATE,UID} = FRIEND_INFO;
-    const [RCNT_MSG, UPT_RCNT_MSG] = useState('');
-    const {all_messages,contactID,contactIcon,contactName,isOnline} = info;
+    // const [RCNT_MSG, UPT_RCNT_MSG] = useState('');
+    const {contactID,contactIcon,contactName,isOnline} = info;
 
 
     // HANDLES THE CONTACT LOADING DISPLAY , ALSO THE ROOT COMPONENT OF THE CONTACT LIST LOADER
@@ -26,11 +26,12 @@ const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES
     }
 
     // const [MESSAGES,SET_MESSAGES] = useState(MessengerStore.getState().ALL_MESSAGES[UID]);
-    const [CHOSEN_PERSON_INFO,SET_INFO] = useState(MessengerStore.getState().INFO);
+    // const [CHOSEN_PERSON_INFO,SET_INFO] = useState(MessengerStore.getState().INFO);
+    // const [CHOSEN_PERSON_INFO,SET_INFO] = 
     // const isMounted = useRef(false);
 
-    const isContactProfileChosen = (contactID === CHOSEN_PERSON_INFO.UID);
-    
+    // const isContactProfileChosen = (contactID === CHOSEN_PERSON_INFO.contactID);
+    const isContactProfileChosen = false;
 
     // useEffect(() => {
     //     if(!isMounted.current){
@@ -53,26 +54,26 @@ const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES
     //     if(my_comp.current){
     //         console.log(my_comp.current.scrollWidth);
     //     }
-    useEffect(() => {
-        const keys = Object.keys(all_messages);
-        const RECENT_MESSAGES = all_messages[keys[keys.length - 1]];
-        let text = RECENT_MESSAGES[0].LOG;
-        text = text.length > 10 ? `${text.slice(0,10)}...` : text;
-        UPT_RCNT_MSG(text);
-    },[all_messages]);
+    // useEffect(() => {
+    //     const keys = Object.keys(all_messages);
+    //     const RECENT_MESSAGES = all_messages[keys[keys.length - 1]];
+    //     let text = RECENT_MESSAGES[0].LOG;
+    //     text = text.length > 10 ? `${text.slice(0,10)}...` : text;
+    //     UPT_RCNT_MSG(text);
+    // },[all_messages]);
     
 
-    const Profile = ({text}) => {
+    const Profile = () => {
         const img_loader = imgCache;
         img_loader.read(contactIcon);
        
 
         return(
-                <div className={`w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center cursor-default ${isContactProfileChosen ? '' : 'hover:cursor-pointer secondaryColor'}  `} onClick = {() => /*MessengerStore.dispatch(UPDATE_INFO(FRIEND_INFO))*/null} style={{background:`${isContactProfileChosen ? Theme.BluePrimary : Theme.DarkPrimary}`}}>
+                <div className={`w-full rounded-lg min-h-16 flex flex-row gap-4 px-4 py-2 items-center cursor-default ${isContactProfileChosen ? '' : 'hover:cursor-pointer secondaryColor'}  `} onClick = {() => /*MessengerStore.dispatch(UPDATE_INFO(FRIEND_INFO))*/null} style={{background:`${isContactProfileChosen ? Theme.BlueGradient90 : Theme.DarkPrimary}`}}>
                     <ProfileIcon ICON={contactIcon} size={{w:'w-12',h:'h-12'}} isActive={isOnline} isHover={false}/>
                     <ul className="flex-grow h-full flex flex-col items-start gap-1">
                         <span className="flex w-full  min-h-4 text-neutral-200  font-semibold">{contactName}</span>
-                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{text}</span>
+                        <span className={`flex w-full  min-h-6 h-max text-neutral-300 text-break `}>{'...'}</span>
                     </ul>
                     {isContactProfileChosen ? 
                         '' :
@@ -87,7 +88,7 @@ const ContactProfile = ({info,MY_UID = null, isSeen = false , REDIRECT = (VALUES
 
     return(
         <Suspense fallback={<ContactProfileLoader/>}>
-            <Profile text={RCNT_MSG}/>
+            <Profile />
         </Suspense>
 
     );
