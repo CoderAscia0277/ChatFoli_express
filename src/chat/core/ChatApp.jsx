@@ -1,5 +1,5 @@
 
-import { useMemo,lazy, useRef, useState ,useEffect} from "react";
+import { useMemo,lazy, useRef, useState ,useEffect, createContext} from "react";
 import { useParams } from "react-router-dom";
 import socket from '../_utils/ws/socket';
 import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
@@ -13,6 +13,7 @@ const ChatContactUI = lazy(() => import('../components/ChatApp/ChatContactUI'));
 
 
 
+export const InitialData = createContext();
 
 const IndexPage = () => {
 
@@ -154,22 +155,22 @@ const IndexPage = () => {
    }
    if(isContactToMessage){
     return(
-        <>
-             <SideBar ICON={ClientInfo.ClientIcon}/>
-             <ChatContactUI ClientContacts={ClientContact}/>
-             <MessengerApp ContactInfo={ClientContact[0]} ClientInfo={ClientInfo} socket={ws.current}/>
-        </>
+        <InitialData.Provider value={{'chosenContact':ClientContact[0],'clientContacts':ClientContact,'clientInfo':ClientInfo,'ws':ws.current}}>
+             <SideBar/>
+             <ChatContactUI/>
+             <MessengerApp/>
+        </InitialData.Provider>
      );
    }else{
     return(
-        <>
-             <SideBar ICON={ClientInfo.ClientIcon}/>
-             <ChatContactUI ClientContacts={ClientContact}/>
+        <InitialData.Provider value={{'chosenContact':ClientContact[0],'clientContacts':ClientContact,'clientInfo':ClientInfo}}>
+             <SideBar/>
+             <ChatContactUI/>
              <aside className="lg:flex md:flex hidden h-screen lg:p-4" style={{width:'-webkit-fill-available'}}>
                     <section className="w-full  h-full flex flex-col rounded-xl" style={{background:Theme.DarkPrimary}}>
                     </section>
             </aside>
-        </>
+        </InitialData.Provider>
      );
    }
 }

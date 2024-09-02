@@ -7,6 +7,7 @@ import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const ChatApp = lazy(() => import('./chat/core/ChatApp'));
 const LoginPage = lazy( () => import('./chat/core/LoginPage'));
+const SignUpPage = lazy(() => import('./chat/core/SignUpPage'));
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,9 @@ const router = createBrowserRouter([
  {
     path:'/:NAME/:TEMPORARY_ID',
     element:<ChatApp/>
+  },{
+    path:'/signUp',
+    element:<SignUpPage/>
   }]
 );
 root.render(

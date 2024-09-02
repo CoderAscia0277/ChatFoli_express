@@ -1,19 +1,20 @@
-import {lazy ,useRef ,useEffect,useState } from "react";
-import { MessengerStore } from "../../../_utils/store/messenger_store";
-import { ContactStore } from "../../../_utils/store/messageStore";
+import {lazy ,useRef ,useEffect,useState, useContext } from "react";
+// import { MessengerStore } from "../../../_utils/store/messenger_store";
+// import { ContactStore } from "../../../_utils/store/messageStore";
+import { InitialData } from "../../../core/ChatApp";
 const ProfileIcon = lazy(() => import("../../Reusable/ProfileIcon"));
-const ChatHeader = ({info,TAG=''}) => {
+const ChatHeader = () => {
    
   
     // const [{STATE,ICON,NAME},set_contact_profile_info] = useState(MessengerStore.getState().INFO);
     // const isMounted = useRef(false);
     // const [{INFO},updateContactInfo] = useState({INFO:null});
-    
-    useEffect(() => {
-        if(info){
-            console.table(info)
-        }
-    },[info]);
+    const {chosenContact} = useContext(InitialData);
+    // useEffect(() => {
+    //     if(contactInfo){
+    //         console.table(contactInfo)
+    //     }
+    // },[contactInfo]);
     // useEffect(() => {
     //     if(!isMounted.current){
     //         isMounted.current = true;
@@ -30,12 +31,12 @@ const ChatHeader = ({info,TAG=''}) => {
         <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-arrow-left-short lg:hidden w-10 h-10 mr-2 hover:cursor-pointer hover:scale-110 text-neutral-300" viewBox="0 0 16 16">
             <path fillRule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
         </svg> 
-        <ProfileIcon size={{w:'lg:w-14 w-12',h:'lg:h-14 h-12'}}  isHover={false} ICON={info ? info.contactIcon : null} isActive={info ? info.isOnline : false}/>
+        <ProfileIcon size={{w:'lg:w-14 w-12',h:'lg:h-14 h-12'}}  isHover={false} ICON={chosenContact.contactIcon} isActive={chosenContact.isOnline}/>
         <div className="flex-grow h-full flex flex-col items-start justify-center  px-4 ">
             <span className="font-sans text-xl font-medium flex flex-row items-center text-neutral-200 " >
-               {info ? info.contactName : null}
+               {chosenContact.contactName}
             </span>
-            <span className="text-neutral-400 text-sm">{TAG}</span>
+            <span className="text-neutral-400 text-sm">{'some thing'}</span>
         </div>
     </article>
     );
