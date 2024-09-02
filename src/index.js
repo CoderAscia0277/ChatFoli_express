@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     element:<ChatApp/>
   },{
     path:'/signUp',
-    element:<SignUpPage/>
+    element:<SignUpPage/> 
   }]
 );
 root.render(
