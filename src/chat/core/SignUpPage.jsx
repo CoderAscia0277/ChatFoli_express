@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState} from "react";
+import { useCallback, useEffect, useRef, useState} from "react";
 import CryptoJS from "crypto-js";
 import {Theme} from '../_utils/Constants';
 
@@ -56,18 +56,18 @@ const InvalidIcon = () => (
         <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
     </svg>
 );
-const ShowIcon = ({show}) => {
+const ShowIcon = ({show,changeType}) => {
 
     if(show){
         return(
-            <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="bi bi-eye-fill w-6 h-6 text-neutral-500 hover:text-neutral-400 cursor-pointer" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => changeType()}  fill="currentColor" className="bi bi-eye-fill w-6 h-6 text-neutral-500 hover:text-neutral-400 cursor-pointer" viewBox="0 0 16 16">
                 <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
                 <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
             </svg>
         );
     }else{
         return(
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-eye-slash-fill w-6 h-6 text-neutral-500 cursor-pointer hover:text-neutral-400" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => changeType()} fill="currentColor" className="bi bi-eye-slash-fill w-6 h-6 text-neutral-500 cursor-pointer hover:text-neutral-400" viewBox="0 0 16 16">
                 <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7 7 0 0 0 2.79-.588M5.21 3.088A7 7 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474z"/>
                 <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12z"/>
             </svg>
@@ -76,6 +76,12 @@ const ShowIcon = ({show}) => {
 }
 const InputField = ({refVal,label,intuitive_icon,status,error_message,inputType = 'text',showEye = false}) => {
     const [state_icon,set_state] = useState(null);
+    const [input_type,set_inputType] = useState(inputType);
+
+    const changeInputType = () => {
+        set_inputType(input_type === 'text' ? 'password' : 'text');
+    };
+
     useEffect(() => {
         switch (status){
             case 'busy':
@@ -86,7 +92,6 @@ const InputField = ({refVal,label,intuitive_icon,status,error_message,inputType 
                 setTimeout(() => {
                     set_state(<InvalidIcon/>);
                 },[1000]);
-                
                 break;
             case 'valid' :
                 set_state(<SpinnerIcon anim={'scale-out-center'}/>);
@@ -95,20 +100,20 @@ const InputField = ({refVal,label,intuitive_icon,status,error_message,inputType 
                 },[1000]);
                 break;
             default:
-                if(inputType === 'password' && showEye){
-                    set_state(<ShowIcon show={false}/>);
+                if(showEye){
+                    set_state(<ShowIcon changeType ={() => changeInputType()} show={input_type === 'text'}/>);
                 }else{
                     set_state(null);
                 }
                 break;
         };
-    },[status]);
+    },[status,input_type]);
     
     return(<div className="w-full flex flex-row gap-4 items-center">
                 <div className={`flex flex-row  flex-grow  py-1 px-4 rounded-2xl items-center ${error_message ? 'border border-red-500' : ''}`} style={{background:Theme.DarkPrimaryTrans}}>
                     <span className="flex flex-col w-full">
                         <p className="text-xs text-neutral-400">{label}:<span className="text-red-500">{error_message}</span></p>
-                        <input ref={refVal} type={inputType} className="flex-grow bg-transparent outline-0 "/>
+                        <input ref={refVal} type={input_type} className="flex-grow bg-transparent outline-0 "/>
                     </span>
                     {state_icon}
                 </div>
@@ -152,7 +157,7 @@ const SignUpPage = () => {
  
     return(
         <section className=" lg:w-1/3 lg:h-max  w-screen h-screen    rounded-2xl flex flex-col justify-start gap-2 py-8 px-4" style={{background:'rgb(255,255,255,0.01)'}}>
-            <span className="text-2xl text-neutral-200 w-full px-4 font-semibold">Create new account</span>
+            <span className="text-2xl text-neutral-200 w-full px-4 font-semibold">Create an account</span>
             <p className="text-xs text-neutral-500 px-4 py-4 ">Already a member? <a className="cursor-pointer" href='/' style={{color:Theme.Violet200}}>Log In</a></p>
             <form autoComplete="off" onKeyDown={e => Submit(e)} className=" flex flex-col justify-evenly items-start h-1/2 text-neutral-300 px-4 gap-6">
                 
@@ -179,10 +184,6 @@ const SignUpPage = () => {
                 </span>
                 <input type="button" onClick={() => Submit()} value="Create account" className="w-full p-2  rounded-2xl font-semibold cursor-pointer hover:scale-105" style={{background:Theme.BlueGradient90}}/> 
             </form>
-            {/* <article className="h-1/3 w-full text-neutral-500 justify-between items-center  px-4 flex flex-row">
-                <a href="/register" className="text-sm cursor-pointer  hover:text-neutral-300">Sign Up</a>
-                <a href="/secovery" className="text-sm cursor-pointer hover:text-neutral-300">Forgot Password</a>
-            </article> */}
         </section>
     )
 }
