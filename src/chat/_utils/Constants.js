@@ -3,6 +3,8 @@ export const Theme = {
     DarkSecondary: 'rgb(38,38,38)',
     BluePrimary:'#635ee2',
     BlueSecondary:'#1fa0ff',
+    Violet100:'#8b5cf6',
+    Violet200:'#635ee2',
     BlueGradient:'linear-gradient(0deg,#8b5cf6,#635ee2,#1fa0ff)',
     BlueGradient90:'linear-gradient(90deg,#8b5cf6,#635ee2)',
     DarkPrimaryTrans:'rgba(32,32,32,0.75)'
