@@ -1,6 +1,7 @@
 
 import { useRef, useState,lazy} from "react";
 import {Theme} from '../_utils/Constants';
+import { SignUp_Verification } from "../_utils/SignUp_Verification/SignUp_Verification";
 
 const InputField = lazy(() => import('../components/SignUp/InputFieldTemplate'));
 const CheckBoxTermsCondition = lazy(() => import('../components/SignUp/CheckBoxTermsCondition'));
@@ -13,7 +14,6 @@ const SignUpPage = () => {
     const confirm_password = useRef(null);
     const email = useRef(null);
     const [checkbox_terms_conditions,set_terms] = useState(false);
-    const submit_form = useRef(false);
 
     const reset_status = {
         UsernameStatus:null,
@@ -31,154 +31,20 @@ const SignUpPage = () => {
     const [{UsernameStatus,EmailStatus,PasswordStatus,ConfirmPasswordStatus},set_status] = useState(reset_status);
     const [{UsernameError,EmailError,PasswordError,ConfirmPasswordError},set_error] = useState(reset_error);
 
-    const Submit = async() => {
-
-        if(submit_form.current){ //This block prevents the submit function to be called multiple times
-            return;
-        }
-        submit_form.current = true;
-
-        const form = {
-            'username':username.current.value,
-            'email':email.current.value,
-            'password':password.current.value,
-            'confirm_password':confirm_password.current.value
-        };
-
-        set_error(reset_error);
-
-        set_status({
-            UsernameStatus:'busy',
-            EmailStatus:'busy',
-            PasswordStatus:'busy',
-            ConfirmPasswordStatus:'busy'
-        });
-
-        try{
-
-            //STARTS VERIFYING USERNAME
-             //Create an async request to determine if the username is already given
-
-            await new Promise(async (resolve,reject) => {
-                if(form.username.length >= 4){
-
-                   const [verification_result] = await fetch('http://localhost:5000/verify-username',{
-                        method:'POST',
-                        headers:{'Content-Type' : 'application/json'},
-                        body:JSON.stringify({'username':form.username})
-                    }).then(res => res.json()).then(data => data).catch(err => {
-                        reject('Opps!, error occured while verifying username: ',err);
-                    });
-
-                    switch(verification_result.status){
-                        case 'ALREADY_EXIST':
-                            reject({message:verification_result.status,status:'USERNAME_ERROR'});
-                            break;
-                        case 'VALID':
-                            set_status(prev => ({...prev,UsernameStatus:'valid'}));
-                            resolve(true);
-                            break;
-                        default:
-                            break;
-                    };
-
-                }else{
-                    if(form.username.length < 4){   
-                         reject({message:'Username is too short',status:'USERNAME_ERROR'});
-                    }else{
-                        reject({message:'This field is required',status:'USERNAME_ERROR'});
-                    }
-                }
-            });
-
-            //START'S VERIFYING EMAIL
-
-            await new Promise(async(resolve,reject) => {
-                
-                if(form.email && form.email.includes('@gmail.com')){
-
-                        const [verification_result] = await fetch('http://localhost:5000/verify-email',{
-                            method:'POST',
-                            headers:{'Content-Type' : 'application/json'},
-                            body:JSON.stringify({'email':form.email})
-                        }).then(res => res.json()).then(data => data).catch(err => reject('Opps!, errro occur while verifying email: ',err));
-
-                        switch(verification_result.status){
-                            case 'ALREADY_EXIST':
-                                reject({message:verification_result.status,status:'EMAIL_ERROR'});
-                                break;
-                            case 'VALID':
-                                set_status(prev => ({...prev,EmailStatus:'valid'}));
-                                resolve(true);
-                                break;
-                            default:
-                                break;
-                        };
-
-                        if(form.password.length >= 8){
-                            if(form.password === form.confirm_password){
-                                set_status(prev => ({...prev,PasswordStatus:'valid',ConfirmPasswordStatus:'valid'}));
-                                resolve(true);
-                            }else{
-                                reject({message:'Does not match',status:'INVALID_CONFIRM_PASSWORD'});
-                            }
-                        }else{
-                            if(!form.password){
-                                reject({message:'This field is required',status:'PASSWORD_TOO_SHORT'});
-                            }
-                            reject({message:'Must be 8 characters long.',status:'PASSWORD_TOO_SHORT'});
-                        }
-                }else{
-                    if(form.email){
-                        reject({message:'Invalid Email Format',status:'EMAIL_ERROR'});
-                    }else{
-                        reject({message:'This field is required',status:'EMAIL_ERROR'});
-                    }
-                     
-                }
-            });
-           
-            const sessionId = await fetch('http://localhost:5000/create-account',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({'username':form.username,'email':form.email,'password':form.password})
-            }).then(res => res.json()).then(data => data).catch(err => console.error(err));
-
-            // window.location.href = '/';
-            console.log(sessionId);
-
-        }catch(err){
-            console.error(err.status);
-            
-            switch(err.status){
-                case 'USERNAME_ERROR':
-                    set_status({...reset_status,UsernameStatus:'invalid'});
-                    set_error(prev => ({...prev,UsernameError:err.message}));
-                    break;
-                case 'EMAIL_ERROR':
-                    set_status(prev => ({...prev,EmailStatus:'invalid',PasswordStatus:null,ConfirmPasswordStatus:null}));
-                    set_error(prev => ({...prev,EmailError:err.message}));
-                    break;   
-                case 'INVALID_CONFIRM_PASSWORD':
-                    set_status(prev => ({...prev,ConfirmPasswordStatus:'invalid',PasswordStatus:null}));
-                    set_error(prev => ({...prev,ConfirmPasswordError:err.message}));
-                    break;
-                case 'PASSWORD_TOO_SHORT':
-                    set_status(prev => ({...prev,PasswordStatus:'invalid',ConfirmPasswordStatus:null}));
-                    set_error(prev => ({...prev,PasswordError:err.message}));
-                    break;
-                default:
-                    console.error(err);
-                    break;
-            }
-        } 
-    }
- 
     return(
         <section className=" lg:w-1/3 lg:h-max  w-screen h-screen    rounded-2xl flex flex-col justify-start gap-2 py-8 px-4" style={{background:'rgb(255,255,255,0.01)'}}>
             <span className="text-2xl text-neutral-200 w-full px-4 font-semibold">Create an account</span>
             <p className="text-xs text-neutral-500 px-4 py-4 ">Already a member? <a className="cursor-pointer" href='/' style={{color:Theme.Violet200}}>Log In</a></p>
-            <form autoComplete="off" onKeyDown={e => e.key === 'Enter' && checkbox_terms_conditions ? Submit() : null} className=" flex flex-col justify-evenly items-start h-1/2 text-neutral-300 px-4 gap-6">
+            <form autoComplete="off" onKeyDown={e => e.key === 'Enter' && checkbox_terms_conditions ? SignUp_Verification({
+                    'username':username.current.value,
+                    'email':email.current.value,
+                    'password':password.current.value,
+                    'confirm_password':confirm_password.current.value,
+                    'reset_error':reset_error,
+                    'reset_status':reset_status,
+                    'set_error' : (data) => set_error(data),
+                    'set_status' : (data) => set_status(data)
+                })  : null} className=" flex flex-col justify-evenly items-start h-1/2 text-neutral-300 px-4 gap-6">
                 
                 <InputField refVal={username} label={"Username"} error_message={UsernameError} status={UsernameStatus} intuitive_icon={  
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="bi bi-person-fill text-neutral-500 w-6 h-6" viewBox="0 0 16 16">
@@ -198,7 +64,16 @@ const SignUpPage = () => {
                     </svg>
                 }/>
                 <CheckBoxTermsCondition action={() => set_terms(!checkbox_terms_conditions) }/>
-                <CreateAccountButton checkbox_terms_conditions={checkbox_terms_conditions} action={() => Submit()}/>
+                <CreateAccountButton checkbox_terms_conditions={checkbox_terms_conditions} action={() =>  SignUp_Verification({
+                    'username':username.current.value,
+                    'email':email.current.value,
+                    'password':password.current.value,
+                    'confirm_password':confirm_password.current.value,
+                    'reset_error':reset_error,
+                    'reset_status':reset_status,
+                    'set_error' : (data) => set_error(data),
+                    'set_status' : (data) => set_status(data)
+                })}/>
             </form>
         </section>
     )
