@@ -35,7 +35,7 @@ const InputField = ({refVal,label,intuitive_icon,status,error_message,inputType 
                 <div className={`flex flex-row  flex-grow  py-1 px-4 rounded-2xl items-center ${error_message ? 'outline outline-red-500' : ''}`} style={{background:Theme.DarkPrimaryTrans,outlineWidth:'1px'}}>
                     <span className="flex flex-col flex-grow">
                         <p className="text-xs text-neutral-400">{label}:<span className="text-red-500 px-1">{error_message}</span>{showEye && !error_message ? <span className="text-neutral-500">Atleast 8 characters</span>: null}</p>
-                        <input ref={refVal} type={input_type} className="flex-grow bg-transparent outline-0 "/>
+                        <input ref={refVal}  type={input_type} className="flex-grow bg-transparent outline-0 "/>
                     </span>
                     {state_icon}
                 </div>

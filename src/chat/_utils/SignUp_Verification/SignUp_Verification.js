@@ -2,11 +2,11 @@
 let submitted = false;
 export const SignUp_Verification = async({username,email,password,confirm_password,reset_error,reset_status,set_error,set_status}) => {
     
-    if(submitted){
-        console.error('Submitted already');
-        return;
-    }
-    submitted = true;
+    // if(submitted){
+    //     console.error('Submitted already');
+    //     return;
+    // }
+    // submitted = true;
 
     const form = {
         'username':username,
@@ -23,7 +23,7 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
         PasswordStatus:'busy',
         ConfirmPasswordStatus:'busy'
     });
-    try{
+    const IsInfoValid = await new Promise( async(resolve,reject) => {
         
         //STARTS VERIFYING USERNAME
          //Create an async request to determine if the username is already given
@@ -34,17 +34,12 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
                  headers:{'Content-Type' : 'application/json'},
                  body:JSON.stringify({'username':form.username})
              }).then(res => res.json()).then(data => data).catch(err => {
-                 throw new Error ('Opps!, error occured while verifying username: ',err);
+                 reject('Opps!, error occured while verifying username: ',err);
             });
-            
-            if(true){
-                console.table(verification_result);
-                return;
-            }
-            
+        
             switch(verification_result.status){
                 case 'ALREADY_EXIST':
-                    throw new Error({message:verification_result.status,status:'USERNAME_ERROR'});
+                    reject({message:verification_result.status,status:'USERNAME_ERROR'});
 
                 case 'AVAILABLE':
                     set_status(prev => ({...prev,UsernameStatus:'valid'}));
@@ -56,12 +51,12 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
 
         }else{
             if(form.username.length < 4){   
-                 throw new Error({message:'Username is too short',status:'USERNAME_ERROR'});
+                reject({message:'Username is too short',status:'USERNAME_ERROR'});
             }else{
-                throw new Error({message:'This field is required',status:'USERNAME_ERROR'});
+                 reject({message:'This field is required',status:'USERNAME_ERROR'});
             }
         }
-     
+      
         if(form.email && form.email.includes('@gmail.com')){
 
             const verification_result = await fetch('http://localhost:5000/verify-email',{
@@ -69,12 +64,12 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
                 headers:{'Content-Type' : 'application/json'},
                 body:JSON.stringify({'email':form.email})
             }).then(res => res.json()).then(data => data).catch(err => {
-                throw new Error('Opps!, errro occur while verifying email: ',err)
+                reject('Opps!, errro occur while verifying email: ',err)
             });
-           
+            
             switch(verification_result.status){
                 case 'ALREADY_EXIST':
-                    throw new Error({message:verification_result.status,status:'EMAIL_ERROR'});
+                    reject({message:verification_result.status,status:'EMAIL_ERROR'});
                 case 'AVAILABLE':
                     set_status(prev => ({...prev,EmailStatus:'valid'}));
                     break;
@@ -82,23 +77,24 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
                     break;
             };
 
-            if(form.password.length >= 8){
+            if(form.password.length >= 8 && verification_result.status === 'AVAILABLE'){
                 if(form.password === form.confirm_password){
                     set_status(prev => ({...prev,PasswordStatus:'valid',ConfirmPasswordStatus:'valid'}));
+                    resolve(true);
                 }else{
-                    throw new Error({message:'Does not match',status:'INVALID_CONFIRM_PASSWORD'});
+                    reject({message:'Does not match',status:'INVALID_CONFIRM_PASSWORD'});
                 }
             }else{
                 if(!form.password){
-                    throw new Error({message:'This field is required',status:'PASSWORD_TOO_SHORT'});
+                    reject({message:'This field is required',status:'PASSWORD_TOO_SHORT'});
                 }
-                throw new Error({message:'Must be 8 characters long.',status:'PASSWORD_TOO_SHORT'});
+                reject({message:'Must be 8 characters long.',status:'PASSWORD_TOO_SHORT'});
             }
         }else{
             if(form.email){
-                throw new Error({message:'Invalid Email Format',status:'EMAIL_ERROR'});
+                reject({message:'Invalid Email Format',status:'EMAIL_ERROR'});
             }else{
-                throw new Error({message:'This field is required',status:'EMAIL_ERROR'});
+                reject({message:'This field is required',status:'EMAIL_ERROR'});
             } 
         }
        
@@ -183,16 +179,11 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
         //     }
         // });
        
-        const sessionId = await fetch('http://localhost:5000/create-account',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({'username':form.username,'email':form.email,'password':form.password})
-        }).then(res => res.json()).then(data => data).catch(err => console.error(err));
+        // if(true){
+        //     return;
+        // }
 
-        // window.location.href = '/';
-        console.log(sessionId);
-
-    }catch(err){
+    }).catch(err => {
         console.error(err.status);
         
         switch(err.status){
@@ -216,5 +207,17 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
                 console.error(err);
                 break;
         }
-    } 
+    }); 
+
+    if(IsInfoValid){
+        const sessionId = await fetch('http://localhost:5000/create-account',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({'username':form.username,'email':form.email,'password':form.password})
+        }).then(res => res.json()).then(data => data).catch(err => console.error(err));
+    
+        // window.location.href = '/';
+        console.log(sessionId);
+    }
+
 };
