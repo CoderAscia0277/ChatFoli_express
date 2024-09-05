@@ -24,24 +24,29 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
         ConfirmPasswordStatus:'busy'
     });
     try{
-
+        
         //STARTS VERIFYING USERNAME
          //Create an async request to determine if the username is already given
          if(form.username.length >= 4){
 
-            const [verification_result] = await fetch('http://localhost:5000/verify-username',{
+            const verification_result = await fetch('http://localhost:5000/verify-username',{
                  method:'POST',
                  headers:{'Content-Type' : 'application/json'},
                  body:JSON.stringify({'username':form.username})
              }).then(res => res.json()).then(data => data).catch(err => {
                  throw new Error ('Opps!, error occured while verifying username: ',err);
             });
-
+            
+            if(true){
+                console.table(verification_result);
+                return;
+            }
+            
             switch(verification_result.status){
                 case 'ALREADY_EXIST':
                     throw new Error({message:verification_result.status,status:'USERNAME_ERROR'});
 
-                case 'VALID':
+                case 'AVAILABLE':
                     set_status(prev => ({...prev,UsernameStatus:'valid'}));
                     break;
 
@@ -56,21 +61,21 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
                 throw new Error({message:'This field is required',status:'USERNAME_ERROR'});
             }
         }
-
+     
         if(form.email && form.email.includes('@gmail.com')){
 
-            const [verification_result] = await fetch('http://localhost:5000/verify-email',{
+            const verification_result = await fetch('http://localhost:5000/verify-email',{
                 method:'POST',
                 headers:{'Content-Type' : 'application/json'},
                 body:JSON.stringify({'email':form.email})
             }).then(res => res.json()).then(data => data).catch(err => {
                 throw new Error('Opps!, errro occur while verifying email: ',err)
             });
-
+           
             switch(verification_result.status){
                 case 'ALREADY_EXIST':
                     throw new Error({message:verification_result.status,status:'EMAIL_ERROR'});
-                case 'VALID':
+                case 'AVAILABLE':
                     set_status(prev => ({...prev,EmailStatus:'valid'}));
                     break;
                 default:
@@ -97,7 +102,7 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
             } 
         }
        
-
+        
         // await new Promise(async (resolve,reject) => {
         //     if(form.username.length >= 4){
 
