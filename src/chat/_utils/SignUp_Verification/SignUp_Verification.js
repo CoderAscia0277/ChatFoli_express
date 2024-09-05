@@ -7,6 +7,7 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
             set_error(prev => ({...prev,UsernameError:error_message}));
         }
     };
+    
     const callEmailAction = ({status,error_message}) => {
         set_status(prev => ({...prev,EmailStatus:status}));
         if(error_message){
