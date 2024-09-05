@@ -1,223 +1,108 @@
-// import { useRef } from "react";
-let submitted = false;
+
 export const SignUp_Verification = async({username,email,password,confirm_password,reset_error,reset_status,set_error,set_status}) => {
     
-    // if(submitted){
-    //     console.error('Submitted already');
-    //     return;
-    // }
-    // submitted = true;
-
-    const form = {
-        'username':username,
-        'email':email,
-        'password':password,
-        'confirm_password':confirm_password
+    const callUserAction = ({status,error_message}) => {
+        set_status(prev => ({...prev,UsernameStatus:status}));
+        if(error_message){
+            set_error(prev => ({...prev,UsernameError:error_message}));
+        }
+    };
+    const callEmailAction = ({status,error_message}) => {
+        set_status(prev => ({...prev,EmailStatus:status}));
+        if(error_message){
+            set_error(prev => ({...prev,EmailError:error_message}));
+        }
     };
 
+
+    //CHECK USER NAME IF VALID FORMAT 
+    if(!username.length){ // is username filled ?
+        callUserAction({status:'invalid',error_message:'This field is required'});
+    }else if(username.length <= 4){ // is it shorter than 4 characters ?
+        callUserAction({status:'invalid',error_message:'Username is too short, atleast 5 characters'});
+    }
+
+    //CHECK EMAIL IF VALID FORMAT
+    if(!email.length){ // is email filled
+        callEmailAction({status:'invalid',error_message:'This field is required'});
+    }else if(!email.includes('@gmail.com')){ // is it a valid email format ?
+        callEmailAction({status:'invalid',error_message:'Username is too short, atleast 5 characters'});
+    }
+
+    //CHECK PASSWORD IF VALID FORMAT
+    if(!password.length || password.length < 8){ // is password shorter that 8 characters ?
+        set_status(prev => ({...prev,PasswordStatus:'invalid',ConfirmPasswordStatus:!confirm_password.length ? 'invalid' : null}));
+        set_error(prev => ({
+            ...prev,
+            PasswordError: !password.length ? 'This field is required' : 'Must be atleast 8 characters long',
+            ConfirmPasswordError: !confirm_password.length ? 'This field is required' : '',
+        }));
+        return;
+    }
+
+    //CHECK IF IT MATCHES
+    if(password !== confirm_password){ //is password similar to confirm password ?
+        set_status(prev => ({...prev,PasswordStatus:null,ConfirmPasswordStatus:'invalid'}));
+        set_error(prev => ({...prev,ConfirmPasswordError:!confirm_password.length ? 'This field is required' : "Doesn't Match"}));
+        return;
+    }
+
+    //RESET ERROR MESSAGES
     set_error(reset_error);
 
+    // MARK ALL AS BUSY
     set_status({
         UsernameStatus:'busy',
         EmailStatus:'busy',
         PasswordStatus:'busy',
         ConfirmPasswordStatus:'busy'
     });
-    const IsInfoValid = await new Promise( async(resolve,reject) => {
+
         
-        //STARTS VERIFYING USERNAME
-         //Create an async request to determine if the username is already given
-         if(form.username.length >= 4){
+    const verification_results = await fetch('http://localhost:5000/verification',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({'username':username,'email':email}),
+    }).then(res => res.json()).then(data => data).catch(err => console.error(err));
 
-            const verification_result = await fetch('http://localhost:5000/verify-username',{
-                 method:'POST',
-                 headers:{'Content-Type' : 'application/json'},
-                 body:JSON.stringify({'username':form.username})
-             }).then(res => res.json()).then(data => data).catch(err => {
-                 reject('Opps!, error occured while verifying username: ',err);
-            });
-        
-            switch(verification_result.status){
-                case 'ALREADY_EXIST':
-                    reject({message:verification_result.status,status:'USERNAME_ERROR'});
+    console.table(verification_results);
 
-                case 'AVAILABLE':
-                    set_status(prev => ({...prev,UsernameStatus:'valid'}));
-                    break;
+    //Mark password as VALID
+    set_status(prev => ({...prev,PasswordStatus:'valid',ConfirmPasswordStatus:'valid'}));
 
-                default:
-                    break;
-            };
-
-        }else{
-            if(form.username.length < 4){   
-                reject({message:'Username is too short',status:'USERNAME_ERROR'});
-            }else{
-                 reject({message:'This field is required',status:'USERNAME_ERROR'});
-            }
-        }
-      
-        if(form.email && form.email.includes('@gmail.com')){
-
-            const verification_result = await fetch('http://localhost:5000/verify-email',{
-                method:'POST',
-                headers:{'Content-Type' : 'application/json'},
-                body:JSON.stringify({'email':form.email})
-            }).then(res => res.json()).then(data => data).catch(err => {
-                reject('Opps!, errro occur while verifying email: ',err)
-            });
-            
-            switch(verification_result.status){
-                case 'ALREADY_EXIST':
-                    reject({message:verification_result.status,status:'EMAIL_ERROR'});
-                case 'AVAILABLE':
-                    set_status(prev => ({...prev,EmailStatus:'valid'}));
-                    break;
-                default:
-                    break;
-            };
-
-            if(form.password.length >= 8 && verification_result.status === 'AVAILABLE'){
-                if(form.password === form.confirm_password){
-                    set_status(prev => ({...prev,PasswordStatus:'valid',ConfirmPasswordStatus:'valid'}));
-                    resolve(true);
-                }else{
-                    reject({message:'Does not match',status:'INVALID_CONFIRM_PASSWORD'});
-                }
-            }else{
-                if(!form.password){
-                    reject({message:'This field is required',status:'PASSWORD_TOO_SHORT'});
-                }
-                reject({message:'Must be 8 characters long.',status:'PASSWORD_TOO_SHORT'});
-            }
-        }else{
-            if(form.email){
-                reject({message:'Invalid Email Format',status:'EMAIL_ERROR'});
-            }else{
-                reject({message:'This field is required',status:'EMAIL_ERROR'});
-            } 
-        }
-       
-        
-        // await new Promise(async (resolve,reject) => {
-        //     if(form.username.length >= 4){
-
-        //        const [verification_result] = await fetch('http://localhost:5000/verify-username',{
-        //             method:'POST',
-        //             headers:{'Content-Type' : 'application/json'},
-        //             body:JSON.stringify({'username':form.username})
-        //         }).then(res => res.json()).then(data => data).catch(err => {
-        //             reject('Opps!, error occured while verifying username: ',err);
-        //         });
-
-        //         switch(verification_result.status){
-        //             case 'ALREADY_EXIST':
-        //                 reject({message:verification_result.status,status:'USERNAME_ERROR'});
-        //                 break;
-        //             case 'VALID':
-        //                 set_status(prev => ({...prev,UsernameStatus:'valid'}));
-        //                 resolve(true);
-        //                 break;
-        //             default:
-        //                 break;
-        //         };
-
-        //     }else{
-        //         if(form.username.length < 4){   
-        //              reject({message:'Username is too short',status:'USERNAME_ERROR'});
-        //         }else{
-        //             reject({message:'This field is required',status:'USERNAME_ERROR'});
-        //         }
-        //     }
-        // });
-
-        //START'S VERIFYING EMAIL
-
-
-        // await new Promise(async(resolve,reject) => {
-            
-        //     if(form.email && form.email.includes('@gmail.com')){
-
-        //             const [verification_result] = await fetch('http://localhost:5000/verify-email',{
-        //                 method:'POST',
-        //                 headers:{'Content-Type' : 'application/json'},
-        //                 body:JSON.stringify({'email':form.email})
-        //             }).then(res => res.json()).then(data => data).catch(err => reject('Opps!, errro occur while verifying email: ',err));
-
-        //             switch(verification_result.status){
-        //                 case 'ALREADY_EXIST':
-        //                     reject({message:verification_result.status,status:'EMAIL_ERROR'});
-        //                     break;
-        //                 case 'VALID':
-        //                     set_status(prev => ({...prev,EmailStatus:'valid'}));
-        //                     resolve(true);
-        //                     break;
-        //                 default:
-        //                     break;
-        //             };
-
-        //             if(form.password.length >= 8){
-        //                 if(form.password === form.confirm_password){
-        //                     set_status(prev => ({...prev,PasswordStatus:'valid',ConfirmPasswordStatus:'valid'}));
-        //                     resolve(true);
-        //                 }else{
-        //                     reject({message:'Does not match',status:'INVALID_CONFIRM_PASSWORD'});
-        //                 }
-        //             }else{
-        //                 if(!form.password){
-        //                     reject({message:'This field is required',status:'PASSWORD_TOO_SHORT'});
-        //                 }
-        //                 reject({message:'Must be 8 characters long.',status:'PASSWORD_TOO_SHORT'});
-        //             }
-        //     }else{
-        //         if(form.email){
-        //             reject({message:'Invalid Email Format',status:'EMAIL_ERROR'});
-        //         }else{
-        //             reject({message:'This field is required',status:'EMAIL_ERROR'});
-        //         }
-                 
-        //     }
-        // });
-       
-        // if(true){
-        //     return;
-        // }
-
-    }).catch(err => {
-        console.error(err.status);
-        
-        switch(err.status){
-            case 'USERNAME_ERROR':
-                set_status({...reset_status,UsernameStatus:'invalid'});
-                set_error(prev => ({...prev,UsernameError:err.message}));
-                break;
-            case 'EMAIL_ERROR':
-                set_status(prev => ({...prev,EmailStatus:'invalid',PasswordStatus:null,ConfirmPasswordStatus:null}));
-                set_error(prev => ({...prev,EmailError:err.message}));
-                break;   
-            case 'INVALID_CONFIRM_PASSWORD':
-                set_status(prev => ({...prev,ConfirmPasswordStatus:'invalid',PasswordStatus:null}));
-                set_error(prev => ({...prev,ConfirmPasswordError:err.message}));
-                break;
-            case 'PASSWORD_TOO_SHORT':
-                set_status(prev => ({...prev,PasswordStatus:'invalid',ConfirmPasswordStatus:null}));
-                set_error(prev => ({...prev,PasswordError:err.message}));
-                break;
-            default:
-                console.error(err);
-                break;
-        }
-    }); 
-
-    if(IsInfoValid){
-        const sessionId = await fetch('http://localhost:5000/create-account',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({'username':form.username,'email':form.email,'password':form.password})
-        }).then(res => res.json()).then(data => data).catch(err => console.error(err));
     
-        // window.location.href = '/';
-        console.log(sessionId);
-    }
+    // Iterate over each key in the verification_results object
+    Object.keys(verification_results).forEach((result) => {
+
+        // Assign the current key to the instance variable
+        const instance = result;
+
+        // Switch based on the value of the current key in verification_results
+        switch(verification_results[result]) {
+            case 'ALREADY_EXIST':
+                // If the instance is 'userVerificationStatus', call callUserAction with an invalid status and error message
+                if(instance === 'userVerificationStatus') {
+                    callUserAction({status: 'invalid', error_message: 'Already exist'});
+                } else {
+                    // Otherwise, call callEmailAction with an invalid status and error message
+                    callEmailAction({status: 'invalid', error_message: 'Already linked to an existing account'});
+                }
+                break;
+
+            case 'AVAILABLE':
+                // If the instance is 'userVerificationStatus', call callUserAction with a valid status and no error message
+                if(instance === 'userVerificationStatus') {
+                    callUserAction({status: 'valid', error_message: null});
+                } else {
+                    // Otherwise, call callEmailAction with a valid status and no error message
+                    callEmailAction({status: 'valid', error_message: null});
+                }
+                break;
+
+            default:
+                // No action needed for other cases
+                break;
+        }
+    });
 
 };
