@@ -52,6 +52,14 @@ input:-webkit-autofill {
   -webkit-text-fill-color: rgb(212, 212, 212); /* Change text color if needed */
 }
 
+.label {
+  position: relative;
+  top: -10px; /* Adjust this value to align the label with the border */
+  left: 10px; /* Adjust this value to align the label with the border */
+  /* Match the background color of your form */
+  padding: 0 5px; /* Add some padding to make it look nice */
+}
+
 /* ANIMATIONS */
 
 .scale-in-center {
