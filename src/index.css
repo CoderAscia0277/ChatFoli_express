@@ -58,6 +58,7 @@ input:-webkit-autofill {
   left: 10px; /* Adjust this value to align the label with the border */
   /* Match the background color of your form */
   padding: 0 5px; /* Add some padding to make it look nice */
+
 }
 
 /* ANIMATIONS */

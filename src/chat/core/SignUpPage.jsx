@@ -5,7 +5,7 @@ import { SignUp_Verification } from "../_utils/SignUp_Verification/SignUp_Verifi
 
 const InputField = lazy(() => import('../components/SignUp/InputFieldTemplate'));
 const CheckBoxTermsCondition = lazy(() => import('../components/SignUp/CheckBoxTermsCondition'));
-const CreateAccountButton = lazy(() => import('../components/SignUp/CreateAccountButton'));
+const CreateAccountButton = lazy(() => import('../components/SignUp/SubmitButton'));
 const MessageGuide = lazy(() => import('../components/SignUp/GuidMessage'));
 
 const SignUpPage = () => {
@@ -81,7 +81,7 @@ const SignUpPage = () => {
                 </article>
                 <article className="flex flex-col gap-8 w-full pt-8">
                     <CheckBoxTermsCondition action={() => set_terms(!checkbox_terms_conditions) }/>
-                    <CreateAccountButton checkbox_terms_conditions={checkbox_terms_conditions} action={() =>  SignUp_Verification({
+                    <CreateAccountButton label={'Create account'} checkbox_terms_conditions={checkbox_terms_conditions} action={() =>  SignUp_Verification({
                         'username':username.current.value,
                         'email':email.current.value,
                         'password':password.current.value,

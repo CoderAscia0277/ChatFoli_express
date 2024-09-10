@@ -2,48 +2,13 @@
 import { useRef,lazy,useState} from "react";
 import CryptoJS from "crypto-js";
 import {Theme} from '../_utils/Constants';
+import { submitLogin } from "../_utils/Login_Validation/Login_Validation";
 
 const InputFieldTemplate = lazy(() => import('../components/SignUp/InputFieldTemplate'));
 const GuideMessage = lazy(() => import('../components/SignUp/GuidMessage'));
+const SubmitButton = lazy(() => import('../components/SignUp/SubmitButton'));
 
-const Validate = async({username,password}) => {
-    
-    const encrypt = {
-        KEY:null,
-        NAME:null,
-        hex(user_name,pass){
-            if(!this.KEY && !this.UID){
-                this.KEY = CryptoJS.SHA256(pass).toString(CryptoJS.enc.Hex);
-                this.NAME = CryptoJS.SHA256(user_name).toString(CryptoJS.enc.Hex);
-            }
-        }
-    }
-    encrypt.hex(username.value,password.value);
 
-    const submit = await fetch(`http://localhost:5000/LOGIN/${username.value}/${password.value}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
-   
-    if(submit){
-        switch(submit.STATUS){
-            case 'Successful':
-                // Move_To({Link: `/${submit.USERNAME}/${submit.TEMPORARY_ID}`});
-                window.location.href = `/${submit.USERNAME}/${submit.TEMPORARY_ID}`;
-                break;
-            case 'Invalid':
-                console.log(encrypt.NAME);
-                username.value = '';
-                password.value = '';
-                break;
-            case 'Wrong Password':
-                console.log(submit.STATUS,password.value);
-                password.value = '';
-                break;
-            default:
-                break;
-        }
-    }
-    
-
-};
 
 
 const LoginPage = () => {
@@ -104,7 +69,13 @@ const LoginPage = () => {
                             Forgot Password?
                         </span>
                     </ul>
-                    <input type="button"  value="Sign In" className="w-full p-2  rounded-2xl font-semibold cursor-pointer hover:scale-105" style={{background:Theme.BlueGradient90}}/>
+                    <SubmitButton   checkbox_terms_conditions={true} action={() => submitLogin({
+                        set_error:(data) => set_error(data),
+                        set_status:(data) => set_status(data),
+                        username:username.current.value,
+                        password:password.current.value,
+                    })} label='Sign In'/>
+                    {/* <input type="button"  value="Sign In" className="w-full p-2  rounded-2xl font-semibold cursor-pointer hover:scale-105" style={{background:Theme.BlueGradient90}}/> */}
                     <p className="flex flex-row gap-2 text-neutral-500 text-sm  text-xs  py-8" >
                         Don't have an account yet? <a style={{color:Theme.BluePrimary}} className="cursor-pointer" href="/signUp">Create account</a>
                     </p>
