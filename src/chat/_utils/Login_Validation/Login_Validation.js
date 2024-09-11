@@ -67,7 +67,7 @@ export const submitLogin = async({username,password,set_error,set_status}) => {
     )
     setTimeout(() => {
         if(submit.UsernameStatus === 'valid' && submit.PasswordStatus === 'valid'){
-            // window.location.href = `/${username}/${submit.sessionId}`;
+            window.location.href = `/${username}/${submit.sessionId}`;
             return;
         }
     },1000);

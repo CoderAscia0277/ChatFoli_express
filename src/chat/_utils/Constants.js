@@ -7,7 +7,8 @@ export const Theme = {
     Violet200:'#635ee2',
     BlueGradient:'linear-gradient(0deg,#8b5cf6,#635ee2,#1fa0ff)',
     BlueGradient90:'linear-gradient(90deg,#8b5cf6,#635ee2)',
-    DarkPrimaryTrans:'rgba(32,32,32,0.75)'
+    DarkPrimaryTrans:'rgba(32,32,32,0.75)',
+    DarkGradience: 'linear-gradient(90deg,#525252,#404040,#262626)'
 };
 
 export const bg = {
