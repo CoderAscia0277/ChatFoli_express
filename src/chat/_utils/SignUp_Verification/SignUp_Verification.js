@@ -1,3 +1,4 @@
+import axios from "axios";
 
 export const SignUp_Verification = async({username,email,password,confirm_password,reset_error,reset_status,set_error,set_status}) => {
     
@@ -71,7 +72,6 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
     //Mark password as VALID
     set_status(prev => ({...prev,PasswordStatus:'valid',ConfirmPasswordStatus:'valid'}));
 
-    
     // Iterate over each key in the verification_results object
     Object.keys(verification_results).forEach((result) => {
 
@@ -106,4 +106,21 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
         }
     });
 
+
+    const {userVerificationStatus,emailVerificationStatus} = verification_results;
+
+    if(userVerificationStatus === 'AVAILABLE' && emailVerificationStatus === 'AVAILABLE'){
+        const creatAccount = await axios.post('http://localhost:5000/create-account',{
+            'username' : username,
+            'email' : email,
+            'password': password
+        }).then(res => res.data).catch(err => console.error(`Opps, error occur while creating accound: `,err));
+
+        if(creatAccount.status === 200){
+            console.log('new account created!')
+        }else{
+            console.log('Internal Server ERROR')
+        }
+
+    }
 };

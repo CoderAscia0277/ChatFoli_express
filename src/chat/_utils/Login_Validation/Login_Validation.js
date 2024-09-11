@@ -45,8 +45,33 @@ export const submitLogin = async({username,password,set_error,set_status}) => {
         return;
     }
 
-    const submit = await axios.get(`http://localhost:5000/LOGIN/${username}/${password}`).catch(err => {console.error(err); return null});
+    //MARK AS BUSY
+    userAction({status:'busy',});
+    passwordAction({status:'busy',});
 
+    const submit = await axios.post(`http://localhost:5000/LOGIN`,{'username':username,'password':password}).then(res => res.data).catch(err => {console.error(err); return null});
+    
+    console.log(submit);
+
+    userAction(
+        {
+            status:submit.UsernameStatus,
+            error:submit.UsernameError
+        }
+    );
+    passwordAction(
+        {
+            status:submit.PasswordStatus,
+            error:submit.PasswordError
+        }
+    )
+    setTimeout(() => {
+        if(submit.UsernameStatus === 'valid' && submit.PasswordStatus === 'valid'){
+            // window.location.href = `/${username}/${submit.sessionId}`;
+            return;
+        }
+    },1000);
+    
     // const submit = await fetch(`http://localhost:5000/LOGIN/${username.value}/${password.value}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
    
     // if(submit){
