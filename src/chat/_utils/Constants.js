@@ -3,7 +3,9 @@ export const Theme = {
     DarkSecondary: 'rgb(38,38,38)',
     BluePrimary:'#635ee2',
     BlueSecondary:'#1fa0ff',
-    Violet100:'#8b5cf6',
+    TextDarkMode_100:'#ffffff',
+    Dark200:'#1c1c1c',
+    Violet100:'#C4C3F4',
     Violet200:'#635ee2',
     BlueGradient:'linear-gradient(0deg,#8b5cf6,#635ee2,#1fa0ff)',
     BlueGradient90:'linear-gradient(90deg,#8b5cf6,#635ee2)',
@@ -11,6 +13,24 @@ export const Theme = {
     DarkGradience: 'linear-gradient(90deg,#525252,#404040,#262626)'
 };
 
+export const LightMode = {
+    TextColor: '#1C1C1C',
+    TextColor2:'#1f1f1f',
+    color_50:'#efeff1',
+    color_100:'#FAFAFF',
+    color_200:'#cdcce9',
+    color_300:'#ECEBE4',
+    color_400:'#DADDD8',
+    default:'#635ee2'
+}
+export const DarkMode = {
+  TextColor: '#F8F9FA',
+  color_200:'#131313',
+  color_100:'#1c1c1c',
+  color_50:'#1f1f1f',
+  color_400:'#6C757D',
+  default:'#635ee2'
+}
 export const bg = {
     neutral: {
     50: '#fafafa',

@@ -1,5 +1,6 @@
-import { useEffect,useState,lazy, useCallback } from "react";
+import { useEffect,useState,lazy, useCallback, useContext } from "react";
 import { Theme } from "../../_utils/Constants";
+import { ThemeContext } from "../../..";
 
 const SpinnerIcon = lazy(() => import('./SpinnerIcon'));
 const ValidIcon = lazy(() => import('./ValidStateIcon'));
@@ -10,6 +11,8 @@ const GuideMessage = lazy(() => import('./GuidMessage'));
 const InputField = ({resetComponent = () => null,refVal,label,intuitive_icon,status,error_message,inputType = 'text',showEye = false}) => {
     const [state_icon,set_state] = useState(null);
     const [input_type,set_inputType] = useState(inputType);
+
+    const Theme = useContext(ThemeContext);
 
     // const [input , set_input] = useState({'STATUS':status,'ERROR':error_message});
 
@@ -40,7 +43,7 @@ const InputField = ({resetComponent = () => null,refVal,label,intuitive_icon,sta
                 set_state(<SpinnerIcon anim={'scale-in-center'}/>);
                 break;
             case 'invalid' :
-                set_state(<InvalidIcon/>);
+                // set_state(<InvalidIcon/>);
                 break;
             case 'valid' :
                 set_state(<ValidIcon/>);
@@ -57,19 +60,20 @@ const InputField = ({resetComponent = () => null,refVal,label,intuitive_icon,sta
     
     return(
     <>
-        <GuideMessage label={error_message} display={error_message}/>
-        <div className="w-full flex flex-row gap-4 items-center">
-                {intuitive_icon}
-                <div className="flex flex-col w-full  gap-2">
-                        <div id={label} className={`flex flex-row  flex-grow px-4 py-2 rounded-2xl items-center   ${error_message ? 'outline outline-red-500' : ''}`} style={{background:Theme.DarkPrimaryTrans,outlineWidth:'1px'}}>
-                            <span className="flex flex-col flex-grow">
-                                <input ref={refVal} onChange={(e) => error_message ? resetComponent() : null} placeholder={label}  type={input_type} className="flex-grow bg-transparent outline-0 py-1 " />
-                            </span>
-                            {state_icon}
-                        </div>
-                </div>
+        
+        <div className="w-full flex flex-row gap-4 items-start justify-center">
                 
-               
+                <div className="flex flex-col w-full  justify-center ">
+                        <div id={label}   className={`flex flex-row  flex-grow  py-2 rounded-2xl items-center   `} >
+                            <span className="flex flex-row flex-grow gap-4 items-center">
+                                {intuitive_icon}
+                                <input ref={refVal} onChange={(e) => error_message ? resetComponent() : null} placeholder={label}  type={input_type} style={{color:Theme.TextColor,outlineWidth:`${error_message ? '1px' : '0px'}`,accentColor:Theme.TextColor , background:Theme.color_50}}  className={`flex-grow bg-transparent  py-3 px-6 rounded-full  ${error_message ? 'outline outline-red-500' : ''}`} />
+                                {state_icon}
+                            </span>
+                            
+                        </div>
+                        <GuideMessage label={error_message} display={error_message}/>
+                </div>
         </div>
     </>
     );

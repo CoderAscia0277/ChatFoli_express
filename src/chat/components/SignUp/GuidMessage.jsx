@@ -1,13 +1,13 @@
-import { Theme } from "../../_utils/Constants";
+import { useContext } from "react";
+import { ThemeContext } from "../../..";
 
 const GuideMessage = ({label,display}) => {
-    return(
-        <div className="flex text-xs h-10 items-center relative" style={{left:'4rem',top:'1rem'}}>
-            {display ? <p className={`text-xs text-neutral-400 w-max px-2 py-1 rounded-2xl outline  outline-red-500 text-red-500`} style={{outlineWidth:'1px',background:Theme.DarkPrimary}}>
-                {label}
-            </p> : null }
-        </div> 
-        
+    const Theme = useContext(ThemeContext);
+    return(   
+        <p className={`text-xs text-neutral-400 w-max h-4 rounded-2xl relative  text-red-500`} style={{left:'3rem',outlineWidth:'1px',background:Theme.color_100}}>
+            {label}
+        </p> 
+          
     );
 };
 
