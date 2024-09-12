@@ -266,12 +266,13 @@ input:-webkit-autofill {
 ::-ms-reveal {
   display: none;
   /* color: aliceblue; */
+  /* accent-color: rgb(199, 83, 83); */
 }
 
 /* For WebKit browsers (Chrome, Safari, etc.) */
 ::-webkit-textfield-decoration-container {
   display: none;
-  
+  /* accent-color: black; */
    /* color: aliceblue; */
 }
 

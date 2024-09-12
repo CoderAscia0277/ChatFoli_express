@@ -47,12 +47,13 @@ const SignUpPage = () => {
                     'set_error' : (data) => set_error(data),
                     'set_status' : (data) => set_status(data)
                 })  : null} className=" flex flex-col justify-evenly items-start h-1/2 text-neutral-300  px-2">
+                    
                 <article className="flex flex-col gap-2">
                     <p className="text-2xl w-full font-semibold" style={{color:Theme.TextColor}}>Create an <span style={{color:Theme.default}}>account</span></p>
                     <p className="text-xs text-neutral-500   ">Already a member? <a className="cursor-pointer font-semibold" href='/' style={{color:Theme.default}}>Log In</a></p>
                 </article>
                 
-                <article className="flex flex-col w-full pt-6" >
+                <article className="flex flex-col w-full pt-6 pb-4" >
                     <InputField resetComponent={() => {
                                 set_error(prev => ({...prev,UsernameError:null})); 
                                 set_status(prev => ({...prev,UsernameStatus:null}))
