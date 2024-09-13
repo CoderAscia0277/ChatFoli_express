@@ -26,7 +26,8 @@ export const LightMode = {
     success:'#08a91d',
     default:'#635ee2',
     IconSize:'w-8 h-8',
-    logo:'/images/VizNovel_logo_dark.png'
+    logo:'/images/VizNovel_logo_dark.png',
+    IconColor:'#1C1C1C'
 }
 export const DarkMode = {
   IconSize:'w-8 h-8',
@@ -40,7 +41,9 @@ export const DarkMode = {
   error:'#fb2920',
   success:'#08a91d',
   default:'#635ee2',
-  logo:'/images/VizNovel_logo_light.png'
+  logo:'/images/VizNovel_logo_light.png',
+  IconColor:'#F8F9FA',
+  SelectIcon:['#35343d','#635ee2']
 }
 export const bg = {
     neutral: {
