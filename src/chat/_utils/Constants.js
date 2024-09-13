@@ -15,20 +15,27 @@ export const Theme = {
 
 export const LightMode = {
     TextColor: '#1C1C1C',
-    TextColor2:'#1f1f1f',
-    color_50:'#efeff1',
+    TextColor2:'#737373',
+    TextColor3:'#635ee2',
+    color_50:'#f1f1f9',
     color_100:'#FAFAFF',
     color_200:'#cdcce9',
     color_300:'#ECEBE4',
     color_400:'#DADDD8',
+    error:'#820703',
+    success:'#08a91d',
     default:'#635ee2'
 }
 export const DarkMode = {
   TextColor: '#F8F9FA',
+  TextColor2:'#737373',
+  TextColor3:'#C4C3F4',
   color_200:'#131313',
   color_100:'#1c1c1c',
-  color_50:'#1f1f1f',
+  color_50:'#35343d',
   color_400:'#6C757D',
+  error:'#fb2920',
+  success:'#08a91d',
   default:'#635ee2'
 }
 export const bg = {

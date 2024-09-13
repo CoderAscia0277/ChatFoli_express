@@ -1,14 +1,15 @@
 import { useContext } from "react";
 import { ThemeContext } from "../../..";
 
-const CheckBoxTermsCondition = ({action}) => {
+const CheckBoxTermsCondition = ({action,state}) => {
 
     const Theme = useContext(ThemeContext);
 
+
     return(
         <span className="flex flex-row gap-2 text-neutral-500 text-sm cursor-pointer  " >
-                    <input  type="checkbox" onClick={() => action()}/>
-                    Accept <span style={{color:Theme.default}}>Terms and Conditions</span>
+                    <input checked={state}  type="checkbox" onClick={() => action()}/>
+                    Accept <span className="font-semibold" style={{color:Theme.TextColor}}>Terms and Conditions</span>
         </span>
     )}
 ;

@@ -17,7 +17,7 @@ const router = createBrowserRouter([
   {
     path:'/',
     element:
-    <ThemeContext.Provider value={DarkMode}>
+    <ThemeContext.Provider value={LightMode}>
         <LoginPage/>
     </ThemeContext.Provider>
   },
