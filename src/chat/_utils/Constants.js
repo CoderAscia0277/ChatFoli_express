@@ -19,14 +19,17 @@ export const LightMode = {
     TextColor3:'#635ee2',
     color_50:'#f1f1f9',
     color_100:'#FAFAFF',
-    color_200:'#cdcce9',
+    color_200:'#f1f1f9',
     color_300:'#ECEBE4',
     color_400:'#DADDD8',
     error:'#820703',
     success:'#08a91d',
-    default:'#635ee2'
+    default:'#635ee2',
+    IconSize:'w-8 h-8',
+    logo:'/images/VizNovel_logo_dark.png'
 }
 export const DarkMode = {
+  IconSize:'w-8 h-8',
   TextColor: '#F8F9FA',
   TextColor2:'#737373',
   TextColor3:'#C4C3F4',
@@ -36,7 +39,8 @@ export const DarkMode = {
   color_400:'#6C757D',
   error:'#fb2920',
   success:'#08a91d',
-  default:'#635ee2'
+  default:'#635ee2',
+  logo:'/images/VizNovel_logo_light.png'
 }
 export const bg = {
     neutral: {

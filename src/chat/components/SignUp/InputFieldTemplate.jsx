@@ -20,7 +20,7 @@ const InputField = ({resetComponent = () => null,refVal,label,intuitive_icon,hin
                         <div id={label}   className={`flex flex-row  flex-grow  py-2 rounded-2xl items-center   `} >
                             <span className="flex flex-row flex-grow gap-4 items-center">
                                 {intuitive_icon}
-                                <input ref={refVal} onChange={(e) => error_message ? resetComponent() : null} placeholder={label}  type={input_type} style={{color:Theme.TextColor,outlineColor:Theme.error,outlineWidth:`${error_message ? '1px' : '0px'}`,accentColor:Theme.color_50 , background:Theme.color_50}}  className={`flex-grow bg-transparent  py-3 px-6 rounded-full  ${error_message ? 'outline' : ''}`} />
+                                <input ref={refVal} autoComplete="off" onChange={(e) => error_message ? resetComponent() : null} placeholder={label}  type={input_type} style={{color:Theme.TextColor,outlineColor:Theme.error,WebkitTextFillColor:Theme.TextColor,outlineWidth:`${error_message ? '1px' : '0px'}`,accentColor:Theme.color_50 , background:Theme.color_50,WebkitBoxShadow:` 0 0 0px 100px ${Theme.color_50} inset`}}  className={`flex-grow bg-transparent  py-3 px-6 rounded-full  ${error_message ? 'outline' : ''}`} />
                                 
                                 {showEye ? <ShowIcon changeType ={() => set_inputType(input_type === 'text' ? 'password' : 'text')} show={input_type === 'text'}/> : null}
                             

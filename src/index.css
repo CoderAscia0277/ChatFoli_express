@@ -48,8 +48,8 @@ input[type="checkbox"]:checked {
   accent-color: #635ee2;
 }
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px rgb(30,30,30) inset; /* Change to your desired color */
-  -webkit-text-fill-color: rgb(212, 212, 212); /* Change text color if needed */
+  -webkit-box-shadow: 0 0 0px 1000px #73737317 inset; /* Change to your desired color */
+  -webkit-text-fill-color: inherit; /* Change text color if needed */
 }
 
 .label {

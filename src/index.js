@@ -17,13 +17,17 @@ const router = createBrowserRouter([
   {
     path:'/',
     element:
-    <ThemeContext.Provider value={LightMode}>
+    <ThemeContext.Provider value={DarkMode}>
         <LoginPage/>
     </ThemeContext.Provider>
   },
  {
     path:'/:NAME/:TEMPORARY_ID',
-    element:<ChatApp/>
+    element:
+    <ThemeContext.Provider value={DarkMode}>
+        <ChatApp/>
+    </ThemeContext.Provider>
+    
   },{
     path:'/signUp',
     element:

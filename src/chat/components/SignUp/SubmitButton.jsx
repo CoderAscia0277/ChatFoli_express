@@ -29,8 +29,8 @@ const CreateAccountButton = ({checkbox_terms_conditions,action,label,status}) =>
                 break;
             case 'valid':
                 setValue(<ValidIcon/>);
-                set_buttonColor(Theme.success);
-                set_textLabel('Success');
+                set_buttonColor(Theme.default);
+                set_textLabel('Welcome back!');
                 break;
             default:
                 setValue(<LoginIcon/>);
@@ -42,7 +42,7 @@ const CreateAccountButton = ({checkbox_terms_conditions,action,label,status}) =>
     
 
 
-   return <span  onFocus={() => !isClicked ? set_isClicked(true): null }   onClick={(e) => checkbox_terms_conditions ? action() : null}  className={`rounded-full  flex items-center justify-center font-semibold   text-neutral-100   py-3  w-full  gap-4 ${checkbox_terms_conditions ? 'cursor-pointer' : ''} ${isClicked ? 'w-0' : ''}`} style={{background: checkbox_terms_conditions ? buttonColor : Theme.color_200,color:Theme.TextDarkMode_100}}>
+   return <span  onFocus={() => !isClicked ? set_isClicked(true): null }   onClick={(e) => checkbox_terms_conditions ? action() : null}  className={`rounded-full  flex items-center justify-center font-bold   text-neutral-100   py-3  w-full  gap-4 ${checkbox_terms_conditions ? 'cursor-pointer' : ''} ${isClicked ? 'w-0' : ''}`} style={{background: checkbox_terms_conditions ? buttonColor : Theme.color_200,color:Theme.TextDarkMode_100}}>
         {value}
         {textLabel}
    </span>
