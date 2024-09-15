@@ -3,6 +3,7 @@ import { useMemo,lazy, useRef, useState ,useEffect, createContext, useContext} f
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ThemeContext } from "../..";
+import { MessageDataStore } from "../_utils/store/MessageAppData";
 
 const MessagingApp = lazy(() => import('../components/ChatApp/MessagingApp'));
 const MessageSelection = lazy(() => import('../components/ChatApp/MessageSelection'));
@@ -21,18 +22,21 @@ const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
 
 
 export const InitialData = createContext();
+export  const MessageAppContext  = createContext();
 
 const IndexPage = () => {
 
     const {TEMPORARY_ID} = useParams();
 
     const Theme = useContext(ThemeContext);
-
+   
     const [ClientInfo,Update_ClientInfo] = useState(null);
     // const [ClientContact,Update_ClientContact] = useState(null);
     const [isLoading,set_loading] = useState(true);
     // const [isContactToMessage, set_isContactToMessage] = useState(true);
     const isMounted = useRef(false);
+
+    const [MessageUIData,set_MessageUIData] = useState(MessageDataStore.getState());
 
     // const ws = useRef(null);
 
@@ -62,8 +66,11 @@ const IndexPage = () => {
             <SideBar/>
             <section className="w-full flex justify-start items-center gap-8 py-4 px-4" style={{height:'-webkit-fill-available', background:Theme.color_200}}>
                 <MessageSelection/>
-                <MessagingApp/>
-                <InfoPanel/>
+                <MessageAppContext.Provider value={MessageUIData}>
+                    <MessagingApp/>
+                    <InfoPanel/>
+                </MessageAppContext.Provider>
+                
             </section>
             {/* <section className="w-1/2 h-screen flex flex-col border items-center gap-4" style={{background:Theme.color_200}} >
                 <nav className="lg:w-3/4 w-full min-h-20  flex flex-col items-center gap-4 border">

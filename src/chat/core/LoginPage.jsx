@@ -30,15 +30,18 @@ const LoginPage = () => {
 
     return(
         <section className="w-screen h-screen flex flex-row items-center justify-center" style={{background:Theme.color_200}}>
-             <img src={Theme.logo} className="absolute top-0 left-0 mx-4 lg:block hidden" style={{height:'10vh'}}/>
+             {/* <img src={Theme.logo} className="absolute top-0 left-0 mx-4 lg:block hidden" style={{height:'10vh'}}/> */}
             <article className=" lg:w-max  lg:h-max lg:rounded-2xl  w-full h-screen  flex flex-col items-start justify-start gap-2 lg:px-8 px-4 " style={{borderColor:Theme.TextColor,background:Theme.color_100}}>
-                <form onKeyDown={e => null} className=" flex flex-col justify-evenly items-start h-max w-full text-neutral-300 px-2 py-8 ">
-                    <p className="text-2xl w-full font-semibold text-start lg:block hidden" style={{color:Theme.TextColor}}>Welcome to VizNovel ! </p>
-                    <span className="w-full flex justify-center">
-                        <img src={Theme.logo} className="lg:hidden block" style={{height:'10vh'}}/>
+                <form onKeyDown={e => null} className=" flex flex-col justify-evenly items-start h-max w-full text-neutral-300 px-2 py-4">
+                    {/* Logo */}
+                    <span className="w-full flex justify-center ">
+                        <img src={Theme.logo} className=" block" style={{height:'8vh'}}/>
                     </span>
                     
-                    <article className="flex flex-col w-full items-center pt-6">
+                    {/* Caption */}
+                    <p className="text-xl w-full font-mediuim text-center block pt-4" style={{color:Theme.TextColor}}>Sign In to VizNovel </p>
+
+                    <article className="flex flex-col w-full items-center pt-4">
                         
                         <InputFieldTemplate resetComponent={() => {
                                 set_error(prev => ({...prev,UsernameError:null})); 
