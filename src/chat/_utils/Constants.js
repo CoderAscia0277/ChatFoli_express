@@ -32,6 +32,7 @@ export const LightMode = {
     logo:'/images/VizNovel_logo_dark.png',
     IconBgColor:'#635ee2',
     IconColor:'#1C1C1C',
+    DialoguePanelBg:'linear-gradient(90deg, rgba(19, 19, 19, 0.467), rgb(0 0 0 / 60%), rgb(19 19 19 / 68%), rgba(19, 19, 19, 0.467))',
 }
 export const DarkMode = {
   IconSize:'w-8 h-8',
@@ -51,6 +52,7 @@ export const DarkMode = {
   logo:'/images/VizNovel_logo_light.png',
   IconColor:'#F8F9FA',
   IconBgColor:'#F8F9FA',
+  DialoguePanelBg:'linear-gradient(90deg, rgba(19, 19, 19, 0.467), rgb(0 0 0 / 60%), rgb(19 19 19 / 68%), rgba(19, 19, 19, 0.467))',
   SelectIcon:['#35343d','#635ee2']
 }
 export const bg = {

@@ -20,7 +20,7 @@ const InfoPanel = () => {
             </div>
 
             {/* Caption */}
-            <span className="font-semibold text-md" style={{color:Theme.TextColor}}>Want some hints?</span>
+            <span className="font-semibold text-md" style={{color:Theme.TextColor}}>What's your role?</span>
 
             {/* Hint of the story */}
             {/* Just add Theme.color_layer_2 as background to make this component a placeholder */}
