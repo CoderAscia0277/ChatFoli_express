@@ -4,6 +4,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ThemeContext } from "../..";
 
+const MessagingApp = lazy(() => import('../components/ChatApp/MessagingApp'));
+const MessageSelection = lazy(() => import('../components/ChatApp/MessageSelection'));
+const InfoPanel = lazy(() => import('../components/ChatApp/InfoPanel'));
+
 // import socket from '../_utils/ws/socket';
 // import { Store ,UPDATE_USER_PARAMS} from "../_utils/store/store";
 // import { UPDATE_INFO,MessengerStore ,UPDATE_MESSAGES,INCOMING_MESSAGE} from "../_utils/store/messenger_store";
@@ -56,8 +60,10 @@ const IndexPage = () => {
     return(
         <InitialData.Provider value={{'clientInfo':ClientInfo}}>
             <SideBar/>
-            <section className="h-screen  flex " style={{width:'-webkit-fill-available', background:Theme.color_200}}>
-                hi
+            <section className="w-full flex justify-start items-center gap-8 py-4 px-4" style={{height:'-webkit-fill-available', background:Theme.color_200}}>
+                <MessageSelection/>
+                <MessagingApp/>
+                <InfoPanel/>
             </section>
             {/* <section className="w-1/2 h-screen flex flex-col border items-center gap-4" style={{background:Theme.color_200}} >
                 <nav className="lg:w-3/4 w-full min-h-20  flex flex-col items-center gap-4 border">

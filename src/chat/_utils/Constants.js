@@ -15,11 +15,14 @@ export const Theme = {
 
 export const LightMode = {
     TextColor: '#1C1C1C',
-    TextColor2:'#737373',
+    TextColor2:'#525255',
     TextColor3:'#635ee2',
     color_50:'#f1f1f9',
+    color_layer_1:'#f1f1f1',
+    color_layer_2:'#ebebeb',
+    color_layer_3:'#e3e3e3',
     color_100:'#FAFAFF',
-    color_200:'#f1f1f9',
+    color_200:'#e4e3f7',
     color_300:'#ECEBE4',
     color_400:'#DADDD8',
     error:'#820703',
@@ -27,22 +30,27 @@ export const LightMode = {
     default:'#635ee2',
     IconSize:'w-8 h-8',
     logo:'/images/VizNovel_logo_dark.png',
-    IconColor:'#1C1C1C'
+    IconBgColor:'#635ee2',
+    IconColor:'#1C1C1C',
 }
 export const DarkMode = {
   IconSize:'w-8 h-8',
   TextColor: '#F8F9FA',
-  TextColor2:'#737373',
+  TextColor2:'#C3C3C6',
   TextColor3:'#C4C3F4',
   color_200:'#131313',
-  color_100:'#1c1c1c',
-  color_50:'#35343d',
+  color_100:'#18181c',
+  color_50:'#38384f',
+  color_layer_1:'#29292d',
+  color_layer_2:'#33333b',
+  color_layer_3:'#434349',
   color_400:'#6C757D',
   error:'#fb2920',
   success:'#08a91d',
   default:'#635ee2',
   logo:'/images/VizNovel_logo_light.png',
   IconColor:'#F8F9FA',
+  IconBgColor:'#F8F9FA',
   SelectIcon:['#35343d','#635ee2']
 }
 export const bg = {

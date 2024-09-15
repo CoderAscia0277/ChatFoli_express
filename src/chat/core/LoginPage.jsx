@@ -31,7 +31,7 @@ const LoginPage = () => {
     return(
         <section className="w-screen h-screen flex flex-row items-center justify-center" style={{background:Theme.color_200}}>
              <img src={Theme.logo} className="absolute top-0 left-0 mx-4 lg:block hidden" style={{height:'10vh'}}/>
-            <article className=" lg:w-1/3 lg:h-max lg:rounded-2xl  w-full h-screen  flex flex-col items-start justify-start gap-2 px-4 " style={{borderColor:Theme.TextColor,background:Theme.color_100}}>
+            <article className=" lg:w-max  lg:h-max lg:rounded-2xl  w-full h-screen  flex flex-col items-start justify-start gap-2 lg:px-8 px-4 " style={{borderColor:Theme.TextColor,background:Theme.color_100}}>
                 <form onKeyDown={e => null} className=" flex flex-col justify-evenly items-start h-max w-full text-neutral-300 px-2 py-8 ">
                     <p className="text-2xl w-full font-semibold text-start lg:block hidden" style={{color:Theme.TextColor}}>Welcome to VizNovel ! </p>
                     <span className="w-full flex justify-center">
