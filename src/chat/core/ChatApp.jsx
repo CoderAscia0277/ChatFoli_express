@@ -50,9 +50,9 @@ const IndexPage = () => {
             
             axios.post('http://localhost:5000/getInfo',{'SessionId':TEMPORARY_ID}).then(
                 res => {
-                    const response = res.data['Info']; //the output is an array not dict
-                    Update_ClientInfo(response[0]);
-                    console.table(response[0]);
+                    const response = res.data; //the output is an array not dict
+                    Update_ClientInfo(response);
+                    console.table(response);
                     set_loading(false);
                 }
             );
