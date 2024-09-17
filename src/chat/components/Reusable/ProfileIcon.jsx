@@ -1,4 +1,4 @@
-import imgCache from "../../not_used/ImageCache";
+import imgCache from "../../_utils/ImageCache";
 import { Suspense } from "react";
 
 //DISPLAYS THE PROFILE ICON
