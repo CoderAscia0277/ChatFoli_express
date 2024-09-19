@@ -48,9 +48,10 @@ const LoginPage = () => {
                                 set_status(prev => ({...prev,UsernameStatus:null}))
                             }
                         } refVal={username}  label={'Username'} intuitive_icon={
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className={`bi bi-person-fill ${Theme.IconSize}`} viewBox="0 0 16 16" style={{color:Theme.TextColor}}>
-                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                        </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`${Theme.IconSize}`} color={Theme.TextColor} fill="none">
+                                <path d="M6.57757 15.4816C5.1628 16.324 1.45336 18.0441 3.71266 20.1966C4.81631 21.248 6.04549 22 7.59087 22H16.4091C17.9545 22 19.1837 21.248 20.2873 20.1966C22.5466 18.0441 18.8372 16.324 17.4224 15.4816C14.1048 13.5061 9.89519 13.5061 6.57757 15.4816Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M16.5 6.5C16.5 8.98528 14.4853 11 12 11C9.51472 11 7.5 8.98528 7.5 6.5C7.5 4.01472 9.51472 2 12 2C14.4853 2 16.5 4.01472 16.5 6.5Z" stroke="currentColor" strokeWidth="1.5" />
+                            </svg>
                         } status={UsernameStatus} error_message={UsernameError} inputType="text"/>
 
 
@@ -59,9 +60,12 @@ const LoginPage = () => {
                                 set_status(prev => ({...prev,PasswordStatus:null}))
                             }
                         } refVal={password} showEye={false} label={'Password'} intuitive_icon={
-                        <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className={`bi bi-lock-fill 0 ${Theme.IconSize}`} viewBox="0 0 16 16" style={{color:Theme.TextColor}}>
-                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2M5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1"/>
-                        </svg>
+                            
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" color={Theme.TextColor}  className={` ${Theme.IconSize}`}>
+                                <path d="M12 16.5V14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                <path d="M4.26781 18.8447C4.49269 20.515 5.87613 21.8235 7.55966 21.9009C8.97627 21.966 10.4153 22 12 22C13.5847 22 15.0237 21.966 16.4403 21.9009C18.1239 21.8235 19.5073 20.515 19.7322 18.8447C19.879 17.7547 20 16.6376 20 15.5C20 14.3624 19.879 13.2453 19.7322 12.1553C19.5073 10.485 18.1239 9.17649 16.4403 9.09909C15.0237 9.03397 13.5847 9 12 9C10.4153 9 8.97627 9.03397 7.55966 9.09909C5.87613 9.17649 4.49269 10.485 4.26781 12.1553C4.12104 13.2453 4 14.3624 4 15.5C4 16.6376 4.12104 17.7547 4.26781 18.8447Z" stroke="currentColor" strokeWidth="1.5" />
+                                <path d="M7.5 9V6.5C7.5 4.01472 9.51472 2 12 2C14.4853 2 16.5 4.01472 16.5 6.5V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
                         } status={PasswordStatus} error_message={PasswordError} inputType="password"/>
 
 
@@ -79,7 +83,7 @@ const LoginPage = () => {
                             set_status:(data) => set_status(data),
                             username:username.current.value,
                             password:password.current.value,
-                        })} label='Login'/>
+                        })} label='Sign In'/>
                     {/* <input type="button"  value="Sign In" className="w-full p-2  rounded-2xl font-semibold cursor-pointer hover:scale-105" style={{background:Theme.BlueGradient90}}/> */}
                         
                     </article>

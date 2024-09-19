@@ -24,6 +24,47 @@ const SideBar = lazy(() => import('../components/ChatApp/SideBar'));
 export const InitialData = createContext();
 export  const MessageAppContext  = createContext();
 
+
+const ws = {
+    socket:{},
+    connect({ClientId}){
+        if(!this.socket[ClientId]){
+            this.socket[ClientId] = new WebSocket('ws://localhost:8080');
+
+            this.socket[ClientId].onopen = () => {
+
+                this.socket[ClientId].send(JSON.stringify({
+                    'method':'CREATE-CONNECTION',
+                    'ClientId':ClientId,
+                }));
+
+                this.socket[ClientId].onmessage = (e) => {
+                    const {STATUS} = JSON.parse(e.data);
+
+                    switch(STATUS){
+                        case 200:
+                            const {web_socket_id} = JSON.parse(e.data);
+                            console.log(`Websocket has been established at: ${web_socket_id}`);
+                            return this.socket;
+                        default:
+                            console.error(`Websocket connection error`);
+                            break;
+                    }     
+                }
+            };
+        }else{
+            return this.socket[ClientId];
+        }
+    },
+    // async send(data){
+    //     return await new Promise((resolve,reject) => {
+    //         setTimeout(() => {
+    //             resolve({name:'Shiragiku-san',message:"I have recieved you message, I have recieved you message,I have recieved you message"});
+    //         },1000); 
+    //     });
+    // }
+};
+
 const IndexPage = () => {
 
     const {TEMPORARY_ID} = useParams();
@@ -37,8 +78,6 @@ const IndexPage = () => {
     const isMounted = useRef(false);
 
     const [MessageUIData,set_MessageUIData] = useState(MessageDataStore.getState());
-
-    // const ws = useRef(null);
 
 
     const [isSearchFill,set_isSearchFill] = useState(false);
@@ -59,15 +98,16 @@ const IndexPage = () => {
         }
     });
 
+
     
    if(!isLoading){
     return(
-        <InitialData.Provider value={{'clientInfo':ClientInfo}}>
+        <InitialData.Provider value={{'clientInfo':ClientInfo,'socket':  ws.connect({'ClientId': ClientInfo.ClientId})}}>
             <SideBar/>
             <section className="w-full flex justify-start items-center gap-8 py-4 px-4" style={{height:'-webkit-fill-available', background:Theme.color_200}}>
                 <MessageSelection/>
                 <MessageAppContext.Provider value={MessageUIData}>
-                    <MessagingApp/>
+                    <MessagingApp ClientInfo={ClientInfo}/>
                     <InfoPanel/>
                 </MessageAppContext.Provider>
                 

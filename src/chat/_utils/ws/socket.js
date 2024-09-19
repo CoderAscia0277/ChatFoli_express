@@ -6,7 +6,7 @@ const socket = {
         if(!this.ws[TEMPORARY_ID] && TEMPORARY_ID && ClientId){
             const server = new WebSocket('ws://localhost:8080');
             server.onopen = () => {
-                server.send(JSON.stringify({PURPOSE:'CREATE_CONNECTION',"TEMPORARY_ID":TEMPORARY_ID,"ClientId":ClientId}));
+                // server.send(JSON.stringify({PURPOSE:'CREATE_CONNECTION',"TEMPORARY_ID":TEMPORARY_ID,"ClientId":ClientId}));
                 // server.onmessage = e =>{
                     console.log('WebSocket connection has established at ',ClientId);
                 // }

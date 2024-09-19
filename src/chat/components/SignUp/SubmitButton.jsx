@@ -23,9 +23,9 @@ const CreateAccountButton = ({checkbox_terms_conditions,action,label,status}) =>
                 set_textLabel('Processing . . .');
                 break;
             case 'invalid':
-                setValue(<InvalidIcon/>);
-                set_buttonColor(Theme.error);
-                set_textLabel('Invalid');
+                // setValue(<InvalidIcon/>);
+                // set_buttonColor(Theme.error);
+                // set_textLabel('Invalid');
                 break;
             case 'valid':
                 setValue(<ValidIcon/>);
@@ -42,7 +42,7 @@ const CreateAccountButton = ({checkbox_terms_conditions,action,label,status}) =>
     
 
 
-   return <span  onFocus={() => !isClicked ? set_isClicked(true): null }   onClick={(e) => checkbox_terms_conditions ? action() : null}  className={`rounded-full  flex items-center justify-center font-bold   text-neutral-100   py-3  w-full  gap-4 ${checkbox_terms_conditions ? 'cursor-pointer' : ''} ${isClicked ? 'w-0' : ''}`} style={{background: checkbox_terms_conditions ? buttonColor : Theme.color_200,color:Theme.TextDarkMode_100}}>
+   return <span  onFocus={() => !isClicked ? set_isClicked(true): null }   onClick={(e) => checkbox_terms_conditions ? action() : null}  className={`rounded-full  flex items-center justify-center font-bold   text-neutral-100   py-3  w-full  gap-4 ${checkbox_terms_conditions ? 'cursor-pointer' : ''} ${isClicked ? 'w-0' : ''} hover:scale-105`} style={{background: checkbox_terms_conditions ? buttonColor : Theme.color_200,color:Theme.TextDarkMode_100}}>
         {value}
         {textLabel}
    </span>

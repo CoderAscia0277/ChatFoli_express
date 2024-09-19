@@ -21,7 +21,7 @@ const SideBar = () => {
     // };
 
     const {clientInfo} = useContext(InitialData);
-
+   
     const IconTemplate = ({action,path,IsActive}) => {
         //Active color | default color
         return(
