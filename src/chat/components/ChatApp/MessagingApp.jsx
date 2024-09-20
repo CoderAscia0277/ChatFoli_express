@@ -31,7 +31,7 @@ const UserTextArea = ({send}) => {
 
     const isloaded = useRef(false);
     const text_field = useRef(null);
-
+    const Theme = useContext(ThemeContext);
     useEffect(() => {
         if(!isloaded.current){
             isloaded.current = true;
@@ -57,12 +57,17 @@ const UserTextArea = ({send}) => {
     }
 
     return(
-        <>
+        <span className=" absolute bottom lg:w-1/3 my-4 border rounded-full flex flex-row px-8  items-center justify-center " style={{background:Theme.color_layer_1}}>
              {/*User Input Text*/}
-            <span className="w-full text-center font-semibold text-md text-neutral-100">- Masayuki Kaito - </span>
-            <textarea ref={text_field} onKeyDown={e => e.key === "Enter" ? submit_action(e) : null} className=" bg-transparent flex-grow outline-0 px-4 text-center text-neutral-100"  placeholder="Please enter your response here." style={{resize:'none'}}></textarea>
-            <span className="text-neutral-400 text-xs font-normal w-full text-center loading">PRESS [ENTER] TO SUBMIT</span>
-        </>
+            {/* <span className="w-full text-center font-semibold text-md text-neutral-100">- Masayuki Kaito - </span> */}
+            <input type="text" ref={text_field} onKeyDown={e => e.key === "Enter" ? submit_action(e) : null} className="bg-transparent  flex-grow h-14 outline-0 px-4 text-center text-neutral-100"  placeholder="Please enter your response here." style={{resize:'none'}}/>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`${Theme.IconSize} hover:scale-110 cursor-pointer`} color="#F8F9FA" fill="none">
+                <path d="M21.0477 3.05293C18.8697 0.707363 2.48648 6.4532 2.50001 8.551C2.51535 10.9299 8.89809 11.6617 10.6672 12.1581C11.7311 12.4565 12.016 12.7625 12.2613 13.8781C13.3723 18.9305 13.9301 21.4435 15.2014 21.4996C17.2278 21.5892 23.1733 5.342 21.0477 3.05293Z" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M11.5 12.5L15 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            
+            {/* <span className="text-neutral-400 text-xs font-normal w-full text-center loading">PRESS [ENTER] TO SUBMIT</span> */}
+        </span>
     );
 };
 
@@ -170,12 +175,47 @@ const ChatContainer = ({socket,bg_image})=> {
         }
     },[responder,characterResponse]);
     
+    const Bubble = () => {
+        return(
+            <span className="chatBubble w-1/3 h-14 rounded-2xl border fading px-2 py-2" style={{flexShrink:0,background:Theme.color_layer_1,color:'#F8F9FA'}}>Texting Texting</span>
+        );
+    }
+
     return(
-    <div className="w-full flex-grow flex flex-col-reverse items-center rounded-xl  " style={{background:`url(${bg_image}) center/cover no-repeat`}}>
-        <div className="w-full h-1/4 rounded-lg p-1 flex flex-col gap-2" style={{background:Theme.DialoguePanelBg}} >
-                {dialogueTemplate}
-        </div>
-    </div> 
+    <article className="w-full h-full flex flex-col-reverse items-center rounded-xl " style={{background:`url(${bg_image}) center/cover no-repeat`}}>
+        <div className="absolute w-full h-full "  style={{background:Theme.DialoguePanelBg}}></div>
+        <article className="overflow-auto w-3/4 block h-full ">
+            <div className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-2  " style={{background:''}} >
+                {/* {dialogueTemplate} */}
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+                <Bubble/>
+            </div>
+        </article>
+        <UserTextArea/>
+
+    </article> 
+        // <div className="w-full h-full rounded-xl" style={{background:bg_image}}>
+
+        // </div>
     );
    
 };
@@ -199,7 +239,7 @@ const MessagingApp = () => {
 
     return(
         
-        <article className="lg:w-1/2 lg:h-full rounded-2xl flex flex-col p-4 gap-2 " style={{background:Theme.color_100}}>
+        <article className="w-full lg:h-full rounded-2xl flex flex-col gap-2 " style={{background:Theme.color_100}}>
  
             {/* Main Chat Container */}
             <Suspense fallback={<ChatContainer_placeholder/>}>

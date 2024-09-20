@@ -6,7 +6,7 @@ const MessageSelection = () => {
 
     const ClickableStoryTemplate = () => {
         return(
-            <div className="w-full h-1/5 rounded-xl p-2 flex flex-row gap-2" style={{background:Theme.color_layer_3}} >
+            <div className="w-full rounded-xl p-2 flex flex-row gap-2" style={{background:Theme.color_layer_3 , aspectRatio:2/1}} >
                 {/* story image */}
                 <div className="h-full rounded-lg" style={{aspectRatio:3/4,background:Theme.color_layer_1}}></div>
                 {/* Info about the story */}
@@ -20,13 +20,24 @@ const MessageSelection = () => {
         );
     }
     return(
-        <aside className="w-1/4 h-full rounded-2xl p-4 flex flex-col gap-2" style={{background:Theme.color_100}}>  
+        <aside className="lg:w-3/4 md:w-3/4 w-full h-full rounded-2xl p-4 flex flex-col gap-2" style={{background:Theme.color_100}}>  
             {/* Title : Stories */}
-            <div className="w-1/2 rounded-xl h-10 font-semibold text-2xl flex items-center justify-start" style={{background:'',color:Theme.TextColor}}>Stories</div>
-            <ClickableStoryTemplate/>
-            <ClickableStoryTemplate/>
-            <ClickableStoryTemplate/>
-            <ClickableStoryTemplate/>
+            <div className="w-1/2 rounded-xl h-10 font-semibold text-2xl " style={{background:'',color:Theme.TextColor}}>Stories</div>
+            <article className="w-full flex-grow grid overflow-auto items-center" style={{gridTemplateColumns:'repeat(auto-fit, minmax(min(16rem, 100%), 1fr))',columnGap:'1rem',rowGap:'1rem'}}>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+                <ClickableStoryTemplate/>
+            </article>
+            
         </aside>
     );
 };

@@ -1,9 +1,9 @@
-import { Store } from '../../_utils/store/store';
+import { Store } from '../_utils/store/store';
 import { useState,useEffect,useRef,lazy, useContext } from 'react';
-import { ClientStore } from '../../_utils/store/ClientStore';
-import { InitialData } from '../../core/ChatApp';
+import { ClientStore } from '../_utils/store/ClientStore';
+import { InitialData } from '../core/ChatApp';
 
-const ContactListDisplay = lazy(() => import('./ContactListDisplay'));
+const ContactListDisplay = lazy(() => import('../components/ChatApp/ContactListDisplay'));
 const InitialHeader = lazy(() => import('./InitialHeader'));
 const ActiveDisplayer = lazy(() => import('./ActiveContactDisplay')); 
 

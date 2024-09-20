@@ -329,7 +329,7 @@ For WebKit browsers (Chrome, Safari, etc.)
 .bubble-container:first-child{
   margin-top: 75vh;
 }
-.bubble-container:last-child{
+.bubble-container:first-child{
   margin-bottom: 10%;
 }
 .pulse{
@@ -376,6 +376,28 @@ For WebKit browsers (Chrome, Safari, etc.)
 .text-lightblue{
   color: #1fa0ff;
 }
+
+.fading{
+  animation: fading ease-in-out forwards;
+  animation-timeline: view();
+}
+.chatContainer .chatBubble:first-child{
+  margin-bottom: 25vh;
+}
+@keyframes fading{
+  0%{
+    opacity: 1;
+  }20%{
+    opacity: 1;
+  }70%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
+
 @keyframes loading_pulse{
   0%{
     opacity: 1;

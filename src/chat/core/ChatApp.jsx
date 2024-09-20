@@ -98,73 +98,38 @@ const IndexPage = () => {
         }
     });
 
+    const [startChat,set_startChat] = useState(true);
 
+    const VizNovel_Info = {
+        'Tittle':''
+    };
     
-   if(!isLoading){
+   if(!isLoading && !startChat){
     return(
-        <InitialData.Provider value={{'clientInfo':ClientInfo,'socket':  ws.connect({'ClientId': ClientInfo.ClientId})}}>
+        <InitialData.Provider value={{'clientInfo':ClientInfo}}>
             <SideBar/>
             <section className="w-full flex justify-start items-center gap-8 py-4 px-4" style={{height:'-webkit-fill-available', background:Theme.color_200}}>
                 <MessageSelection/>
                 <MessageAppContext.Provider value={MessageUIData}>
-                    <MessagingApp ClientInfo={ClientInfo}/>
+                    {/* <MessagingApp ClientInfo={ClientInfo}/> */}
                     <InfoPanel/>
                 </MessageAppContext.Provider>
                 
             </section>
-            {/* <section className="w-1/2 h-screen flex flex-col border items-center gap-4" style={{background:Theme.color_200}} >
-                <nav className="lg:w-3/4 w-full min-h-20  flex flex-col items-center gap-4 border">
-                    <article className="flex flex-row w-full items-center">
-                        <div className="flex flex-row flex-grow ">
-                            <span className="text-2xl" style={{color:'transparent',background:Theme.BlueGradient90,backgroundClip:'text'}}>LOGO </span>
-                        </div>
-                    
-                        <div className="flex flex-row justify-end gap-2 items-center py-1 ">
-                            <input ref={SearchBar} onChange={e => e.target.value ? set_isSearchFill(true) : set_isSearchFill(false)} type="text" placeholder="" className="rounded-2xl text-end  text-neutral-300  w-1/2 h-10 py-1 px-2   outline-0" style={{background:'rgba(255,255,255,0.0)'}} />
-                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => !SearchBar.current.value ? SearchBar.current.focus() : null} fill="currentColor" className={`hover:scale-105 bi bi-search w-10 h-10 cursor-pointer text-neutral-300 rounded-full p-2`} viewBox="0 0 16 16"  style={{background:Theme.DarkPrimary}}>
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                            </svg>
-                        </div>
-                    </article>
-                    <article className=" border w-full overflow-x-auto">
-                            <div className="flex flex-row gap-4  ">
-                                    <span className="rounded-2xl text-neutral-500  text-center text-sm py-1 px-4 max-w-20" style={{background:Theme.color_50,flexShrink:0}}>sample</span>
-                                    <span className="rounded-2xl text-neutral-500  text-center text-sm py-1 px-4 max-w-20" style={{background:Theme.color_50,flexShrink:0}}>sample</span>
-                                    <span className="rounded-2xl text-neutral-300  text-center text-sm py-1 px-4 max-w-20" style={{background:Theme.default,flexShrink:0}}>sample</span>
-                                    <span className="rounded-2xl text-neutral-500  text-center text-sm py-1 px-4 max-w-20" style={{background:Theme.color_50,flexShrink:0}}>sample</span>
-                            </div>
-                    </article>
-                    
-                </nav>
-                <article className="w-full lg:h-1/2 md:h-1/2 h-1/3 rounded-2xl " style={{background:Theme.color_50,backgroundSize:'500% 500%'}} >
-                    
-                </article>
-            </section> */}
         </InitialData.Provider>
     )
-   }else{
+   }else if(!isLoading && startChat){
+        return(
+           <InitialData.Provider value={{'clientInfo':ClientInfo,'storyInfo':VizNovel_Info,'socket':  ws.connect({'ClientId': ClientInfo.ClientId})}}>
+                 <MessageAppContext.Provider value={MessageUIData}>
+                    <MessagingApp ClientInfo={ClientInfo}/>
+                </MessageAppContext.Provider>
+           </InitialData.Provider> 
+        )
+   }
+   else{
         return(<p>Please wait..</p>)
    }
-//    if(isContactToMessage){
-//     return(
-//         <InitialData.Provider value={{'chosenContact':ClientContact[0],'clientContacts':ClientContact,'clientInfo':ClientInfo,'ws':ws.current}}>
-//              <SideBar/>
-//              <ChatContactUI/>
-//              <MessengerApp/>
-//         </InitialData.Provider>
-//      );
-//    }else{
-//     return(
-//         <InitialData.Provider value={{'chosenContact':ClientContact[0],'clientContacts':ClientContact,'clientInfo':ClientInfo}}>
-//              <SideBar/>
-//              <ChatContactUI/>
-//              <aside className="lg:flex md:flex hidden h-screen lg:p-4" style={{width:'-webkit-fill-available'}}>
-//                     <section className="w-full  h-full flex flex-col rounded-xl" style={{background:Theme.DarkPrimary}}>
-//                     </section>
-//             </aside>
-//         </InitialData.Provider>
-//      );
-//    }
 }
 
 export default IndexPage;

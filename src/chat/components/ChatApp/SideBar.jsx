@@ -40,8 +40,8 @@ const SideBar = () => {
     }
 
     return(
-    <nav className="w-full h-max flex flex-row items-center  px-4 " style={{background:Theme.color_100}}>
-        <img src={Theme.logo} className=" lg:block hidden" style={{height:'10vh'}}/>
+    <nav className="w-full h-1/8 flex flex-row items-center  px-4 " style={{background:Theme.color_100}}>
+        <img src={Theme.logo} className="" style={{height:'10vh'}}/>
         <article className="w-full h-max flex flex-row justify-end px-8 items-center gap-8" style={{color:Theme.IconColor}}>
             
             <IconTemplate

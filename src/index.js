@@ -24,7 +24,7 @@ const router = createBrowserRouter([
  {
     path:'/:NAME/:TEMPORARY_ID',
     element:
-    <ThemeContext.Provider value={LightMode}>
+    <ThemeContext.Provider value={DarkMode}>
         <ChatApp/>
     </ThemeContext.Provider>
     

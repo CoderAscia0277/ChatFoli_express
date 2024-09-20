@@ -1,4 +1,4 @@
-import { Theme } from "../../_utils/Constants";
+import { Theme } from "../_utils/Constants";
 import { useState,useRef } from "react";
 
 const InitialHeader = () => {

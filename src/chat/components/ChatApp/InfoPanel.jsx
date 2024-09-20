@@ -3,7 +3,7 @@ import { useContext } from "react";
 const InfoPanel = () => {
     const Theme = useContext(ThemeContext);
      return(
-        <article  className="w-1/4 h-full rounded-2xl flex flex-col gap-2 p-4" style={{background:Theme.color_100}}>
+        <article  className="lg:w-1/4 md:w-1/4 lg:flex md:flex hidden  h-full rounded-2xl flex-col gap-2 p-4" style={{background:Theme.color_100}}>
             {/* Story Image */}
             <span className="w-full rounded-xl" style={{background:Theme.color_layer_2 , aspectRatio:2/1}}></span>
             

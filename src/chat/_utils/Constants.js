@@ -52,7 +52,7 @@ export const DarkMode = {
   logo:'/images/VizNovel_logo_light.png',
   IconColor:'#F8F9FA',
   IconBgColor:'#F8F9FA',
-  DialoguePanelBg:'linear-gradient(90deg, rgba(19, 19, 19, 0.467), rgb(0 0 0 / 60%), rgb(19 19 19 / 68%), rgba(19, 19, 19, 0.467))',
+  DialoguePanelBg:'linear-gradient(0deg, #1c1c1c, transparent)',
   SelectIcon:['#35343d','#635ee2']
 }
 export const bg = {
