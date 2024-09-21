@@ -381,15 +381,26 @@ For WebKit browsers (Chrome, Safari, etc.)
   animation: fading ease-in-out forwards;
   animation-timeline: view();
 }
+
 .chatContainer .chatBubble:first-child{
   margin-bottom: 25vh;
 }
+.chatContainer .chatBubble:last-child{
+  margin-top: 75vh;
+}
 @keyframes fading{
   0%{
+    opacity: 0;
+  }
+  10%{
+    opacity: 0;
+  }
+  30%{
     opacity: 1;
-  }20%{
-    opacity: 1;
-  }70%{
+  }40%{
+    opacity: 0.8;
+  }
+  70%{
     opacity: 0;
   }
   100%{

@@ -1,4 +1,4 @@
-import { useContext ,Suspense, useState, useEffect, useRef} from "react";
+import { useContext ,Suspense, useState, useEffect, useRef, useMemo, useCallback} from "react";
 import { ThemeContext } from "../../..";
 import { MessageAppContext } from "../../core/ChatApp";
 import imgCache from "../../_utils/ImageCache";
@@ -10,24 +10,28 @@ const localSlice = createSlice({
     name:'localSlice',
     initialState:{
         ai_message:'',
-        ai_name:'Asagami Yuzuha'
+        ai_name:'Asagami Yuzuha',
+        chat_text:'',
     },
     reducers:{
         update_ai_message:(state,data) => {
             const {ai_message} = data.payload;
             state.ai_message = ai_message;
         },
-    
+        update_chat_text:(state,data) => {
+            state.chat_text = data.payload;
+            
+        }
     }
 });
 
-const {update_ai_message} = localSlice.actions;
+const {update_ai_message,update_chat_text} = localSlice.actions;
 const localStore = configureStore({reducer:localSlice.reducer});
 
 
 
 
-const UserTextArea = ({send}) => {
+const UserTextArea = ({send,action = () => null}) => {
 
     const isloaded = useRef(false);
     const text_field = useRef(null);
@@ -45,9 +49,14 @@ const UserTextArea = ({send}) => {
             console.log('stop',e.target.value);
             
             const userInput = e.target.value;
+            // alert('pressed');
+            action(userInput);
+
+            //Stores the user message into local array for display
+            // localStore.dispatch(update_chat_text(userInput));
 
             //SENTS THE MESSAGE TO SERVER 
-            send(userInput);
+            // send(userInput);
 
             // localStore.dispatch(update_user_message(userInput));
 
@@ -118,10 +127,13 @@ const ChatContainer = ({socket,bg_image})=> {
     loadImage.read(bg_image);
 
     const [responder,set_responder] = useState('MAIN_CHARACTER');
-    const [dialogueTemplate,set_dialogueTemplate] = useState(null);
+    // const [dialogueTemplate,set_dialogueTemplate] = useState(null);
 
-    const [userText,update_userText] = useState(null);
-    const [characterResponse,update_characterResponse] = useState({name:null,message:null});
+    // const [userText,update_userText] = useState(null);
+    // const [characterResponse,update_characterResponse] = useState({name:null,message:null});
+
+    const [chat_text,update_chat_text] = useState(localStore.getState().chat_text);
+    const [chat_blocks,update_chat_blocks] = useState([]);
 
     socket.onmessage = e => {
         const {STATUS} = JSON.parse(e.data);
@@ -143,79 +155,40 @@ const ChatContainer = ({socket,bg_image})=> {
     }
 
 
-    ///This block is responsible for altring the dialogue panel depending on which character to respose
-    //if it detects changes in the localStore it will call the ai dialogue panel to display new message
-    localStore.subscribe(() => {
-            if(responder === 'MAIN_CHARACTER'){
-                update_characterResponse({
-                    name:localStore.getState().ai_name,
-                    message:localStore.getState().ai_message,
-                });
-                set_responder('AI_CHARACTER');
-            }
-        }
-    );
 
-    useEffect(() => {
-        switch(responder){
-            case 'MAIN_CHARACTER':
-                set_dialogueTemplate(<UserTextArea send={(message) => socket.send(JSON.stringify(
-                    {
-                        'method':'SEND-MESSAGE',
-                        'message':message
-                    })
-                )}/>);
-
-                break;
-            case 'AI_CHARACTER':
-                set_dialogueTemplate(<Character_DialoguePanel player_turn={() => set_responder('MAIN_CHARACTER')} name={characterResponse.name} message={characterResponse.message}/>);
-                break;
-            default:
-               break;
-        }
-    },[responder,characterResponse]);
-    
-    const Bubble = () => {
+    const Bubble = ({value,type = 'user'}) => {
         return(
-            <span className="chatBubble w-1/3 h-14 rounded-2xl border fading px-2 py-2" style={{flexShrink:0,background:Theme.color_layer_1,color:'#F8F9FA'}}>Texting Texting</span>
+            // <div className={`chatBubble w-full h-max flex ${type === 'user' ? 'justify-end' : 'justify-start'}`} style={{pointerEvents:'none'}}>
+                 <span className="chatBubble fading w-max max-w-1/3 min-w-20  h-max min-h-10 rounded-2xl border  px-2 py-2" style={{flexShrink:0,background:Theme.color_layer_1,color:'#F8F9FA',textWrap:'wrap'}}>{value}</span>
+            // </div> */}
+           
         );
     }
+    
+    const ScrollView = useRef(null);
+    useEffect(() => {
+        ScrollView.current.scrollTop = ScrollView.current.scrollHeight;
+    },[chat_blocks]);
+
+    const add_user_bubble = useCallback((text) => {
+        const new_block = <Bubble key={chat_blocks.length} value={text}/>;
+        update_chat_blocks(prev => ([new_block,...prev]));
+    },[chat_blocks]);
+
+   
+    
 
     return(
     <article className="w-full h-full flex flex-col-reverse items-center rounded-xl " style={{background:`url(${bg_image}) center/cover no-repeat`}}>
-        <div className="absolute w-full h-full "  style={{background:Theme.DialoguePanelBg}}></div>
-        <article className="overflow-auto w-3/4 block h-full ">
-            <div className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-2  " style={{background:''}} >
-                {/* {dialogueTemplate} */}
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
-                <Bubble/>
+        <div className="absolute w-full h-full"  style={{background:Theme.DialoguePanelBg}}></div>
+        <article ref={ScrollView} className="overflow-y-auto w-3/4  block h-full  ">
+            <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-2  " style={{background:''}} >
+                {chat_blocks}
             </div>
         </article>
-        <UserTextArea/>
+        <UserTextArea action={(text) => add_user_bubble(text)}/>
 
     </article> 
-        // <div className="w-full h-full rounded-xl" style={{background:bg_image}}>
-
-        // </div>
     );
    
 };
@@ -231,7 +204,7 @@ const MessagingApp = () => {
 
     const Theme = useContext(ThemeContext);
     const AppData = useContext(MessageAppContext);
-    // console.table(AppData);
+   
 
     const {socket} = useContext(InitialData);
 
