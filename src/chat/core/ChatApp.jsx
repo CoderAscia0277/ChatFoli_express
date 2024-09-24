@@ -45,7 +45,7 @@ const ws = {
                         case 200:
                             const {web_socket_id} = JSON.parse(e.data);
                             console.log(`Websocket has been established at: ${web_socket_id}`);
-                            return this.socket;
+                            return this.socket[ClientId];
                         default:
                             console.error(`Websocket connection error`);
                             break;

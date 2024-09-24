@@ -3,8 +3,8 @@ import { useRef,lazy,useState, useContext} from "react";
 import { submitLogin } from "../_utils/Login_Validation/Login_Validation";
 import { ThemeContext } from "../..";
 
-const InputFieldTemplate = lazy(() => import('../components/SignUp/InputFieldTemplate'));
-const SubmitButton = lazy(() => import('../components/SignUp/SubmitButton'));
+const InputFieldTemplate = lazy(() => import('../components/Reusable/InputFieldTemplate'));
+const SubmitButton = lazy(() => import('../components/Reusable/SubmitButton'));
 
 
 

@@ -3,9 +3,9 @@ import { useRef, useState,lazy, useContext} from "react";
 import { ThemeContext } from "../..";
 import { SignUp_Verification } from "../_utils/SignUp_Verification/SignUp_Verification";
 
-const InputField = lazy(() => import('../components/SignUp/InputFieldTemplate'));
-const CheckBoxTermsCondition = lazy(() => import('../components/SignUp/CheckBoxTermsCondition'));
-const CreateAccountButton = lazy(() => import('../components/SignUp/SubmitButton'));
+const InputField = lazy(() => import('../components/Reusable/InputFieldTemplate'));
+const CheckBoxTermsCondition = lazy(() => import('../components/Reusable/CheckBoxTermsCondition'));
+const CreateAccountButton = lazy(() => import('../components/Reusable/SubmitButton'));
 
 
 const SignUpPage = () => {
