@@ -1,3 +1,6 @@
+#This is the first working version of my ChatApp , althpugh it still incomplete, don't modify without backup
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
