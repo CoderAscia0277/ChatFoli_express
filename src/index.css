@@ -46,6 +46,11 @@ body{
 .dialouge_wrap{
   max-width: 45%;
 }
+@media screen and (max-width : 480px){
+  .dialouge_wrap{
+    max-width: 85%;
+  }
+}
 input[type="checkbox"]:checked {
   accent-color: #635ee2;
 }

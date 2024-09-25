@@ -45,13 +45,12 @@ const UserTextArea = ({send = () => null, action = () => null, set_request_state
     const submit_action = e => {
         e.preventDefault();
         if(e.target.value){
-            console.log('stop',e.target.value);
             
             const userInput = e.target.value;
          
-            action(userInput);
+            action(userInput); // creates new user bubble based on input
 
-            send(userInput);
+            send(userInput);// send messages to the server
 
             e.target.blur(); //disables focus on the text box
             e.target.value = ''; //resets the user input
@@ -107,7 +106,7 @@ const Bubble = ({value,response_type}) => {
     if(response_type === 'user'){
         return(
             <div className={`chatBubble  fading w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_1,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+                 <span className="w-max dialouge_wrap h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_3,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
@@ -115,7 +114,7 @@ const Bubble = ({value,response_type}) => {
 
         return(
             <div className={`chatBubble  fading w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_1,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{streamMessage}</span>
+                 <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{streamMessage}</span>
             </div> 
            
         );
@@ -131,7 +130,7 @@ const MessageScrollView = ({chats}) => {
     },[chats]);
 
     return(
-        <article ref={ScrollView} className="overflow-y-auto w-3/4  block h-full  ">
+        <article ref={ScrollView} className="overflow-y-auto lg:w-3/4 w-full block h-full  ">
             <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8  " style={{background:''}} >
                 {chats}
             </div>
@@ -142,6 +141,15 @@ const MessageScrollView = ({chats}) => {
 const ChatContainer = ({socket,bg_image})=> {
     const Theme = useContext(ThemeContext);
     const loadImage = imgCache;
+    const isloaded = useRef(false);
+
+    // useEffect(() => {
+    //     if(!isloaded.current){
+    //         isloaded.current = true;
+    //         socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':'test'}))
+    //     }
+    // },[]);
+    
     loadImage.read(bg_image);
 
     const [request_state,set_request_state] = useState(false);
@@ -175,12 +183,18 @@ const ChatContainer = ({socket,bg_image})=> {
         update_chat_blocks(prev => ([new_block,...prev]));
     },[chat_blocks]);
 
+    const send_to_AI = useCallback((text) => {
+        socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':text}));
+    },[]);
+
     return(
         <article className="w-full h-full flex flex-col-reverse items-center rounded-xl " style={{background:`url(${bg_image}) center/cover no-repeat`}}>
             <div className="absolute w-full h-full pointer-events-none"  style={{background:Theme.DialoguePanelBg}}></div>
 
-            <span className=" absolute bottom lg:w-1/3 my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,opacity:`${request_state ? '0.5' : '1'}`}}>
-                <UserTextArea isRequesting={request_state} send={(text) => socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':text}))} action={(text) => add_bubble(text,'user')} set_request_state = {(bool) => set_request_state(bool)}/>
+            <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,opacity:`${request_state ? '0.5' : '1'}`}}>
+                {/* <Suspense fallback={<p>wait</p>}> */}
+                    <UserTextArea isRequesting={request_state} send={(text) => send_to_AI(text)} action={(text) => add_bubble(text,'user')} set_request_state = {(bool) => set_request_state(bool)}/>
+                {/* </Suspense> */}
                 <SubmitIcon isRequesting={request_state}/>
             </span>
 
@@ -211,7 +225,7 @@ const MessagingApp = () => {
 
     return(
         
-        <article className="w-full lg:h-full rounded-2xl flex flex-col gap-2 " style={{background:Theme.color_100}}>
+        <article className="w-full h-full rounded-2xl flex flex-col gap-2 " style={{background:Theme.color_100}}>
  
             {/* Main Chat Container */}
             <Suspense fallback={<ChatContainer_placeholder/>}>

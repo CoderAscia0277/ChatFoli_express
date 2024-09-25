@@ -28,7 +28,9 @@ export  const MessageAppContext  = createContext();
 const ws = {
     socket:{},
     connect({ClientId}){
+
         if(!this.socket[ClientId]){
+            console.log('Is connecting...')
             this.socket[ClientId] = new WebSocket('ws://localhost:8080');
 
             this.socket[ClientId].onopen = () => {
