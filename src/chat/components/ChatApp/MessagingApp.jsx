@@ -7,6 +7,46 @@ import { InitialData } from "../../core/ChatApp";
 
 const LoadingSpinner = lazy(() => import('../Reusable/SpinnerIcon'));
 
+const ws = {
+    socket:null,
+    
+    connect({ClientId}){
+
+        if(!this.socket){
+            console.log('Is connecting...')
+            this.socket= new WebSocket('ws://localhost:8080');
+
+            this.socket.onopen = () => {
+
+                this.socket.send(JSON.stringify({
+                    'method':'CREATE-CONNECTION',
+                    'ClientId':ClientId,
+                }));
+
+                this.socket.onmessage = (e) => {
+                    const {STATUS} = JSON.parse(e.data);
+
+                    switch(STATUS){
+                        case 200:
+                            const {web_socket_id} = JSON.parse(e.data);
+                            console.log(`Websocket has been established at: ${web_socket_id}`);
+                            // return this.socket[ClientId];
+                            break;
+                        default:
+                            console.error(`Websocket connection error`);
+                            break;
+                    }     
+                }
+            };
+        }else{
+            console.log('Websocket already established')
+            return;
+        }
+    },
+ 
+};
+
+
 const SubmitIcon = ({isRequesting}) => {
     const Theme = useContext(ThemeContext);
     // const isRequesting = useContext(API_STATUS);
@@ -22,7 +62,7 @@ const SubmitIcon = ({isRequesting}) => {
     }
 };
 
-const UserTextArea = ({send = () => null, action = () => null, set_request_state = () => null, isRequesting}) => {
+const UserTextArea = ({ action = () => null, set_request_state = () => null, isRequesting}) => {
 
     const isloaded = useRef(false);
     const text_field = useRef(null);
@@ -50,8 +90,9 @@ const UserTextArea = ({send = () => null, action = () => null, set_request_state
          
             action(userInput); // creates new user bubble based on input
 
-            send(userInput);// send messages to the server
-
+            //send_to_AI(userInput);// send messages to the server
+            ws.socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':userInput}));
+            
             e.target.blur(); //disables focus on the text box
             e.target.value = ''; //resets the user input
 
@@ -74,7 +115,7 @@ const Bubble = ({value,response_type}) => {
     const isloaded = useRef(false);
 
     useEffect(() => {
-        if(!isloaded.current && response_type == 'ai' ){
+        if(!isloaded.current && response_type == 'ai' && value){
             isloaded.current = true;
 
             const AnimateText = {
@@ -138,44 +179,37 @@ const MessageScrollView = ({chats}) => {
     );
 };
 
-const ChatContainer = ({socket,bg_image})=> {
+const ChatContainer = ({bg_image})=> {
     const Theme = useContext(ThemeContext);
     const loadImage = imgCache;
-    const isloaded = useRef(false);
-
-    // useEffect(() => {
-    //     if(!isloaded.current){
-    //         isloaded.current = true;
-    //         socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':'test'}))
-    //     }
-    // },[]);
     
-    loadImage.read(bg_image);
+    loadImage.read(bg_image); //Preload the bg image
 
-    const [request_state,set_request_state] = useState(false);
+    const [request_state,set_request_state] = useState(false); // Determines if the front end is busy requesting or not
 
-    const [chat_blocks,update_chat_blocks] = useState([]);
+    const [chat_blocks,update_chat_blocks] = useState([<Bubble key={0} value={'Izumi-kun eating alone again? *sits next to him*'} response_type={'ai'}/>]);
 
-    socket.onmessage = e => {
+    ws.socket.onmessage = e => {
         const {STATUS} = JSON.parse(e.data);
-        switch(STATUS){
-            case 200:
-                const {response} = JSON.parse(e.data);
-                console.log(response);
-
-                // localStore.dispatch(update_ai_message(
-                // {
-                //     'ai_message':response 
-                // }));
-
-                add_bubble(response,'ai');
-                set_request_state(false);
-                
-                break;
-            default:
-                console.error('Error while recieving message');
-                break;
+        try{
+            const {response} = JSON.parse(e.data);
+            if(response){
+                switch(STATUS){
+                    case 200:
+                        const {response} = JSON.parse(e.data);
+                        console.log(response);
+                        add_bubble(response,'ai');
+                        set_request_state(false);
+                        break;
+                    default:
+                        console.error('Error while recieving message');
+                        break;
+                }
+            }
+        }catch{
+            return;
         }
+        
     }
 
     const add_bubble = useCallback((text,response_type) => {
@@ -183,9 +217,7 @@ const ChatContainer = ({socket,bg_image})=> {
         update_chat_blocks(prev => ([new_block,...prev]));
     },[chat_blocks]);
 
-    const send_to_AI = useCallback((text) => {
-        socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':text}));
-    },[]);
+  
 
     return(
         <article className="w-full h-full flex flex-col-reverse items-center rounded-xl " style={{background:`url(${bg_image}) center/cover no-repeat`}}>
@@ -193,7 +225,7 @@ const ChatContainer = ({socket,bg_image})=> {
 
             <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,opacity:`${request_state ? '0.5' : '1'}`}}>
                 {/* <Suspense fallback={<p>wait</p>}> */}
-                    <UserTextArea isRequesting={request_state} send={(text) => send_to_AI(text)} action={(text) => add_bubble(text,'user')} set_request_state = {(bool) => set_request_state(bool)}/>
+                    <UserTextArea isRequesting={request_state}  action={(text) => add_bubble(text,'user')} set_request_state = {(bool) => set_request_state(bool)}/>
                 {/* </Suspense> */}
                 <SubmitIcon isRequesting={request_state}/>
             </span>
@@ -219,7 +251,9 @@ const MessagingApp = () => {
     const AppData = useContext(MessageAppContext);
    
 
-    const {socket} = useContext(InitialData);
+    const {clientInfo} = useContext(InitialData);
+
+    ws.connect({'ClientId':clientInfo.ClientId});
 
    
 
@@ -229,7 +263,7 @@ const MessagingApp = () => {
  
             {/* Main Chat Container */}
             <Suspense fallback={<ChatContainer_placeholder/>}>
-                <ChatContainer socket={socket} bg_image={AppData.chatbox_image}/>
+                <ChatContainer bg_image={AppData.chatbox_image}/>
             </Suspense>
            
         </article>

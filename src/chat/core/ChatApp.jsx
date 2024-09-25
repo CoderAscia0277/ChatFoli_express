@@ -122,7 +122,7 @@ const IndexPage = () => {
     )
    }else if(!isLoading && startChat){
         return(
-           <InitialData.Provider value={{'clientInfo':ClientInfo,'storyInfo':VizNovel_Info,'socket':  ws.connect({'ClientId': ClientInfo.ClientId})}}>
+           <InitialData.Provider value={{'clientInfo':ClientInfo,'storyInfo':VizNovel_Info,'socket': ''}}>
                  <MessageAppContext.Provider value={MessageUIData}>
                     <MessagingApp ClientInfo={ClientInfo}/>
                 </MessageAppContext.Provider>
