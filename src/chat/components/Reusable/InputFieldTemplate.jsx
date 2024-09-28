@@ -35,7 +35,7 @@ const InputField = ({resetComponent = () => null,refVal,label,intuitive_icon,hin
                                         WebkitBoxShadow:` 0 0 0 100px ${Theme.color_50} inset`,
                                         WebkitTextFillColor:Theme.TextColor
                                     }} 
-                                    className={`flex-grow bg-transparent border-0 py-3 px-6 rounded-full ${error_message ? 'outline' : ''}`}/>
+                                    className={`flex-grow bg-transparent border-0 py-3 px-6 rounded-full ${error_message ? 'outline' : ''} ${error_message ? 'shake-horizontal' : ''} `}/>
                                 {showEye ? <ShowIcon changeType ={() => set_inputType(input_type === 'text' ? 'password' : 'text')} show={input_type === 'text'}/> : null}
                             
                             </span>

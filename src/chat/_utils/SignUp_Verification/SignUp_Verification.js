@@ -6,6 +6,7 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
         set_status(prev => ({...prev,UsernameStatus:status}));
         if(error_message){
             set_error(prev => ({...prev,UsernameError:error_message}));
+            return {'status':'invalid'};
         }
     };
     
@@ -13,6 +14,7 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
         set_status(prev => ({...prev,EmailStatus:status}));
         if(error_message){
             set_error(prev => ({...prev,EmailError:error_message}));
+            return {'status':'invalid'};
         }
     };
 
@@ -39,14 +41,14 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
             PasswordError: !password.length ? 'This field is required' : 'Must be atleast 8 characters long',
             ConfirmPasswordError: !confirm_password.length ? 'This field is required' : '',
         }));
-        return;
+        return {'status':'invalid'};
     }
 
     //CHECK IF IT MATCHES
     if(password !== confirm_password){ //is password similar to confirm password ?
         set_status(prev => ({...prev,PasswordStatus:null,ConfirmPasswordStatus:'invalid'}));
         set_error(prev => ({...prev,ConfirmPasswordError:!confirm_password.length ? 'This field is required' : "Doesn't Match"}));
-        return;
+        return {'status':'invalid'};
     }
 
     //RESET ERROR MESSAGES
@@ -84,16 +86,18 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
                 // If the instance is 'userVerificationStatus', call callUserAction with an invalid status and error message
                 if(instance === 'userVerificationStatus') {
                     callUserAction({status: 'invalid', error_message: 'Already exist'});
+                    return {'status':'invalid'};
                 } else {
                     // Otherwise, call callEmailAction with an invalid status and error message
                     callEmailAction({status: 'invalid', error_message: 'Already linked to an existing account'});
+                    return {'status':'invalid'};
                 }
-                break;
 
             case 'AVAILABLE':
                 // If the instance is 'userVerificationStatus', call callUserAction with a valid status and no error message
                 if(instance === 'userVerificationStatus') {
                     callUserAction({status: 'valid', error_message: null});
+                  
                 } else {
                     // Otherwise, call callEmailAction with a valid status and no error message
                     callEmailAction({status: 'valid', error_message: null});
@@ -118,9 +122,12 @@ export const SignUp_Verification = async({username,email,password,confirm_passwo
 
         if(creatAccount.status === 200){
             console.log('new account created!')
+
+            return {'status':'valid','url':'/'};
         }else{
             console.log('Internal Server ERROR')
         }
 
     }
+    return {'status':'invalid'};
 };

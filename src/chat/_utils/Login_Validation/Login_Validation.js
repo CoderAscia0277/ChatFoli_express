@@ -39,10 +39,10 @@ export const submitLogin = async({username,password,set_error,set_status}) => {
     //CHECK PASSWORD INPUT
     if(!password){
         passwordAction({status:'invalid',error:'This field is required'});
-        return;
+        return {'status':'invalid'};
     }else if(password.length < 8){
         passwordAction({status:'invalid',error:'Invalid password'});
-        return;
+        return {'status':'invalid'};
     }
 
     //MARK AS BUSY
@@ -51,7 +51,7 @@ export const submitLogin = async({username,password,set_error,set_status}) => {
 
     const submit = await axios.post(`http://localhost:5000/LOGIN`,{'username':username,'password':password}).then(res => res.data).catch(err => {console.error(err); return null});
     
-    console.log(submit);
+    // console.log(submit);
 
     userAction(
         {
@@ -65,13 +65,14 @@ export const submitLogin = async({username,password,set_error,set_status}) => {
             error:submit.PasswordError
         }
     )
-    setTimeout(() => {
-        if(submit.UsernameStatus === 'valid' && submit.PasswordStatus === 'valid'){
-            window.location.href = `/${username}/${submit.sessionId}`;
-            return;
-        }
-    },1000);
+    if(submit.UsernameStatus === 'valid' && submit.PasswordStatus === 'valid'){
     
+        return {'status':'valid','url':`/${username}/${submit.sessionId}`};
+    }
+    
+    
+    return {'status':'invalid'};
+
     // const submit = await fetch(`http://localhost:5000/LOGIN/${username.value}/${password.value}`).then(res => res.ok ? res.json() :  new Error(res.status)).catch(err => {console.error(err); return null});
    
     // if(submit){

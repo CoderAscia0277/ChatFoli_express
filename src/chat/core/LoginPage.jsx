@@ -1,5 +1,5 @@
 
-import { useRef,lazy,useState, useContext} from "react";
+import { useRef,lazy,useState, useContext, useCallback} from "react";
 import { submitLogin } from "../_utils/Login_Validation/Login_Validation";
 import { ThemeContext } from "../..";
 
@@ -28,6 +28,17 @@ const LoginPage = () => {
 
     const Theme = useContext(ThemeContext);
 
+    const EnterSubmit = ({username,password}) => {
+        if(username && password){
+            submitLogin({
+                set_error:(data) => set_error(data),
+                set_status:(data) => set_status(data),
+                username:username.value,
+                password:password.value,
+            });
+        }
+    };
+
     return(
         <section className="w-screen h-screen flex flex-row items-center justify-center" style={{background:Theme.color_200}}>
              {/* <img src={Theme.logo} className="absolute top-0 left-0 mx-4 lg:block hidden" style={{height:'10vh'}}/> */}
@@ -41,7 +52,7 @@ const LoginPage = () => {
                     {/* Caption */}
                     {/* <p className="text-xl w-full font-mediuim text-center block pt-4" style={{color:Theme.TextColor}}>Sign In to VizNovel </p> */}
 
-                    <article className="flex flex-col w-full items-center pt-4">
+                    <article className="flex flex-col w-full items-center pt-4" onKeyDown={(e) => e.key === 'Enter' ? EnterSubmit({'username':username.current,'password':password.current}) : null}>
                         
                         <InputFieldTemplate resetComponent={() => {
                                 set_error(prev => ({...prev,UsernameError:null})); 
