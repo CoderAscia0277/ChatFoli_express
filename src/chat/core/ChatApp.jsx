@@ -100,7 +100,7 @@ const IndexPage = () => {
         }
     });
 
-    const [startChat,set_startChat] = useState(true);
+    const [startChat,set_startChat] = useState(false);
 
     const VizNovel_Info = {
         'Tittle':''
@@ -112,10 +112,11 @@ const IndexPage = () => {
             <SideBar/>
             <section className="w-full flex justify-start items-center gap-8 py-4 px-4" style={{height:'-webkit-fill-available', background:Theme.color_200}}>
                 <MessageSelection/>
-                <MessageAppContext.Provider value={MessageUIData}>
+                <InfoPanel/>
+                {/* <MessageAppContext.Provider value={MessageUIData}> */}
                     {/* <MessagingApp ClientInfo={ClientInfo}/> */}
-                    <InfoPanel/>
-                </MessageAppContext.Provider>
+                   
+                {/* </MessageAppContext.Provider> */}
                 
             </section>
         </InitialData.Provider>

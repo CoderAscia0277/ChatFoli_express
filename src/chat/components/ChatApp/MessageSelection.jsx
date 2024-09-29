@@ -12,9 +12,9 @@ const MessageSelection = () => {
                 {/* Info about the story */}
                 <div className="flex-grow h-full rounded-lg flex flex-col p-1 gap-1" style={{background:Theme.color_layer_1}}>
                     {/* Title */}
-                    <span className="w-1/2 rounded-md h-1/3" style={{background:Theme.color_layer_3}}></span>
+                    <span className="w-1/2 rounded-md h-5" style={{background:Theme.color_layer_3}}></span>
                     {/* Other Info like tag , rating ,etc. */}
-                    <span className=" rounded-md flex-grow" style={{background:Theme.color_layer_3}}></span>
+                    <span className=" rounded-md w-full h-5" style={{background:Theme.color_layer_3}}></span>
                 </div>
             </div>
         );
