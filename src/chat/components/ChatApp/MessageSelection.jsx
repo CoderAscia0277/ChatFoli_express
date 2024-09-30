@@ -1,10 +1,13 @@
 import { ThemeContext } from "../../..";
-import { Suspense, useContext } from "react";
+import { Suspense, useCallback, useContext, useEffect, useState } from "react";
 import imgCache from "../../_utils/ImageCache";
+import { InitialData } from "../../core/ChatApp";
 
 const MessageSelection = () => {
 
     const Theme= useContext(ThemeContext);
+    const {Stories} = useContext(InitialData);
+    const [ClickableBlocks,update_ClickableBlocks] = useState([]);
 
     const ClickableStoryTemplatePlaceholder = ({isHidden}) => {
         return(
@@ -22,9 +25,9 @@ const MessageSelection = () => {
         );
     }
 
-    const ClickableStoryTemplate = ({StoryImage,StoryName,StoryDescription}) => {
+    const ClickableStoryTemplate = ({StoryImage,StoryName,StoryDetails,click = () => null,keyVal}) => {
         
-        if(!StoryImage || !StoryName || !StoryDescription){
+        if(!StoryImage || !StoryName || !StoryDetails){
             throw new Error(`ClickableStoryTemplate component cannot be Null`);
         };
 
@@ -32,18 +35,22 @@ const MessageSelection = () => {
         img_loader.read(StoryImage);
 
         return(
-            <div className={` p-2 flex flex-row gap-2 rounded-xl w-full`} style={{background:Theme.color_layer_1 , aspectRatio:2/1}} >
+            <div key={keyVal} className={`  flex flex-col rounded-xl w-full gap-2 px-4 cursor-pointer`} style={{aspectRatio:1/2}} >
                 {/* story image */}
-                <div className="h-full rounded-lg" style={{aspectRatio:3/4,background:`url(${StoryImage}) center/cover no-repeat`}}></div>
+                <div className="h-1/2 rounded-m" style={{aspectRatio:'',background:`url(${StoryImage}) center/cover no-repeat`}}></div>
                 {/* Info about the story */}
-                <div className="flex-grow h-full rounded-lg flex flex-col p-1 py-0 justify-around items-end" style={{background:'transparent',color:Theme.TextColor}}>
+                {/* <div className="flex-grow h-full rounded-lg flex flex-col p-1 py-0 justify-around items-end" style={{background:'transparent',color:Theme.TextColor}}> */}
                     {/* Title */}
-                    <span className="w-full rounded-md h-5 font-semibold" >{StoryName}</span>
+                    <span className="w-full rounded-md h-5 font-semibold text-sm flex flex-col" style={{color:Theme.TextColor}} >
+                        {StoryName}
+                        <span className="w-full rounded-md h-5 font-normal text-xs" style={{color:Theme.TextColor2}} >{'@Moe Paradise'}</span>
+                    </span>
+                    
                     {/* Other Info like tag , rating ,etc. */}
-                    <span className=" rounded-md w-full  text-sm font-semibold " >Description:<p className={` flex-grow overflow-y-auto font-normal`} style={{color:Theme.TextColor2}}>{StoryDescription}</p></span>
+                    {/* <span className=" rounded-md w-full  text-sm font-semibold " >Description:<p className={` flex-grow overflow-y-auto font-normal`} style={{color:Theme.TextColor2}}>{StoryDetails}</p></span>
                     {/* Play */}
-                    <span className={`rounded-xl px-8 py-1 font-semibold w-max flex justify-center cursor-pointer hover:scale-105`} style={{background:Theme.TextColor,color:Theme.color_100}}>Play</span>
-                </div>
+                    {/* <span className={`rounded-xl px-8 py-1 font-semibold w-max flex justify-center cursor-pointer hover:scale-105`} onClick={() => click()} style={{background:Theme.TextColor,color:Theme.color_100}}>Play</span> */} 
+                {/* </div> */}
           
                 
             </div>
@@ -65,6 +72,32 @@ const MessageSelection = () => {
           
         );
     }
+
+    const ClickableAction = useCallback((StoryInfo) => {
+        console.table(StoryInfo);
+    },[]);
+
+    useEffect(() => {
+        if(Stories){
+            const blocks = {
+                caches:[<ClickableStoryTemplatePlaceholder key={0} isHidden={true}/>,<ClickableStoryTemplatePlaceholder key={1} isHidden={true}/>],
+                generate(arr){
+                    arr.forEach((data) => {
+
+                        const block_template = (<Suspense key={this.caches.length} fallback={<ClickableStoryTemplatePlaceholder/>}>
+                            <ClickableStoryTemplate   StoryImage={data.StoryImage} StoryName={data.StoryName} StoryDetails={data.StoryDetails} click={() => ClickableAction(data)}/>
+                        </Suspense>)
+
+                        this.caches = [block_template,...this.caches];
+
+                    });
+                    update_ClickableBlocks(this.caches);
+                }
+            }
+            blocks.generate(Stories);
+        }
+    },[Stories]);
+
     return(
         <aside className=" w-full h-full rounded-2xl p-4 flex flex-col gap-2" style={{background:Theme.color_100}}>  
             {/* Title : Stories */}
@@ -72,36 +105,11 @@ const MessageSelection = () => {
                 <p className="font-semibold text-2xl ">Stories</p>
                 <AddStory/>
             </div>
-            <article className="w-full max-h-full h-max grid overflow-auto items-start" style={{gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))',columnGap:'1rem',rowGap:'1rem'}}>
-                <Suspense fallback={<ClickableStoryTemplatePlaceholder/>}>
-                    <ClickableStoryTemplate StoryImage={'/images/school_girl.jpg'} StoryName={'My lunch at the cafeteria'} StoryDescription={`InfoPanel' is assigned a value but never used          no-unused-vars
-                             Line 82:26:   'set_MessageUIData'...`}/>
-                </Suspense>
-                <Suspense fallback={<ClickableStoryTemplatePlaceholder/>}>
-                    <ClickableStoryTemplate StoryImage={'/images/school_girl.jpg'} StoryName={'My lunch at the cafeteria'} StoryDescription={`InfoPanel' is assigned a value but never used          no-unused-vars
-                        Line 82:26:   'set_MessageUIData'...`}/>
-                </Suspense>
-                <Suspense fallback={<ClickableStoryTemplatePlaceholder/>}>
-                    <ClickableStoryTemplate StoryImage={'/images/school_girl.jpg'} StoryName={'My lunch at the cafeteria'} StoryDescription={`InfoPanel' is assigned a value but never used          no-unused-vars
-                             Line 82:26:   'set_MessageUIData'...`}/>
-                </Suspense>
-                <Suspense fallback={<ClickableStoryTemplatePlaceholder/>}>
-                    <ClickableStoryTemplate StoryImage={'/images/school_girl.jpg'} StoryName={'My lunch at the cafeteria'} StoryDescription={`InfoPanel' is assigned a value but never used          no-unused-vars
-                        Line 82:26:   'set_MessageUIData'...`}/>
-                </Suspense>
-                <ClickableStoryTemplatePlaceholder isHidden={true}/>
-                <ClickableStoryTemplatePlaceholder isHidden={true}/>
-                {/* <ClickableStoryTemplate />
-                <ClickableStoryTemplate/> 
-                 <ClickableStoryTemplate/>
-                <ClickableStoryTemplate/>
-                <ClickableStoryTemplate/>
-                <ClickableStoryTemplate/>
-                <ClickableStoryTemplate/>
-                <ClickableStoryTemplate/> 
-                <ClickableStoryTemplate/>
-                <ClickableStoryTemplate/> */}
-                {/* <ClickableStoryTemplate isHidden={true}/>  */}
+            <article className="w-full max-h-full h-max grid lg:grid-cols-6 md:grid-cols-4 grid-cols-3 overflow-auto items-start" style={{}}>
+                
+                {ClickableBlocks}
+                
+            
             </article>
            
         </aside>

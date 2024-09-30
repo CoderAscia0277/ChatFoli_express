@@ -35,7 +35,7 @@ export const LightMode = {
     DialoguePanelBg:'linear-gradient(90deg, rgba(19, 19, 19, 0.467), rgb(0 0 0 / 60%), rgb(19 19 19 / 68%), rgba(19, 19, 19, 0.467))',
 }
 export const DarkMode = {
-  IconSize:'w-8 h-8',
+  IconSize:'w-6 h-6',
   TextColor: '#F8F9FA',
   TextColor2:'#C3C3C6',
   TextColor3:'#C4C3F4',

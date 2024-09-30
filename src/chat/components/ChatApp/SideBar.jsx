@@ -29,7 +29,7 @@ const SideBar = () => {
                 <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     fill="currentColor" 
-                    className={`${Theme.IconSize} cursor-pointer  ${IsActive ? 'p-1' : ''} `} 
+                    className={`${Theme.IconSize} cursor-pointer  ${IsActive ? '' : ''} `} 
                     viewBox="0 0 16 16" 
                     onClick={() => action()}
                 >

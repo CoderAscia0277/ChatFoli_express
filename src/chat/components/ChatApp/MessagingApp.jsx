@@ -309,8 +309,7 @@ const ChatContainer = ({bg_image})=> {
   
 
     return(
-        <article className="w-full h-full flex flex-col-reverse items-center rounded-xl " style={{background:`url(${bg_image}) center/cover no-repeat`}}>
-            <div className="absolute w-full h-full pointer-events-none"  style={{background:Theme.DialoguePanelBg}}></div>
+        <article className={`w-full h-full flex flex-col-reverse items-center rounded-xl `} style={{background:`url(${bg_image}) center/cover no-repeat`,borderImage:`fill 0 ${Theme.DialoguePanelBg}`}}>
             <MessageScrollView />
         </article> 
     

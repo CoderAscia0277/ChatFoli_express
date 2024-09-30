@@ -106,9 +106,61 @@ const IndexPage = () => {
         'Tittle':''
     };
     
+    const Stories = [
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+        {
+            'StoryImage':'/images/school_girl.jpg',
+            'StoryName':'The girl at the cafeteria',
+            'StoryDetails':'A short story between you and ...',
+            'PromptID':'016798',
+
+        },
+    ];
+
    if(!isLoading && !startChat){
     return(
-        <InitialData.Provider value={{'clientInfo':ClientInfo}}>
+        <InitialData.Provider value={{'clientInfo':ClientInfo,'Stories':Stories}}>
             <SideBar/>
             <section className="w-full flex justify-start items-center gap-8 py-4 px-4" style={{height:'-webkit-fill-available', background:Theme.color_200}}>
                 <MessageSelection/>
