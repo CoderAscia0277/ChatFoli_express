@@ -100,7 +100,7 @@ const IndexPage = () => {
         }
     });
 
-    const [startChat,set_startChat] = useState(false);
+    const [startChat,set_startChat] = useState(true);
 
     const VizNovel_Info = {
         'Tittle':''

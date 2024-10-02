@@ -5,6 +5,7 @@ import imgCache from "../../_utils/ImageCache";
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { InitialData } from "../../core/ChatApp";
 import SpinnerIcon from "../Reusable/SpinnerIcon";
+import { Theme } from "../../_utils/Constants";
 
 
 const localState = createSlice({
@@ -17,6 +18,14 @@ const localState = createSlice({
         }
     }
 })
+
+const sample = [
+    'yes Sir!, this is afor this app.',
+    'yes Sir!, this is a sample text or this app.'
+    ,"hahhaha, that's funnse for this app."
+
+]
+
 
 const instructions = `
         1. Context: You're name is Asagami Yuzuha, a 16 yrs old high school girl.
@@ -210,14 +219,14 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
     if(response_type === 'user'){
         return(
             <div className={`chatBubble  fading w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_3,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+                 <span className="w-max dialouge_wrap h-max min-h-16 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_3,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
     }else if(response_type === 'intro'){
         return(
             <div className={`chatBubble  fading w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+                 <span className="w-max dialouge_wrap  h-max min-h-14 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
@@ -233,6 +242,93 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
     }
     
 };
+
+
+const UserOptions = ({value,keyVal,action = () => null}) => {
+    const Theme = useContext(ThemeContext);
+    const [bgcolor,change_color] = useState(Theme.color_layer_2);
+    const isClicked = useCallback(() => {
+        change_color(Theme.color_layer_3);
+
+        setTimeout(() => {
+            action(true);
+        },1000);
+        
+    },[]);
+    return(
+    // <div className=" px-4 flex justify-center ">
+        <span onClick={() => isClicked()} key={keyVal} className="slide-top hover:relative  m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4 border rounded-2xl cursor-pointer" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
+            {value}
+        </span>
+    // </div>
+    );
+};
+
+const OptionList = ({options}) => {
+
+    const [childs, update_child] = useState([]);
+    const isMounted = useRef(false);
+
+
+    const [hasChosen, update_hasChosen] = useState(false);
+    const [displayLoader, update_displayLoader] = useState(false);
+
+    const generate_options = {
+        cache:[],
+        begin(arr){
+            arr.forEach((text) => {
+                const template = <UserOptions value={text} key={this.cache.length} action={(bool) => update_hasChosen(bool)}/>
+                this.cache = [...this.cache,template];
+            });
+            update_child(this.cache);
+        }
+    };
+
+    useEffect(() => {
+        if(options && !isMounted.current){
+            isMounted.current = true;
+            generate_options.begin(options);
+        }
+    },[options]);
+    
+    useEffect(() => {
+        if(hasChosen){
+            setTimeout(() => {
+                update_displayLoader(true);
+            },1000);
+
+            setTimeout(() => {
+                update_hasChosen(false);
+                update_displayLoader(false);
+            },6500);
+        }
+    },[hasChosen]);
+
+    if(!displayLoader){
+        return(
+            <div className={`absolute bottom-0 lg:w-3/4 w-full flex flex-row  h-max py-8 overflow-x-auto ${hasChosen ? 'slide-down' : 'slide-in-bottom '}` }   >
+                <div className="lg:w-full w-max flex flex-row gap-8 justify-center items-center  px-4" style={{flexShrink:0}}>
+                    {childs}
+                </div>
+                
+            </div>
+        )
+    }else{
+        return(
+            <div className=" absolute bottom-0 lg:w-3/4 w-full h-1/4  appear flex items-center justify-center">
+                <span className="loader "></span>
+            </div>
+        );
+
+    }
+    
+}
+
+const OptionSpacer = () => {
+    return(
+        <span className="w-full h-1/4 pointer-events-none"></span>
+    );
+}
 
 const IsRequestingContext = createContext();
 
@@ -285,17 +381,26 @@ const MessageScrollView = () => {
         update_chat_blocks(prev => ([new_block,...prev]));
     },[chat_blocks]);
 
+
+    
     return(
         <IsRequestingContext.Provider value={request_state}>
-            <article ref={ScrollView} className="overflow-y-auto lg:w-3/4 w-full block h-full  ">
-                <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8  " style={{background:''}} >
+        <section className="flex flex-col lg:w-3/4 w-full h-full ">
+            <article ref={ScrollView} className="overflow-y-auto  w-full block flex-grow  ">
+                <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8   " style={{background:''}} >
                     {chat_blocks}
                 </div>
+                
             </article>
-            <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,zIndex:1,opacity:`${request_state ? '0.5' : '1'}`}}>
+            <OptionSpacer/>
+        </section>
+        <OptionList options={sample}/>
+            
+            {/* <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,zIndex:1,opacity:`${request_state ? '0.5' : '1'}`}}>
                 <UserTextArea action={(text) => add_bubble(text,'user')}/>
            
-            </span>
+            </span> */}
+           
         </IsRequestingContext.Provider>
         
     );
