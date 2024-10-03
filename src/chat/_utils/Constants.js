@@ -44,6 +44,7 @@ export const DarkMode = {
   color_50:'#38384f',
   color_layer_1:'#29292d',
   color_layer_2:'#33333b',
+  color_layer_trans:'#33333bbb',
   color_layer_3:'#434349',
   color_400:'#6C757D',
   error:'#fb2920',

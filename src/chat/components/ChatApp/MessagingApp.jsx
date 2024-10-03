@@ -246,18 +246,18 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
 
 const UserOptions = ({value,keyVal,action = () => null}) => {
     const Theme = useContext(ThemeContext);
-    const [bgcolor,change_color] = useState(Theme.color_layer_2);
+    const [bgcolor,change_color] = useState(Theme.color_layer_trans);
     const isClicked = useCallback(() => {
-        change_color(Theme.color_layer_3);
+        change_color(Theme.color_layer_1);
 
         setTimeout(() => {
             action(true);
-        },1000);
+        },500);
         
     },[]);
     return(
     // <div className=" px-4 flex justify-center ">
-        <span onClick={() => isClicked()} key={keyVal} className="slide-top hover:relative  m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4 border rounded-2xl cursor-pointer" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
+        <span onClick={() => isClicked()} key={keyVal} className="slide-top-disable m-auto hover:relative break-normal lg:w-max w-full option_wrap min-w-30 h-max py-2 px-4 border rounded-2xl cursor-pointer lg:text-md text-md" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
             {value}
         </span>
     // </div>
@@ -294,33 +294,31 @@ const OptionList = ({options}) => {
     useEffect(() => {
         if(hasChosen){
             setTimeout(() => {
-                update_displayLoader(true);
-            },1000);
+                // update_displayLoader(true);
+                localStore.dispatch(update_isRequesting(true));
+            },500);
 
             setTimeout(() => {
-                update_hasChosen(false);
-                update_displayLoader(false);
+                localStore.dispatch(update_isRequesting(false));
+                // update_hasChosen(false);
+                // update_displayLoader(false);
             },6500);
         }
     },[hasChosen]);
 
-    if(!displayLoader){
+    // if(!displayLoader){
         return(
-            <div className={`absolute bottom-0 lg:w-3/4 w-full flex flex-row  h-max py-8 overflow-x-auto ${hasChosen ? 'slide-down' : 'slide-in-bottom '}` }   >
-                <div className="lg:w-full w-max flex flex-row gap-8 justify-center items-center  px-4" style={{flexShrink:0}}>
+            <div className={` flex flex-row  h-max overflow-x-auto ${hasChosen ? 'slide-down-disable disappear' : 'slide-in-bottom-disable appear '}` }   >
+                <div className="w-max  flex flex-col lg:gap-6 gap-4 justify-end items-end   " style={{flexShrink:0}}>
                     {childs}
                 </div>
                 
             </div>
         )
-    }else{
-        return(
-            <div className=" absolute bottom-0 lg:w-3/4 w-full h-1/4  appear flex items-center justify-center">
-                <span className="loader "></span>
-            </div>
-        );
+    // }else{
+        
 
-    }
+    // }
     
 }
 
@@ -331,6 +329,83 @@ const OptionSpacer = () => {
 }
 
 const IsRequestingContext = createContext();
+
+
+const DialoguePanel = ({value,response_type}) => {
+
+    const isRequesting = useContext(IsRequestingContext);
+
+    const Theme = useContext(ThemeContext);
+
+    const [streamMessage,update_streamMessage] = useState('');
+    const [isStreaming, update_isStreaming] = useState(true);
+
+    const isloaded = useRef(false);
+
+    
+
+    useEffect(() => {
+        if(!isloaded.current && response_type == 'ai' && value){
+            isloaded.current = true;
+
+            const AnimateText = {
+                cache:[],
+                iterate(text){
+                    this.cache = [];
+                    const text_array = text.split('');
+                    const interval = setInterval(() => {
+        
+                        this.cache.push(text_array[this.cache.length]);
+        
+                        update_streamMessage(this.cache.join(''));
+
+                        // scrollUp(); // Scrolls the messages container everytime the bubble values is being updated
+
+                        if(this.cache.length === text_array.length){
+                            clearInterval(interval);
+
+                            // //Set isRequesting to false, it means its done responding
+                            // localStore.dispatch(update_isRequesting(false));
+                            update_isStreaming(false);
+                        }
+                    },30);
+                }
+            };
+
+            AnimateText.iterate(value);
+        }
+    },[value]);
+
+    if(isRequesting){
+        return(
+        <article className="lg:w-3/4 md:w-3/4 w-full h-1/4 appear absolute bottom-0 flex   justify-center items-center" style={{color:Theme.TextColor}}>
+            {/* <div className=" lg:w-3/4 w-full h-1/4  appear flex items-center justify-center"> */}
+                <span className="loader "></span>
+            {/* </div> */}
+        </article>
+        );
+    }else{
+        return(
+            <>
+                <article className=" lg:w-3/4 md:w-3/4 w-full h-1/4 absolute bottom-0 flex flex-col  gap-4 justify-start items-center py-4" style={{color:Theme.TextColor,borderTop:'1px solid white'}}>
+                    <span className="text-md text-center">- Yuzuha Kotori -</span>
+                    <p className="text-center lg:text-lg text-lg">{streamMessage}</p>
+                </article>
+                {
+                    true ?
+                    <article className="absolute  top-0 lg:w-3/4 md:w-3/4 w-full h-3/4 flex lg:justify-endf lg:items-endf md:justify-endf md:items-endf justify-center items-center  ">
+                        <OptionList options={sample}/>
+                    </article>
+                    : null
+                }
+            </>
+            );
+    }
+
+   
+};
+
+
 
 const MessageScrollView = () => {
 
@@ -349,6 +424,7 @@ const MessageScrollView = () => {
     const [chat_blocks,update_chat_blocks] = useState([<Bubble key={0} scrollUp={() => ScrollUp()} value={'Izumi-kun eating alone again? *sits next to him*'} response_type={'intro'}/>]);
 
     const ScrollView = useRef(null);
+
     useEffect(() => {
         ScrollView.current.scrollTop = ScrollView.current.scrollHeight;
     },[chat_blocks]);
@@ -381,29 +457,41 @@ const MessageScrollView = () => {
         update_chat_blocks(prev => ([new_block,...prev]));
     },[chat_blocks]);
 
+    const enable_prev_layout = false;
 
-    
-    return(
-        <IsRequestingContext.Provider value={request_state}>
-        <section className="flex flex-col lg:w-3/4 w-full h-full ">
-            <article ref={ScrollView} className="overflow-y-auto  w-full block flex-grow  ">
-                <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8   " style={{background:''}} >
-                    {chat_blocks}
-                </div>
+    if(enable_prev_layout){
+        return(
+            <IsRequestingContext.Provider value={request_state}>
+            <section className="flex flex-col lg:w-3/4 w-full h-full ">
+                <article ref={ScrollView} className="overflow-y-auto  w-full block flex-grow  ">
+                    <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8   " style={{background:''}} >
+                        {chat_blocks}
+                    </div>
+                    
+                </article>
+                <OptionSpacer/> 
+            </section>
+            <OptionList options={sample}/>
                 
-            </article>
-            <OptionSpacer/>
-        </section>
-        <OptionList options={sample}/>
+                {/* <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,zIndex:1,opacity:`${request_state ? '0.5' : '1'}`}}>
+                    <UserTextArea action={(text) => add_bubble(text,'user')}/>
+               
+                </span> */}
+               
+            </IsRequestingContext.Provider>
             
-            {/* <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,zIndex:1,opacity:`${request_state ? '0.5' : '1'}`}}>
-                <UserTextArea action={(text) => add_bubble(text,'user')}/>
-           
-            </span> */}
-           
-        </IsRequestingContext.Provider>
-        
-    );
+        );
+    }else{
+        return(
+            <IsRequestingContext.Provider value={request_state}>
+                  <section  ref={ScrollView} className="flex flex-col lg:w-3/4 w-full h-full ">
+                    <DialoguePanel value={'hi, my name is ISLA, your personal virtual companion.'} response_type={'ai'}/>
+                  </section>
+            </IsRequestingContext.Provider>
+        )
+    }
+    
+    
 };
 
 const ChatContainer = ({bg_image})=> {
