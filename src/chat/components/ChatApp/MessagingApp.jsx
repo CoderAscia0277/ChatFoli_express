@@ -1,21 +1,25 @@
-import { useContext ,Suspense, useState, useEffect, useRef, memo, useCallback, lazy, createContext} from "react";
+import { useContext ,Suspense, useState, useEffect, useRef, useCallback, createContext} from "react";
 import { ThemeContext } from "../../..";
 import { MessageAppContext } from "../../core/ChatApp";
 import imgCache from "../../_utils/ImageCache";
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { InitialData } from "../../core/ChatApp";
 import SpinnerIcon from "../Reusable/SpinnerIcon";
-import { Theme } from "../../_utils/Constants";
+// import { Theme } from "../../_utils/Constants";
 
 
 const localState = createSlice({
     name:'localState',
     initialState:{
-        isRequesting:false
+        isRequesting:false,
+        userText:'',
     },reducers:{
         update_isRequesting:(state,data) => {
             state.isRequesting = data.payload;
-        }
+        },
+        update_userText:(state,data) => {
+            state.userText = data.payload;
+        },
     }
 })
 
@@ -54,7 +58,7 @@ const history = [
     ];
 
 const localStore = configureStore({reducer:localState.reducer});
-const {update_isRequesting} = localState.actions;
+const {update_isRequesting,update_userText} = localState.actions;
 
 const ws = {
     socket:null,
@@ -156,7 +160,8 @@ const UserTextArea = ({ action = () => null}) => {
     // In short nag kakaroon ng delay ung spinner icon kaya may promise, to fix this import mo nlng ung spinner Icon without lazy
    
     return(
-        <>
+        <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,zIndex:1,opacity:`${isRequesting ? '0.5' : '1'}`}}>
+
             <input type="text"  ref={text_field} onKeyDown={e => e.key === "Enter" ? submit_action(e) : null} className="bg-transparent  flex-grow h-14 outline-0 px-4 text-center text-neutral-100"  placeholder={`${isRequesting ? "Azumi is currently typing..." :"Please enter your response here."}`} style={{resize:'none'}}/>      
             
             {
@@ -171,7 +176,7 @@ const UserTextArea = ({ action = () => null}) => {
                     )
                 
             }
-        </>
+        </span>
        
     );
 };
@@ -183,7 +188,7 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
     const isloaded = useRef(false);
 
     useEffect(() => {
-        if(!isloaded.current && response_type == 'ai' && value){
+        if(!isloaded.current && response_type === 'ai' && value){
             isloaded.current = true;
 
             const AnimateText = {
@@ -214,12 +219,12 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
                 'called'
             )
         }
-    },[value]);
+    },[value,scrollUp,response_type]);
 
     if(response_type === 'user'){
         return(
             <div className={`chatBubble  fading w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap h-max min-h-16 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_3,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+                 <span className="w-max dialouge_wrap h-max  rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_3,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
@@ -244,17 +249,34 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
 };
 
 
-const UserOptions = ({value,keyVal,action = () => null}) => {
+const UserOptions = ({value,keyVal,action = () => null,submit= () => null}) => {
     const Theme = useContext(ThemeContext);
     const [bgcolor,change_color] = useState(Theme.color_layer_2);
-    const isClicked = useCallback(() => {
-        change_color(Theme.color_layer_3);
 
-        setTimeout(() => {
-            action(true);
-        },1000);
+    const isClicked = async() => {
+        change_color(Theme.color_layer_3);
+       
+        await new Promise(resolve => {
+            setTimeout(() => {
+                action(true);
+                // submit(value);
+                localStore.dispatch(update_userText(value));
+                console.log('called');
+                resolve();
+            },300);
+        });
+
+        await new Promise(resolve => {
+            setTimeout(() => {
+                localStore.dispatch(update_isRequesting(true));
+                ws.socket.send(JSON.stringify({'method':'SEND-MESSAGE','message':value}));
+                resolve();
+            },1000);
+        });
         
-    },[]);
+        
+    };
+
     return(
     // <div className=" px-4 flex justify-center ">
         <span onClick={() => isClicked()} key={keyVal} className="slide-top hover:relative  m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4 border rounded-2xl cursor-pointer" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
@@ -264,60 +286,60 @@ const UserOptions = ({value,keyVal,action = () => null}) => {
     );
 };
 
-const OptionList = ({options}) => {
+
+const OptionList = ({options,submitAction = () => null}) => {
 
     const [childs, update_child] = useState([]);
     const isMounted = useRef(false);
 
 
     const [hasChosen, update_hasChosen] = useState(false);
-    const [displayLoader, update_displayLoader] = useState(false);
+    // const [displayLoader, update_displayLoader] = useState(false);
 
-    const generate_options = {
-        cache:[],
-        begin(arr){
-            arr.forEach((text) => {
-                const template = <UserOptions value={text} key={this.cache.length} action={(bool) => update_hasChosen(bool)}/>
-                this.cache = [...this.cache,template];
-            });
-            update_child(this.cache);
-        }
-    };
+    const isRequesting = useContext(IsRequestingContext);
 
     useEffect(() => {
+
+        const generate_options = {
+            cache:[],
+            begin(arr){
+                arr.forEach((text) => {
+                    const template = <UserOptions submit={(text) => submitAction(text)} value={text} key={this.cache.length} action={(bool) => update_hasChosen(bool)}/>
+                    this.cache = [...this.cache,template];
+                });
+                update_child(this.cache);
+            }
+        };
+
         if(options && !isMounted.current){
             isMounted.current = true;
             generate_options.begin(options);
         }
-    },[options]);
+    },[options,submitAction]);
     
+    
+
     useEffect(() => {
-        if(hasChosen){
-            setTimeout(() => {
-                update_displayLoader(true);
-            },1000);
-
-            setTimeout(() => {
-                update_hasChosen(false);
-                update_displayLoader(false);
-            },6500);
+        if(!isRequesting){
+            update_hasChosen(false);
         }
-    },[hasChosen]);
+    },[isRequesting]);
+    
 
-    if(!displayLoader){
+    if(!isRequesting){
         return(
-            <div className={`absolute bottom-0 lg:w-3/4 w-full flex flex-row  h-max py-8 overflow-x-auto ${hasChosen ? 'slide-down' : 'slide-in-bottom '}` }   >
+            <article className={`absolute bottom-0 lg:w-3/4 w-full flex flex-row  h-max py-8 overflow-x-auto ${hasChosen ? 'slide-down' : 'slide-in-bottom '}` }   >
                 <div className="lg:w-full w-max flex flex-row gap-8 justify-center items-center  px-4" style={{flexShrink:0}}>
                     {childs}
                 </div>
                 
-            </div>
+            </article>
         )
-    }else{
+    }else if(isRequesting){
         return(
-            <div className=" absolute bottom-0 lg:w-3/4 w-full h-1/4  appear flex items-center justify-center">
+            <article className=" absolute bottom-0 lg:w-3/4 w-full h-1/5   appear flex items-center justify-center">
                 <span className="loader "></span>
-            </div>
+            </article>
         );
 
     }
@@ -334,19 +356,23 @@ const IsRequestingContext = createContext();
 
 const MessageScrollView = () => {
 
-    const Theme = useContext(ThemeContext);
-
     const [request_state,set_request_state] = useState(localStore.getState().isRequesting); // Determines if the front end is busy requesting or not
-    
+    const [userText,update_userText] = useState(localStore.getState().userText);
+
+    const [chat_blocks,update_chat_blocks] = useState([]);
+
     localStore.subscribe(() => {
-        set_request_state(localStore.getState().isRequesting);
+        const rs = localStore.getState().isRequesting;
+        const user_txt = localStore.getState().userText;
+        if(request_state !== rs){
+            set_request_state(rs);
+        }
+        if(userText !== user_txt){
+            update_userText(user_txt);
+        }
     });
 
-    const ScrollUp = useCallback(() => { //Scrolls the chat container when called
-        ScrollView.current.scrollTop = ScrollView.current.scrollHeight;
-    },[]);
-
-    const [chat_blocks,update_chat_blocks] = useState([<Bubble key={0} scrollUp={() => ScrollUp()} value={'Izumi-kun eating alone again? *sits next to him*'} response_type={'intro'}/>]);
+ 
 
     const ScrollView = useRef(null);
     useEffect(() => {
@@ -354,6 +380,23 @@ const MessageScrollView = () => {
     },[chat_blocks]);
 
    
+    const add_bubble = useCallback((text,response_type) => {
+
+        const ScrollUp = () => { //Scrolls the chat container when called
+            ScrollView.current.scrollTop = ScrollView.current.scrollHeight;
+        };
+        
+        const new_block = <Bubble key={chat_blocks.length} scrollUp={() => ScrollUp()} response_type={response_type} value={text}/>;
+        update_chat_blocks(prev => ([new_block,...prev]));
+    },[chat_blocks]);
+
+    const isloaded = useRef(false);
+    useEffect(() => {
+        if(!isloaded.current){
+            isloaded.current = true;
+            add_bubble('Izumi-kun eating alone again? *sits next to him*','intro');
+        }
+    },[add_bubble]);
 
     ws.socket.onmessage = e => {
         const {STATUS} = JSON.parse(e.data);
@@ -375,33 +418,27 @@ const MessageScrollView = () => {
         }
         
     }
-
-    const add_bubble = useCallback((text,response_type) => {
-        const new_block = <Bubble key={chat_blocks.length} scrollUp={() => ScrollUp()} response_type={response_type} value={text}/>;
-        update_chat_blocks(prev => ([new_block,...prev]));
-    },[chat_blocks]);
-
-
     
+    useEffect(() => {
+        if(userText){
+            add_bubble(userText,'user');
+        }
+    },[userText]);
+
     return(
-        <IsRequestingContext.Provider value={request_state}>
-        <section className="flex flex-col lg:w-3/4 w-full h-full ">
-            <article ref={ScrollView} className="overflow-y-auto  w-full block flex-grow  ">
+    <IsRequestingContext.Provider value={request_state}>
+        <section className="flex flex-col lg:w-3/4 w-full h-full overflow-hidden">
+            <article ref={ScrollView} className={` ${request_state ? 'overflow-y-hidden' : 'overflow-y-auto'}  w-full block flex-grow  `}>
                 <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8   " style={{background:''}} >
                     {chat_blocks}
                 </div>
                 
             </article>
-            <OptionSpacer/>
+            {/* <OptionSpacer/> */}
         </section>
-        <OptionList options={sample}/>
-            
-            {/* <span className=" absolute  bottom lg:w-1/3 md:w-3/4 sm:w-3/4 w-5/6  my-4 border rounded-full flex flex-row px-8  items-center justify-center transform-all" style={{background:Theme.color_layer_1,zIndex:1,opacity:`${request_state ? '0.5' : '1'}`}}>
-                <UserTextArea action={(text) => add_bubble(text,'user')}/>
-           
-            </span> */}
-           
-        </IsRequestingContext.Provider>
+        <OptionList options={sample} submitAction={(text) => add_bubble(text,'user')}/>
+        {/* <UserTextArea action={(text) => add_bubble(text,'user')}/>    */}
+    </IsRequestingContext.Provider>
         
     );
 };

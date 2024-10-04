@@ -47,7 +47,7 @@ input:-webkit-autofill {
   animation-timeline: view();
 }
 .chatContainer .chatBubble:first-child{
-  margin-bottom: 10vh;
+  margin-bottom: 25vh;
 }
  .chatContainer .chatBubble:last-child{
   margin-top: 85vh;
@@ -60,7 +60,7 @@ input:-webkit-autofill {
     max-width: 60vw;
   }
   .chatContainer .chatBubble:first-child{
-    margin-bottom: 10vh;
+    margin-bottom: 30vh;
   }
   .chatContainer .chatBubble:last-child{
     margin-top: 75vh;
@@ -70,10 +70,10 @@ input:-webkit-autofill {
       opacity: 0;
     }
     10%{
-      opacity: 0.1;
+      opacity: 0;
     }
     30%{
-      opacity: 1;
+      opacity: 0;
     }40%{
       opacity: 1;
     }
@@ -484,7 +484,7 @@ For WebKit browsers (Chrome, Safari, etc.)
 */
 
 /* HTML: <div class="loader"></div> */
-.loader {
+.loader_bar {
   width: 45px;
   aspect-ratio: .75;
   --c: no-repeat linear-gradient(#fcfcfc78 0 0);
@@ -494,6 +494,21 @@ For WebKit browsers (Chrome, Safari, etc.)
     var(--c) 100% 50%;
   background-size: 20% 50%;
   animation: l6 1s infinite linear;
+}
+/* HTML: <div class="loader"></div> */
+.loader {
+  color: #fcfcfc78;
+  width: 6px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 19px 0 0 7px, 38px 0 0 3px, 57px 0 0 0;
+  transform: translateX(-38px);
+  animation: l21 .5s infinite alternate linear;
+}
+
+@keyframes l21 {
+  50%  {box-shadow: 19px 0 0 3px, 38px 0 0 7px, 57px 0 0 3px}
+  100% {box-shadow: 19px 0 0 0  , 38px 0 0 3px, 57px 0 0 7px}
 }
 @keyframes l6 {
   20% {background-position: 0% 0%  ,50% 50% ,100% 50% }
