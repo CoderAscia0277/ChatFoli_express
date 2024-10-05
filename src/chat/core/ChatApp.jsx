@@ -3,7 +3,7 @@ import {lazy, useRef, useState ,useEffect, createContext, useContext} from "reac
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ThemeContext } from "../..";
-import { MessageDataStore } from "../_utils/store/MessageAppData";
+import { MessageDataStore } from "../_utils/unused_store/MessageAppData";
 
 const MessagingApp = lazy(() => import('../components/ChatApp/MessagingApp'));
 const MessageSelection = lazy(() => import('../components/ChatApp/MessageSelection'));
