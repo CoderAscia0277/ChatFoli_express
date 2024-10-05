@@ -36,9 +36,6 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
             };
 
             AnimateText.iterate(value);
-            console.log(
-                'called'
-            )
         }
     },[value,scrollUp,response_type]);
 

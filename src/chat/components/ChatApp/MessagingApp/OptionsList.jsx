@@ -1,16 +1,19 @@
 import { useEffect,useState,useRef,useContext } from "react";
 import { IsRequestingContext } from "./ScrollView";
 import UserOptions from "./UserOption";
+// import { Theme } from "../../../_utils/Constants";
+import { ThemeContext } from "../../../..";
+import UserKeyBoard from "./UserKeyBoard";
+
 
 const OptionList = ({options,submitAction = () => null}) => {
 
     const [childs, update_child] = useState([]);
     const isMounted = useRef(false);
-
+    const Theme = useContext(ThemeContext);
 
     const [hasChosen, update_hasChosen] = useState(false);
-    // const [displayLoader, update_displayLoader] = useState(false);
-
+    const [useKeyboard , update_useKeyboard] = useState(false);
     const isRequesting = useContext(IsRequestingContext);
 
     useEffect(() => {
@@ -32,6 +35,20 @@ const OptionList = ({options,submitAction = () => null}) => {
         }
     },[options,submitAction]);
     
+
+
+    const OptionBox = () => {
+        return(
+            !isRequesting ?
+                <div className={` ${ hasChosen  ? 'slide-down' : 'slide-in-bsottom ' }  lg:w-full w-max flex flex-row gap-8 justify-center items-center  px-4`} style={{flexShrink:0}}>
+                    {childs}
+                </div>
+            :
+            <div className="w-full h-14 flex justify-center items-center">
+                <span className="loader"></span>
+            </div>
+        );
+    }
     
 
     useEffect(() => {
@@ -40,24 +57,20 @@ const OptionList = ({options,submitAction = () => null}) => {
         }
     },[isRequesting]);
     
-
-    if(!isRequesting){
-        return(
-            <article className={`absolute bottom-0 lg:w-3/4 w-full flex flex-row  h-max py-8 overflow-x-auto ${hasChosen ? 'slide-down' : 'slide-in-bottom '}` }   >
-                <div className="lg:w-full w-max flex flex-row gap-8 justify-center items-center  px-4" style={{flexShrink:0}}>
-                    {childs}
-                </div>
+    return(
+        <>
+            <div className="w-full h-max flex justify-end px-4 py-2">
+                    <span onClick={() => update_useKeyboard(!useKeyboard)} className="rounded-full p-2 border w-max cursor-pointer h-5 w-5 p-4  hover:scale-105" style={{ background:Theme.color_layer_3,color:Theme.TextColor,top:'0px'}}></span>
+            </div>
+            <article className={`absolute bottom-0 lg:w-3/4 w-full flex flex-col ${useKeyboard || isRequesting ? 'justify-center items-center' : ''} h-max py-8 px-4 overflow-x-auto` }   >
                 
+                {
+                    useKeyboard ? 
+                    <UserKeyBoard/> : <OptionBox/>
+                }
             </article>
-        )
-    }else if(isRequesting){
-        return(
-            <article className=" absolute bottom-0 lg:w-3/4 w-full h-1/5   appear flex items-center justify-center">
-                <span className="loader "></span>
-            </article>
-        );
-
-    }
+        </>
+    );
     
 }
 export default OptionList;

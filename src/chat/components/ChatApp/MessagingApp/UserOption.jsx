@@ -32,11 +32,9 @@ const UserOptions = ({value,keyVal,action = () => null,submit= () => null}) => {
     };
 
     return(
-    // <div className=" px-4 flex justify-center ">
         <span onClick={() => isClicked()} key={keyVal} className="slide-top hover:relative  m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4 border rounded-2xl cursor-pointer" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
             {value}
         </span>
-    // </div>
     );
 };
 
