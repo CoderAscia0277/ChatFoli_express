@@ -41,15 +41,15 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
 
     if(response_type === 'user'){
         return(
-            <div className={`chatBubble  fading w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap h-max  rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_3,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+            <div className={`chatBubble  fading-disable w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
+                 <span className="w-max dialouge_wrap h-max  rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:'transparent',color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
     }else if(response_type === 'intro'){
         return(
-            <div className={`chatBubble  fading w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap  h-max min-h-14 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+            <div className={`chatBubble  fading-disable w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
+                 <span className="w-max dialouge_wrap  h-max min-h-14 rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
@@ -57,9 +57,13 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
     else{
 
         return(
-            <div className={`chatBubble  fading w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl border  px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{streamMessage}</span>
-            </div> 
+           
+                <div className={`chatBubble  fading-disable w-full h-max flex flex-row  justify-start gap-4`} style={{pointerEvents:'none'}}>
+                    <span className={`${Theme.IconSize} border rounded-full bg-neutral-500`}></span>
+                    <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{streamMessage}</span>
+                </div> 
+        
+            
            
         );
     }

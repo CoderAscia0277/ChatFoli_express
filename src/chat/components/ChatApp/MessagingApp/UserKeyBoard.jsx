@@ -64,7 +64,7 @@ const UserKeyBoard = ({ action = () => null}) => {
     // In short nag kakaroon ng delay ung spinner icon kaya may promise, to fix this import mo nlng ung spinner Icon without lazy
    
     return(
-        <span className={`lg:w-3/4 w-full  ${isRequesting ? '' : 'border' } rounded-full flex flex-row px-8  items-center justify-center`} style={{background:isRequesting ? 'transparent' : Theme.color_layer_1,opacity:`${isRequesting ? '0.5' : '1'}`}}>
+        <span className={`lg:w-3/4 w-full  ${isRequesting ? '' : 'border-disable' } rounded-full flex flex-row px-8  items-center justify-center`} style={{background:isRequesting ? 'transparent' : Theme.color_layer_2,opacity:`${isRequesting ? '0.5' : '1'}`}}>
 
             {
                 !isRequesting ?

@@ -14,10 +14,10 @@ const ChatContainer = ({bg_image})=> {
     const loadImage = imgCache;
     
     loadImage.read(bg_image); //Preload the bg image
-  
-
+    // `url(${bg_image}) center/cover no-repeat`
+    // borderImage:`fill 0 ${Theme.DialoguePanelBg}`
     return(
-        <article className={`w-full h-full flex flex-col-reverse items-center rounded-xl `} style={{background:`url(${bg_image}) center/cover no-repeat`,borderImage:`fill 0 ${Theme.DialoguePanelBg}`}}>
+        <article className={`w-full h-full flex flex-col-reverse items-center rounded-xl `} style={{background:Theme.color_layer_1}}>
             <MessageScrollView />
         </article> 
     
