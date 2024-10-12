@@ -3,7 +3,7 @@ import { createSlice ,configureStore} from "@reduxjs/toolkit";
 const Slice = createSlice({
     name:'Slice',
     initialState:{
-       chatbox_image:'/images/school_girl.jpg'
+       chatbox_image:'/images/medivalcastle.jpg'
             
     },reducers:{
         set_chatbox_image: (state,image) =>{

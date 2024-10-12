@@ -40,6 +40,8 @@ export const DarkMode = {
   TextColor2:'#C3C3C6',
   TextColor3:'#C4C3F4',
   color_200:'#131313',
+  dark_glass_trans:'#13131388',
+  light_glass_trans:'#ffffff11',
   color_100:'#18181c',
   color_50:'#38384f',
   color_layer_1:'#29292d',
@@ -52,7 +54,7 @@ export const DarkMode = {
   logo:'/images/VizNovel_logo_light.png',
   IconColor:'#F8F9FA',
   IconBgColor:'#F8F9FA',
-  DialoguePanelBg:'linear-gradient(0deg, #1c1c1c, transparent)',
+  DialoguePanelBg:'linear-gradient(0deg, #131313, transparent)',
   SelectIcon:['#35343d','#635ee2']
 }
 export const bg = {

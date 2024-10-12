@@ -2,14 +2,14 @@ import { ThemeContext } from "../../../..";
 import { useState,useEffect,useRef,useContext } from "react";
 import { localStore,update_isRequesting } from "../../../_utils/Local_Store/local_store";
 
-const Bubble = ({scrollUp = () => null,value,response_type}) => {
+const Bubble = ({scrollUp = () => null,value,response_type,enable_transition}) => {
     const Theme = useContext(ThemeContext);
     const [streamMessage,update_streamMessage] = useState('');
 
     const isloaded = useRef(false);
 
     useEffect(() => {
-        if(!isloaded.current && response_type === 'ai' && value){
+        if(!isloaded.current && response_type === 'ai' && value && enable_transition){
             isloaded.current = true;
 
             const AnimateText = {
@@ -36,20 +36,22 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
             };
 
             AnimateText.iterate(value);
+        }else if(!enable_transition){
+            update_streamMessage(value);
         }
     },[value,scrollUp,response_type]);
 
     if(response_type === 'user'){
         return(
-            <div className={`chatBubble  fading-disable w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap h-max  rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:'transparent',color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+            <div className={`chatBubble  fading w-full h-max flex flex-row justify-end`} style={{pointerEvents:'none'}}>
+                 <span className="w-max dialouge_wrap h-max  rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.light_glass_trans,backdropFilter:'blur(0px)',color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
     }else if(response_type === 'intro'){
         return(
-            <div className={`chatBubble  fading-disable w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
-                 <span className="w-max dialouge_wrap  h-max min-h-14 rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
+            <div className={`chatBubble  fading w-full h-max flex flex-row  justify-start`} style={{pointerEvents:'none'}}>
+                 <span className="w-max dialouge_wrap  h-max min-h-14 rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,backdropFilter:'blur(0px)',color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{value}</span>
             </div> 
            
         );
@@ -58,9 +60,9 @@ const Bubble = ({scrollUp = () => null,value,response_type}) => {
 
         return(
            
-                <div className={`chatBubble  fading-disable w-full h-max flex flex-row  justify-start gap-4`} style={{pointerEvents:'none'}}>
+                <div className={`chatBubble  fading w-full h-max flex flex-row  justify-start gap-4`} style={{pointerEvents:'none'}}>
                     <span className={`${Theme.IconSize} border rounded-full bg-neutral-500`}></span>
-                    <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.color_layer_2,color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{streamMessage}</span>
+                    <span className="w-max dialouge_wrap  h-max min-h-10 rounded-2xl   px-4 py-2 break-normal" style={{flexShrink:0,background:Theme.dark_glass_trans,backdropFilter:'blur(0px)',color:'#F8F9FA',overflowWrap: 'normal',wordBreak:'normal'}}>{streamMessage}</span>
                 </div> 
         
             

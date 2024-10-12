@@ -17,7 +17,7 @@ const ChatContainer = ({bg_image})=> {
     // `url(${bg_image}) center/cover no-repeat`
     // borderImage:`fill 0 ${Theme.DialoguePanelBg}`
     return(
-        <article className={`w-full h-full flex flex-col-reverse items-center rounded-xl `} style={{background:Theme.color_layer_1}}>
+        <article className={`lg:w-3/4  w-full h-full flex flex-col-reverse items-center z-0 `} style={{background:`url(${bg_image}) center/cover no-repeat`,borderImage:`fill 0 ${Theme.DialoguePanelBg}`}}>
             <MessageScrollView />
         </article> 
     
@@ -44,10 +44,11 @@ const MessagingApp = () => {
 
     return(
         
-        <article className="w-full h-full rounded-2xl flex flex-col gap-2 " style={{background:Theme.color_100}}>
- 
+        <article className="w-full h-full rounded-2xl flex flex-col justify-center items-center " style={{background:Theme.color_100}}>
+            
             {/* Main Chat Container */}
             <Suspense fallback={<ChatContainerPlaceholder/>}>
+                <article style={{background:`url(${AppData.chatbox_image}) center/cover no-repeat`,filter:'blur(5px)'}} className="w-full h-full lg:block  hidden absolute z-0 point-events-none "></article>
                 <ChatContainer bg_image={AppData.chatbox_image}/>
             </Suspense>
            

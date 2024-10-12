@@ -64,12 +64,12 @@ const UserKeyBoard = ({ action = () => null}) => {
     // In short nag kakaroon ng delay ung spinner icon kaya may promise, to fix this import mo nlng ung spinner Icon without lazy
    
     return(
-        <span className={`lg:w-3/4 w-full  ${isRequesting ? '' : 'border-disable' } rounded-full flex flex-row px-8  items-center justify-center`} style={{background:isRequesting ? 'transparent' : Theme.color_layer_2,opacity:`${isRequesting ? '0.5' : '1'}`}}>
+        <span className={`lg:w-1/2 w-full  ${isRequesting ? '' : 'border-disable' } rounded-full flex flex-row px-8  items-center justify-center`} style={{background:isRequesting ? 'transparent' : Theme.light_glass_trans,opacity:`${isRequesting ? '0.5' : '1'}`}}>
 
             {
                 !isRequesting ?
                     <>
-                         <input type="text"  ref={text_field} onKeyDown={e => e.key === "Enter" ? submit_action(e) : null} className="bg-transparent  flex-grow h-14 outline-0 px-4 text-center text-neutral-100"  placeholder={`${isRequesting ? "Azumi is currently typing..." :"Please enter your response here."}`} style={{resize:'none'}}/>      
+                         <input type="text"  ref={text_field} onKeyDown={e => e.key === "Enter" ? submit_action(e) : null} className="bg-transparent  flex-grow h-12 outline-0 px-4 text-md text-center text-neutral-100"  placeholder={`${isRequesting ? "Azumi is currently typing..." :"Type your response here"}`} style={{resize:'none'}}/>      
                          {/* //Submit Icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={() =>  submit_action()} className={`${Theme.IconSize} hover:scale-110 cursor-pointer`} color="#F8F9FA" fill="none">
                             <path d="M21.0477 3.05293C18.8697 0.707363 2.48648 6.4532 2.50001 8.551C2.51535 10.9299 8.89809 11.6617 10.6672 12.1581C11.7311 12.4565 12.016 12.7625 12.2613 13.8781C13.3723 18.9305 13.9301 21.4435 15.2014 21.4996C17.2278 21.5892 23.1733 5.342 21.0477 3.05293Z" stroke="currentColor" strokeWidth="1.5" />

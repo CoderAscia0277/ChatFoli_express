@@ -5,7 +5,7 @@ import { ThemeContext } from "../../../..";
 
 const UserOptions = ({value,keyVal,action = () => null,submit= () => null}) => {
     const Theme = useContext(ThemeContext);
-    const [bgcolor,change_color] = useState(Theme.color_layer_2);
+    const [bgcolor,change_color] = useState(Theme.light_glass_trans);
 
     const isClicked = async() => {
         change_color(Theme.color_layer_3);
@@ -32,7 +32,7 @@ const UserOptions = ({value,keyVal,action = () => null,submit= () => null}) => {
     };
 
     return(
-        <span onClick={() => isClicked()} key={keyVal} className="slide-top hover:relative  m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4 border rounded-2xl cursor-pointer" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
+        <span onClick={() => isClicked()} key={keyVal} className="slide-top hover:relative  m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4  rounded-2xl cursor-pointer" style={{background:bgcolor,color:Theme.TextColor,zIndex:2}}>
             {value}
         </span>
     );

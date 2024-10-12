@@ -1,9 +1,10 @@
 import { localStore } from "../../../_utils/Local_Store/local_store";
-import { useState,useEffect,useRef,useCallback } from "react";
+import { useState,useEffect,useRef,useCallback, useContext } from "react";
 import { createContext } from "react";
 import ws from "../../../_utils/ws/socket";
 import Bubble from "./ChatBubble";
 import OptionList from "./OptionsList";
+import { ThemeContext } from "../../../..";
 
 export const IsRequestingContext = createContext();
 
@@ -20,6 +21,8 @@ const MessageScrollView = () => {
     const [userText,update_userText] = useState(localStore.getState().userText);
 
     const [chat_blocks,update_chat_blocks] = useState([]);
+
+    const Theme = useContext(ThemeContext);
 
     localStore.subscribe(() => {
         const rs = localStore.getState().isRequesting;
@@ -40,13 +43,13 @@ const MessageScrollView = () => {
     },[chat_blocks]);
 
    
-    const add_bubble = useCallback((text,response_type) => {
+    const add_bubble = useCallback((text,response_type,enable_transition = true) => {
 
         const ScrollUp = () => { //Scrolls the chat container when called
             ScrollView.current.scrollTop = ScrollView.current.scrollHeight;
         };
         
-        const new_block = <Bubble key={chat_blocks.length} scrollUp={() => ScrollUp()} response_type={response_type} value={text}/>;
+        const new_block = <Bubble key={chat_blocks.length} enable_transition={enable_transition} scrollUp={() => ScrollUp()} response_type={response_type} value={text}/>;
         update_chat_blocks(prev => ([new_block,...prev]));
     },[chat_blocks]);
 
@@ -54,7 +57,7 @@ const MessageScrollView = () => {
     useEffect(() => {
         if(!isloaded.current){
             isloaded.current = true;
-            add_bubble('Izumi-kun eating alone again? *sits next to him*','intro');
+            add_bubble('Izumi-kun eating alone again? *sits next to him*','ai',false);
         }
     },[add_bubble]);
 
@@ -87,7 +90,7 @@ const MessageScrollView = () => {
 
     return(
     <IsRequestingContext.Provider value={request_state}>
-        <section className="flex flex-col lg:w-3/4 w-full h-full overflow-hidden">
+        <section className="flex flex-col  w-full h-full overflow-hidden px-4">
             <article ref={ScrollView} className={` ${request_state ? 'overflow-y-hidden' : 'overflow-y-auto'}  w-full block flex-grow  `}>
                 <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8   " style={{background:''}} >
                     {chat_blocks}
