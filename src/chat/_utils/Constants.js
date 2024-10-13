@@ -41,7 +41,7 @@ export const DarkMode = {
   TextColor3:'#C4C3F4',
   color_200:'#131313',
   dark_glass_trans:'#13131388',
-  light_glass_trans:'#ffffff11',
+  light_glass_trans:'#ffffff1f',
   color_100:'#18181c',
   color_50:'#38384f',
   color_layer_1:'#29292d',

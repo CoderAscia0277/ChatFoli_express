@@ -48,7 +48,7 @@ const MessagingApp = () => {
             
             {/* Main Chat Container */}
             <Suspense fallback={<ChatContainerPlaceholder/>}>
-                <article style={{background:`url(${AppData.chatbox_image}) center/cover no-repeat`,filter:'blur(5px)'}} className="w-full h-full lg:block  hidden absolute z-0 point-events-none "></article>
+                <article style={{background:`url(${AppData.chatbox_image}) center/cover no-repeat`,filter:'blur(4px)'}} className="w-full h-full lg:block  hidden absolute z-0 point-events-none "></article>
                 <ChatContainer bg_image={AppData.chatbox_image}/>
             </Suspense>
            

@@ -57,7 +57,7 @@ const MessageScrollView = () => {
     useEffect(() => {
         if(!isloaded.current){
             isloaded.current = true;
-            add_bubble('Izumi-kun eating alone again? *sits next to him*','ai',false);
+            add_bubble('Oh it is you brother Albert *sniffs and wipes her tears*','ai',false);
         }
     },[add_bubble]);
 
