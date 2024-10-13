@@ -62,7 +62,7 @@ const OptionList = ({options,submitAction = () => null}) => {
             <div className="w-full h-max flex justify-end px-4 py-2">
                     <span onClick={() => update_useKeyboard(!useKeyboard)} className="rounded-full p-2 border w-max cursor-pointer h-5 w-5 p-4  hover:scale-105" style={{ background:Theme.color_layer_3,color:Theme.TextColor,top:'0px'}}></span>
             </div>
-            <article className={`absolute bottom-0 lg:w-3/4 w-full flex flex-col ${useKeyboard || isRequesting ? 'justify-center items-center' : ''} h-max py-4 px-4 overflow-x-auto` }   >
+            <article className={`absolute bottom-0 lg:w-3/4 w-full flex flex-col ${useKeyboard || isRequesting ? 'justify-center items-center' : ''} h-max py-4 px-8 overflow-x-auto` }   >
                 
                 {
                     useKeyboard ? 

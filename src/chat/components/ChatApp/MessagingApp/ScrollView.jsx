@@ -92,7 +92,7 @@ const MessageScrollView = () => {
     <IsRequestingContext.Provider value={request_state}>
         <section className="flex flex-col  w-full h-full overflow-hidden px-4">
             <article ref={ScrollView} className={` ${request_state ? 'overflow-y-hidden' : 'overflow-y-auto'}  w-full block flex-grow  `}>
-                <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse px-4 gap-8   " style={{background:''}} >
+                <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse lg:px-4 gap-8   " style={{background:''}} >
                     {chat_blocks}
                 </div>
             </article>
