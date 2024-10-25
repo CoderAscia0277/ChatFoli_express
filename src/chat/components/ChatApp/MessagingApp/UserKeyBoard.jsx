@@ -113,12 +113,12 @@ const UserKeyBoard = ({ action = () => null}) => {
     // In short nag kakaroon ng delay ung spinner icon kaya may promise, to fix this import mo nlng ung spinner Icon without lazy
    
     return(
-        <span className={`lg:w-1/2 w-full  ${isRequesting ? '' : 'border-disable' } rounded-2xl flex flex-row px-8  items-center justify-center`} style={{background:isRequesting ? 'transparent' : Theme.light_glass_trans,opacity:`${isRequesting ? '0.5' : '1'}`}}>
+        <span className={`lg:w-3/4 w-full  ${isRequesting ? '' : 'card' }  rounded-2xl flex flex-row px-8 py-1  items-center justify-center`} style={{background:isRequesting ? 'transparent' : Theme.light_glass_trans,opacity:`${isRequesting ? '0.5' : '1'}`}}>
 
             {
                 !isRequesting ?
                     <>
-                         <textarea  ref={text_field} onChange={(e) => {AdjustInputHeight(e)}} onKeyDown={e => e.key === "Enter" ? submit_action(e)  : null} className="bg-transparent  flex-grow  outline-0 px-4 py-2 text-md text-start text-neutral-100"  placeholder={`${isRequesting ? "Azumi is currently typing..." :"Type your response here"}`} style={{resize:'none'}}></textarea>      
+                         <textarea  ref={text_field} onChange={(e) => {AdjustInputHeight(e)}} onKeyDown={e => e.key === "Enter" ? submit_action(e)  : null} className="bg-transparent h-10 flex-grow  outline-0 px-4 py-2 text-md text-start text-neutral-100"  placeholder={"Type your message"} style={{resize:'none'}}></textarea>      
                          {/* //Submit Icon */}
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" onClick={() =>  submit_action()} className={`${Theme.IconSize} hover:scale-110 cursor-pointer`} color="#F8F9FA" fill="none">
                             <path d="M21.0477 3.05293C18.8697 0.707363 2.48648 6.4532 2.50001 8.551C2.51535 10.9299 8.89809 11.6617 10.6672 12.1581C11.7311 12.4565 12.016 12.7625 12.2613 13.8781C13.3723 18.9305 13.9301 21.4435 15.2014 21.4996C17.2278 21.5892 23.1733 5.342 21.0477 3.05293Z" stroke="currentColor" strokeWidth="1.5" />
@@ -126,7 +126,7 @@ const UserKeyBoard = ({ action = () => null}) => {
                         </svg>
                     </>
                 :
-                    <div className="w-full h-14 flex justify-center items-center">
+                    <div className="w-full h-10 flex justify-center items-center">
                          <span className="loader"></span>
                     </div>
             }

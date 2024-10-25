@@ -90,14 +90,15 @@ const MessageScrollView = () => {
 
     return(
     <IsRequestingContext.Provider value={request_state}>
-        <section className="flex flex-col  w-full h-full overflow-hidden px-4">
-            <article ref={ScrollView} className={` ${request_state ? 'overflow-y-hidden' : 'overflow-y-auto'}  w-full block flex-grow  `}>
+        <section className="flex flex-col lg:w-3/4 w-full lg:h-5/6 overflow-hidden px-4 rounded-xl items-center card py-2" style={{background:Theme.dark_glass_trans,backdropFilter:'blur(1px)'}}>
+            <article ref={ScrollView} className={` ${request_state ? 'overflow-y-hidden' : 'overflow-y-auto'}  w-full  flex-grow  `}>
                 <div  className="chatContainer w-full h-max rounded-lg p-1 flex flex-col-reverse lg:px-4 gap-8   " style={{background:''}} >
                     {chat_blocks}
                 </div>
             </article>
+            <OptionList options={sample} submitAction={(text) => add_bubble(text,'user')}/>
         </section>
-        <OptionList options={sample} submitAction={(text) => add_bubble(text,'user')}/>
+       
         {/* <UserTextArea action={(text) => add_bubble(text,'user')}/>    */}
     </IsRequestingContext.Provider>
         

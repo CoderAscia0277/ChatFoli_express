@@ -14,6 +14,7 @@ export const Theme = {
 };
 
 export const LightMode = {
+    none:'',
     TextColor: '#1C1C1C',
     TextColor2:'#525255',
     TextColor3:'#635ee2',
@@ -35,13 +36,14 @@ export const LightMode = {
     DialoguePanelBg:'linear-gradient(90deg, rgba(19, 19, 19, 0.467), rgb(0 0 0 / 60%), rgb(19 19 19 / 68%), rgba(19, 19, 19, 0.467))',
 }
 export const DarkMode = {
+  none:'',
   IconSize:'w-6 h-6',
   TextColor: '#F8F9FA',
   TextColor2:'#C3C3C6',
   TextColor3:'#C4C3F4',
   color_200:'#131313',
   dark_glass_trans:'#13131388',
-  light_glass_trans:'#ffffff1f',
+  light_glass_trans:'rgba(255,255,255,0.03)',
   color_100:'#18181c',
   color_50:'#38384f',
   color_layer_1:'#29292d',
