@@ -35,7 +35,7 @@ const UserOptions = ({value,keyVal,action = () => null,submit= () => null}) => {
     };
 
     return(
-        <span onClick={() => isClicked()}  key={keyVal} className=" card  hover:scale-105 shadow-sm hover:shadow-neutral-500/50 m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4  rounded-2xl cursor-pointer" style={{background:Theme.light_glass_trans,color:Theme.TextColor,zIndex:2}}>
+        <span onClick={() => isClicked()}  key={keyVal} className=" card shadow-sm hover:shadow-neutral-500/50 m-auto break-normal w-max option_wrap min-w-30 h-max min-h-10 py-4 px-4  rounded-2xl cursor-pointer" style={{background:Theme.light_glass_trans,color:Theme.TextColor,zIndex:2}}>
             {value}
         </span>
     );

@@ -13,7 +13,7 @@ const OptionList = ({options,submitAction = () => null}) => {
     const Theme = useContext(ThemeContext);
 
     const [hasChosen, update_hasChosen] = useState(false);
-    const [useKeyboard , update_useKeyboard] = useState(true);
+    const [useKeyboard , update_useKeyboard] = useState(false);
     const isRequesting = useContext(IsRequestingContext);
 
     useEffect(() => {

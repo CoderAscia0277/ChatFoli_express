@@ -9,7 +9,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 const ChatApp = lazy(() => import('./chat/core/ChatApp'));
 const LoginPage = lazy( () => import('./chat/core/LoginPage'));
 const SignUpPage = lazy(() => import('./chat/core/SignUpPage'));
-
+const CreateDashBoard = lazy(() => import('./chat/core/CreateDashboard'));
 
 export const ThemeContext = createContext();
 
@@ -33,6 +33,11 @@ const router = createBrowserRouter([
     element:
     <ThemeContext.Provider value={LightMode}>
        <SignUpPage/> 
+    </ThemeContext.Provider>
+  },{
+    path:'/create',
+    element: <ThemeContext.Provider value={DarkMode}>
+      <CreateDashBoard/>
     </ThemeContext.Provider>
   }]
 );
