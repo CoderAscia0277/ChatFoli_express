@@ -1,5 +1,5 @@
 import { ThemeContext } from "../.."
-import { useContext } from "react"
+import { useContext ,useState} from "react"
 
 const BasicInfo = () => {
     const Theme = useContext(ThemeContext);
@@ -10,7 +10,7 @@ const BasicInfo = () => {
                 <span className="font-medium text-sm">Tittle</span><input placeholder="Ex. The adventures of David ..." type="Text" className="text-sm bg-transparent rounded-md outline-0 p-2 w-full" style={{border:`solid 1px ${Theme.color_layer_3}`,background:Theme.color_layer_2}}/>
             </div>
             <div className="flex flex-col gap-2 ">
-                <span className="font-medium text-sm">Introductory</span><textarea placeholder="Ex. You were at the forest hunting for ..." className="text-sm bg-transparent rounded-md outline-0 p-2 w-full flex-grow" style={{border:`solid 1px ${Theme.color_layer_3}`,background:Theme.color_layer_2,resize:'none'}}></textarea>
+                <span className="font-medium text-sm">Introductory</span><textarea placeholder="Ex. You were at the forest hunting for ..." className=" text-sm bg-transparent rounded-md outline-0 p-2 w-full flex-grow" style={{border:`solid 1px ${Theme.color_layer_3}`,background:Theme.color_layer_2,resize:'none'}}></textarea>
             </div>
             <div className="flex flex-col gap-2 h-1/2">
                 <span className="font-medium text-sm">Scenario</span><textarea placeholder="Write your scenario here ..." className="text-sm bg-transparent rounded-md outline-0 p-2 w-full flex-grow" style={{border:`solid 1px ${Theme.color_layer_3}`,background:Theme.color_layer_2,resize:'none'}}></textarea>
@@ -63,10 +63,32 @@ const Characters_and_Roles = () => {
 const Layout_and_Design = () => {
     const Theme = useContext(ThemeContext);
 
-    return(
-        <article className="w-1/3 p-4 " style={{color:Theme.TextColor}}>
-             <span className="font-semibold  text-md ">Layout & Design</span>
+    const ChooseTheme = () => {
 
+        const theme_option_style = "theme_option font-normal text-sm py-2 px-2 rounded-md shadow-md ";
+
+        const [activeIndex, setActiveIndex] = useState('ClassicNote');
+
+        const handleClick = (index) => {
+            setActiveIndex(index);
+        };
+
+        return(
+        <div className="flex flex-col h-1/3 w-full gap-2">
+            <div className="title font-medium text-sm">Choose your theme</div>
+            <ul className="w-full flex flex-row cursor-pointer gap-2 " >
+                <span onClick={() => handleClick('ClassicNote')}  className={`${theme_option_style}${activeIndex !== 'ClassicNote' ? 'hover:scale-105' : ''}`} style={{background: activeIndex === 'ClassicNote' ? Theme.color_layer_2 : Theme.color_layer_1}}>Classic Note</span>
+                <span onClick={() => handleClick('ChatStyle')} className={`${theme_option_style}${activeIndex !== 'ChatStyle' ? 'hover:scale-105' : ''}`} style={{background:activeIndex === 'ChatStyle' ? Theme.color_layer_2 : Theme.color_layer_1}}>Chat Style</span>
+                <span onClick={() => handleClick('Customize')} className={`${theme_option_style}${activeIndex !== 'Customize' ? 'hover:scale-105' : ''}`} style={{background:activeIndex === 'Customize' ? Theme.color_layer_2 : Theme.color_layer_1}}>Customize</span>
+            </ul>
+        </div>
+        );
+    }; 
+    
+    return(
+        <article className="w-1/3 p-4 h-full flex gap-4 flex-col" style={{color:Theme.TextColor}}>
+             <span className="font-semibold  text-md ">Layout & Design</span>
+            <ChooseTheme/>
         </article>
     );
 }
